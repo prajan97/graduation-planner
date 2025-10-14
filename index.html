@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PNOMH Graduation Planner</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --muted: #94a3b8;
+      --ink: #e5e7eb;
+      --accent: #38bdf8;
+      --good: #22c55e;
+      --warn: #f59e0b;
+      --bad: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+      Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(180deg, #0b1023, #0a1229, #0f172a);
+      color: var(--ink);
+    }
+    header {
+      padding: 28px 20px; border-bottom: 1px solid #1f2937; position: sticky; top: 0; backdrop-filter: blur(8px);
+      background: rgba(15, 23, 42, 0.7);
+    }
+    h1 { margin: 0; font-weight: 800; letter-spacing: 0.2px; font-size: clamp(22px, 3vw, 28px); }
+    .container { max-width: 1200px; margin: 0 auto; padding: 16px; }
+
+    .grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    @media (min-width: 900px) { .grid { grid-template-columns: 360px 1fr; } }
+
+    .card { background: linear-gradient(180deg, #0b1224, #0e162b); border: 1px solid #1f2937; border-radius: 14px; box-shadow: 0 10px 24px rgba(0,0,0,0.25); }
+    .card .inner { padding: 16px; }
+    .card h2 { margin: 0 0 8px; font-size: 18px; }
+    .sub { color: var(--muted); font-size: 13px; }
+
+    label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    select, input[type="month"], input[type="text"], input[type="number"], button, textarea {
+      width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #243143; background: #0a1226; color: var(--ink);
+    }
+    textarea { min-height: 72px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .mutetext { color: var(--muted); font-size: 12px; }
+
+    .pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: #0b162e; border: 1px solid #1f2c44; font-size: 12px; color: var(--muted); }
+
+    .btn { cursor: pointer; background: linear-gradient(180deg, #0ea5e9, #0284c7); border: none; font-weight: 700; letter-spacing: .2px; }
+    .btn.secondary { background: #0b162e; border: 1px solid #223049; }
+
+    .timeline { display: grid; gap: 10px; }
+    .term { border: 1px solid #233046; border-radius: 12px; padding: 10px; background: #0b142a; display: grid; gap: 6px; }
+    .termHeader { display: flex; justify-content: space-between; align-items: baseline; }
+    .termTitle { font-weight: 700; }
+    .termMeta { font-size: 12px; color: var(--muted); }
+    .bad { color: var(--bad); }
+    .warn { color: var(--warn); }
+    .good { color: var(--good); }
+
+    .legend { display: flex; flex-wrap: wrap; gap: 8px; }
+    .legend span { font-size: 12px; }
+
+    .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .moduleTag { border: 1px dashed #2a3a58; background: #0b152f; padding: 6px 8px; border-radius: 10px; font-size: 12px; }
+    .hardStop { border: 1px solid #3a2131; background: #2a0c18; }
+    .softStop { border: 1px solid #3a331f; background: #2a170c; }
+
+    .kbd { border: 1px solid #2b3a57; background: #0b142a; padding: 2px 6px; border-radius: 6px; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>PNOMH Graduation Planner <span class="sub">(part‑time · online)</span></h1>
+      <div class="sub">Plan your path to PG Cert (60c), PG Dip (120c), or MSc (180c). One module per teaching period; 2‑year target, 6‑year maximum.</div>
+    </div>
+  </header>
+
+  <main class="container grid">
+    <section class="card">
+      <div class="inner">
+        <h2>1) Your setup</h2>
+        <div class="row">
+          <div>
+            <label for="award">Intended award</label>
+            <select id="award">
+              <option value="PGCert">PG Cert (60 credits)</option>
+              <option value="PGDip">PG Dip (120 credits)</option>
+              <option value="MSc" selected>MSc (180 credits)</option>
+            </select>
+          </div>
+          <div>
+            <label for="start">Start teaching window</label>
+            <select id="start"></select>
+          </div>
+        </div>
+        <div style="height:8px"></div>
+        <div class="row">
+          <div>
+            <label for="pace">Pace</label>
+            <select id="pace">
+              <option value="continuous" selected>Continuous (no breaks)</option>
+              <option value="light">Light (skip every 3rd period)</option>
+              <option value="custom">Custom (I'll choose breaks)</option>
+            </select>
+          </div>
+          <div>
+            <label for="maxYears">Max duration</label>
+            <select id="maxYears">
+              <option value="2">Target: 2 years</option>
+              <option value="3">Up to 3 years</option>
+              <option value="4">Up to 4 years</option>
+              <option value="5">Up to 5 years</option>
+              <option value="6" selected>Absolute max: 6 years</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="inner">
+        <h2>2) Optional modules (pick up to 4)</h2>
+        <div class="mutetext">You must finish the four Foundation modules before taking options. Order within each group is flexible. Research Skills 1 & 2 must both be completed before the Synoptic Project (which spans two consecutive periods).
+        </div>
+        <div style="height:8px"></div>
+        <div id="options" class="tags"></div>
+      </div>
+    </section>
+
+    <section class="card" style="grid-column: 1 / -1;">
+      <div class="inner">
+        <h2>3) Plan</h2>
+        <div class="legend">
+          <span class="pill"><span>🟦</span> Foundation</span>
+          <span class="pill"><span>🟥</span> Option (choose 4)</span>
+          <span class="pill"><span>🟪</span> Research Skills</span>
+          <span class="pill"><span>⬛</span> Synoptic Project (2 periods)</span>
+          <span class="pill"><span>⏱️</span> 2‑yr target</span>
+          <span class="pill"><span>🚫</span> 6‑yr hard limit</span>
+        </div>
+        <div style="height:12px"></div>
+        <div id="timeline" class="timeline"></div>
+        <div id="impact" class="term" style="margin-top:10px; background:#0c1734">
+          <div class="termHeader">
+            <div class="termTitle">What‑if: study break impact</div>
+            <div class="termMeta">Live comparison vs. no‑break plan</div>
+          </div>
+          <div id="impactBody" class="mutetext">Toggle <span class="kbd">Pace → Custom</span> and click periods in the timeline to mark breaks. Then press <strong>Generate plan</strong> to see the impact here.</div>
+        </div>
+        <div style="height:12px"></div>
+        <div class="row">
+          <button id="generate" class="btn">Generate plan</button>
+          <button id="toggleBreaks" class="btn secondary">Toggle breaks (custom)</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="grid-column: 1 / -1;">
+      <div class="inner">
+        <h2>Notes & export</h2>
+        <textarea id="notes" placeholder="Any constraints, e.g. work travel in Mar/Jun, aim for Addictions in June, etc."></textarea>
+        <div style="height:8px"></div>
+        <div class="row">
+          <button id="exportJSON" class="btn secondary">Download plan (.json)</button>
+          <button id="shareURL" class="btn secondary">Copy shareable URL</button>
+        </div>
+        <div id="shareStatus" class="mutetext" style="margin-top:6px"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // === Programme data (from Carousel Guide 2024/25, cyclical pattern for 2025–2027) ===
+    // Groups
+    const GROUP = {
+      FOUNDATION: 'foundation', // navy blue
+      OPTIONS: 'options',       // red
+      RESEARCH: 'research',     // light blue
+      SYNOPTIC: 'synoptic'      // grey
+    };
+
+    const FOUNDATIONS = [
+      'Biological Foundations of Mental Health',
+      'Techniques in Neuroscience',
+      'Psychological Foundations of Mental Health',
+      'Mental Health in the Community',
+    ];
+
+    const OPTIONS = [
+      'Mindfulness',
+      'Global Mental Health',
+      'Psychology & Neuroscience of Addictions',
+      'Child & Adolescent Mental Health',
+      'Social, Genetic & Environmental Basis of Mental Health',
+      'Neuroscience in Society',
+      'Psychology & Neuroscience of Affective Disorders',
+      'Psychology & Neuroscience of Psychosis',
+      'Neuroimaging & Mental Health',
+      'Contemporary Advances in Neuroscience',
+      'Neurodevelopmental Disorders: From Bench to Bedside',
+    ];
+
+    const RESEARCH = [
+      'Research Skills 1: From Reviewing & Critical Analysis to Research Ethics',
+      'Research Skills 2: From Methods & Procedures to Analysis & Reporting',
+    ];
+
+    const SYNOPTIC = ['Independent Synoptic Project']; // spans two consecutive periods
+
+    // Teaching windows per year (Jan, Mar, May, Jun, Sep, Oct). Each window lists modules that run.
+    // We encode a 2-year cycle using 2025 and 2026, and repeat 2025 for 2027, 2029..., and 2026 for 2028, 2030...
+    const SCHEDULE_2025 = {
+      '2025-01': [
+        'Techniques in Neuroscience',
+        'Psychology & Neuroscience of Affective Disorders',
+        'Neuroscience in Society',
+        'Social, Genetic & Environmental Basis of Mental Health',
+        'Research Skills 1: From Reviewing & Critical Analysis to Research Ethics',
+        'Independent Synoptic Project'
+      ],
+      '2025-03': [
+        'Psychological Foundations of Mental Health',
+        'Psychology & Neuroscience of Psychosis',
+        'Neuroimaging & Mental Health',
+        'Research Skills 2: From Methods & Procedures to Analysis & Reporting',
+        'Independent Synoptic Project'
+      ],
+      '2025-05': [
+        'Mental Health in the Community',
+        'Child & Adolescent Mental Health',
+        'Global Mental Health',
+        'Neurodevelopmental Disorders: From Bench to Bedside',
+        'Research Skills 1: From Reviewing & Critical Analysis to Research Ethics',
+        'Independent Synoptic Project'
+      ],
+      '2025-06': [
+        'Biological Foundations of Mental Health',
+        'Psychology & Neuroscience of Addictions',
+        'Mindfulness',
+        'Contemporary Advances in Neuroscience',
+        'Research Skills 2: From Methods & Procedures to Analysis & Reporting',
+        'Independent Synoptic Project'
+      ],
+      '2025-09': [
+        'Techniques in Neuroscience',
+        'Psychology & Neuroscience of Affective Disorders',
+        'Neuroscience in Society',
+        'Social, Genetic & Environmental Basis of Mental Health',
+        'Research Skills 1: From Reviewing & Critical Analysis to Research Ethics',
+        'Independent Synoptic Project'
+      ],
+      '2025-10': [
+        'Psychological Foundations of Mental Health',
+        'Psychology & Neuroscience of Psychosis',
+        'Neuroimaging & Mental Health',
+        'Research Skills 2: From Methods & Procedures to Analysis & Reporting'
+      ]
+    };
+
+    const SCHEDULE_2026 = {
+      '2026-01': [
+        'Mental Health in the Community',
+        'Child & Adolescent Mental Health',
+        'Global Mental Health',
+        'Neurodevelopmental Disorders: From Bench to Bedside',
+        'Research Skills 1: From Reviewing & Critical Analysis to Research Ethics',
+        'Independent Synoptic Project'
+      ],
+      '2026-03': [
+        'Biological Foundations of Mental Health',
+        'Psychology & Neuroscience of Addictions',
+        'Mindfulness',
+        'Contemporary Advances in Neuroscience',
+        'Research Skills 2: From Methods & Procedures to Analysis & Reporting',
+        'Independent Synoptic Project'
+      ],
+      '2026-05': [
+        'Techniques in Neuroscience',
+        'Psychology & Neuroscience of Affective Disorders',
+        'Neuroscience in Society',
+        'Social, Genetic & Environmental Basis of Mental Health',
+        'Research Skills 1: From Reviewing & Critical Analysis to Research Ethics',
+        'Independent Synoptic Project'
+      ],
+      '2026-06': [
+        'Psychological Foundations of Mental Health',
+        'Psychology & Neuroscience of Psychosis',
+        'Neuroimaging & Mental Health',
+        'Research Skills 2: From Methods & Procedures to Analysis & Reporting',
+        'Independent Synoptic Project'
+      ],
+      '2026-09': [
+        'Mental Health in the Community',
+        'Child & Adolescent Mental Health',
+        'Global Mental Health',
+        'Neurodevelopmental Disorders: From Bench to Bedside',
+        'Research Skills 1: From Reviewing & Critical Analysis to Research Ethics',
+        'Independent Synoptic Project'
+      ],
+      '2026-10': [
+        'Biological Foundations of Mental Health',
+        'Psychology & Neuroscience of Addictions',
+        'Mindfulness',
+        'Contemporary Advances in Neuroscience',
+        'Research Skills 2: From Methods & Procedures to Analysis & Reporting'
+      ]
+    };
+
+    // Build extended schedule up to 6 years from now by alternating 2025/2026 patterns
+    function buildSchedule(startYear, years = 7) { // a little extra headroom
+      const map = new Map();
+      for (let y = startYear; y < startYear + years; y++) {
+        const pattern = (y % 2 === 1) ? SCHEDULE_2025 : SCHEDULE_2026; // odd years like 2025 use 2025 pattern
+        Object.entries(pattern).forEach(([k, mods]) => {
+          const month = k.split('-')[1];
+          const key = `${y}-${month}`;
+          map.set(key, mods.slice());
+        });
+      }
+      return map;
+    }
+
+    // Utility: classify a module to a group
+    function moduleGroup(name) {
+      if (FOUNDATIONS.includes(name)) return GROUP.FOUNDATION;
+      if (RESEARCH.includes(name)) return GROUP.RESEARCH;
+      if (SYNOPTIC.includes(name)) return GROUP.SYNOPTIC;
+      if (OPTIONS.includes(name)) return GROUP.OPTIONS;
+      return 'unknown';
+    }
+
+    // Award requirements
+    const REQUIREMENTS = {
+      PGCert: { foundation: 4, options: 0, research: 0, synoptic: 0 },
+      PGDip:  { foundation: 4, options: 4, research: 0, synoptic: 0 },
+      MSc:    { foundation: 4, options: 4, research: 2, synoptic: 1 }, // synoptic = 1 project (2 periods)
+    };
+
+    // Populate start windows (today -> +12 months for convenience)
+    const startSelect = document.getElementById('start');
+    const now = new Date();
+    const schedule = buildSchedule(now.getFullYear(), 8);
+    const sortedKeys = Array.from(schedule.keys()).sort();
+    // Keep only valid teaching windows (Jan, Mar, May, Jun, Sep, Oct) already encoded
+    sortedKeys.forEach(k => {
+      const opt = document.createElement('option');
+      const [y, m] = k.split('-');
+      const label = new Date(Number(y), Number(m)-1, 1).toLocaleString(undefined, { month: 'short', year: 'numeric' });
+      opt.value = k; opt.textContent = label;
+      startSelect.appendChild(opt);
+    });
+    // Preselect the closest upcoming window
+    const todayKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    let preselect = sortedKeys.find(k => k >= todayKey) || sortedKeys[0];
+    startSelect.value = preselect;
+
+    // Render options
+    const optionsWrap = document.getElementById('options');
+    OPTIONS.forEach(name => {
+      const id = 'opt-' + name.replace(/[^a-z0-9]/gi,'');
+      const label = document.createElement('label');
+      label.className = 'pill';
+      label.title = 'Select to prioritise this option when available';
+      label.innerHTML = `<input type="checkbox" id="${id}" data-name="${name}" style="margin-right:8px">${name}`;
+      optionsWrap.appendChild(label);
+    });
+
+    // Toggle breaks mode
+    const paceSel = document.getElementById('pace');
+    const toggleBreaksBtn = document.getElementById('toggleBreaks');
+
+    toggleBreaksBtn.addEventListener('click', () => {
+      paceSel.value = 'custom';
+      document.querySelectorAll('.term').forEach(div => {
+        div.dataset.clickable = '1';
+        div.title = 'Click to toggle a break in this period';
+      });
+      const banner = document.getElementById('impactBody');
+      if (banner) banner.innerHTML = 'Break mode on. Click any period in the timeline to mark a study break. Then press <strong>Generate plan</strong>.';
+    });
+    });
+
+    // Core planning algorithm
+    function generatePlan(useBreaks = true) {
+      const award = document.getElementById('award').value;
+      const startKey = document.getElementById('start').value;
+      const maxYears = parseInt(document.getElementById('maxYears').value, 10);
+      const pace = document.getElementById('pace').value;
+
+      const req = { ...REQUIREMENTS[award] };
+      const chosenOptions = Array.from(document.querySelectorAll('#options input:checked')).map(cb => cb.dataset.name);
+
+      // State
+      let remaining = {
+        foundation: new Set(FOUNDATIONS),
+        options: new Set(chosenOptions.length ? chosenOptions : OPTIONS), // if none selected, any 4 will do
+        research: new Set(RESEARCH),
+        synoptic: new Set(SYNOPTIC)
+      };
+
+      let planned = []; // {key, module, group, break?:true}
+      let takenCounts = { foundation:0, options:0, research:0, synoptic:0 };
+
+      // Timelines
+      const keys = sortedKeys.filter(k => k >= startKey);
+      const hardStopKey = addYearsToKey(startKey, 6);
+      const targetKey   = addYearsToKey(startKey, 2);
+      const absoluteStop = keys.filter(k => k <= hardStopKey);
+
+      let skipEvery = (pace === 'light') ? 3 : 0; // skip every 3rd period
+      let counter = 0;
+
+      occupiedKeys = new Set();
+
+      for (const key of absoluteStop) {
+        counter++;
+        const mods = schedule.get(key) || [];
+        const withinTarget = key <= targetKey;
+
+        // Breaks (automatic or custom)
+        const customBreak = document.querySelector(`.term[data-key="${key}"]`)?.dataset.break === '1';
+        const autoBreak = (skipEvery && counter % skipEvery === 0);
+        if (useBreaks && ((pace === 'custom' && customBreak) || autoBreak)) {
+          planned.push({ key, module: 'Break', group: 'break', break: true, withinTarget });
+          continue;
+        }
+
+        // Rule: Synoptic only after both Research 1 & 2 complete; spans two periods (this and next available)
+        const canTakeSynoptic = (takenCounts.research === 2) && (req.synoptic > 0) && remaining.synoptic.size > 0;
+
+        // Priority order: finish Foundations -> Options (until 4) -> Research -> Synoptic
+        let picked = null;
+
+        // Foundations first
+        if (takenCounts.foundation < req.foundation) {
+          picked = mods.find(m => remaining.foundation.has(m));
+          if (picked) {
+            remaining.foundation.delete(picked);
+            planned.push({ key, module: picked, group: GROUP.FOUNDATION, withinTarget });
+            takenCounts.foundation++;
+            continue;
+          }
+        }
+
+        // Options next (any from chosen set, but only up to required count)
+        if (takenCounts.options < req.options) {
+          picked = mods.find(m => remaining.options.has(m));
+          if (picked) {
+            remaining.options.delete(picked);
+            planned.push({ key, module: picked, group: GROUP.OPTIONS, withinTarget });
+            takenCounts.options++;
+            continue;
+          }
+        }
+
+        // Research skills
+        if (takenCounts.research < req.research) {
+          picked = mods.find(m => remaining.research.has(m));
+          if (picked) {
+            remaining.research.delete(picked);
+            planned.push({ key, module: picked, group: GROUP.RESEARCH, withinTarget });
+            takenCounts.research++;
+            continue;
+          }
+        }
+
+        // Synoptic (requires 2 consecutive periods)
+        if (canTakeSynoptic) {
+          const nextKey = nextPeriodKey(key);
+          planned.push({ key, module: SYNOPTIC[0], group: GROUP.SYNOPTIC, withinTarget });
+          planned.push({ key: nextKey, module: SYNOPTIC[0] + ' (cont.)', group: GROUP.SYNOPTIC, withinTarget: nextKey <= targetKey });
+          takenCounts.synoptic++;
+          occupiedKeys.add(nextKey);
+          continue;
+        }
+
+        // Nothing schedulable -> leave unfilled (idle)
+        planned.push({ key, module: '—', group: 'idle', withinTarget });
+      }
+
+      // Trim after meeting requirements
+      planned = trimAfterCompletion(planned, takenCounts, req);
+
+      renderTimeline(planned, startKey, targetKey, hardStopKey, req);
+      currentPlan = { planned, award, startKey, maxYears, pace, chosenOptions, notes: document.getElementById('notes').value };
+
+      // Build baseline no-break comparison and render impact
+      const baseline = buildBaselineImpact({ award, startKey, maxYears, pace, chosenOptions, notes: '' });
+      renderImpact(baseline, currentPlan);
+    };
+      const chosenOptions = Array.from(document.querySelectorAll('#options input:checked')).map(cb => cb.dataset.name);
+
+      // State
+      let remaining = {
+        foundation: new Set(FOUNDATIONS),
+        options: new Set(chosenOptions.length ? chosenOptions : OPTIONS), // if none selected, any 4 will do
+        research: new Set(RESEARCH),
+        synoptic: new Set(SYNOPTIC)
+      };
+
+      let planned = []; // {key, module, group, break?:true}
+      let takenCounts = { foundation:0, options:0, research:0, synoptic:0 };
+
+      // Timelines
+      const keys = sortedKeys.filter(k => k >= startKey);
+      const hardStopKey = addYearsToKey(startKey, 6);
+      const targetKey   = addYearsToKey(startKey, 2);
+      const absoluteStop = keys.filter(k => k <= hardStopKey);
+
+      let skipEvery = (pace === 'light') ? 3 : 0; // skip every 3rd period
+      let counter = 0;
+
+      for (const key of absoluteStop) {
+        counter++;
+        const mods = schedule.get(key) || [];
+        const withinTarget = key <= targetKey;
+
+        // Breaks (automatic or custom)
+        const customBreak = document.querySelector(`.term[data-key="${key}"]`)?.dataset.break === '1';
+        const autoBreak = (skipEvery && counter % skipEvery === 0);
+        if (pace === 'custom' && customBreak) {
+          planned.push({ key, module: 'Break', group: 'break', break: true });
+          continue;
+        }
+        if (autoBreak) {
+          planned.push({ key, module: 'Break', group: 'break', break: true });
+          continue;
+        }
+
+        // Rule: Synoptic only after both Research 1 & 2 complete; spans two periods (this and next available)
+        const canTakeSynoptic = (takenCounts.research === 2) && (req.synoptic > 0) && remaining.synoptic.size > 0;
+
+        // Priority order: finish Foundations -> Options (until 4) -> Research -> Synoptic
+        let picked = null;
+
+        // Foundations first
+        if (takenCounts.foundation < req.foundation) {
+          picked = mods.find(m => remaining.foundation.has(m));
+          if (picked) {
+            remaining.foundation.delete(picked);
+            planned.push({ key, module: picked, group: GROUP.FOUNDATION, withinTarget });
+            takenCounts.foundation++;
+            continue;
+          }
+        }
+
+        // Options next (any from chosen set, but only up to required count)
+        if (takenCounts.options < req.options) {
+          picked = mods.find(m => remaining.options.has(m));
+          if (picked) {
+            remaining.options.delete(picked);
+            planned.push({ key, module: picked, group: GROUP.OPTIONS, withinTarget });
+            takenCounts.options++;
+            continue;
+          }
+        }
+
+        // Research skills
+        if (takenCounts.research < req.research) {
+          picked = mods.find(m => remaining.research.has(m));
+          if (picked) {
+            remaining.research.delete(picked);
+            planned.push({ key, module: picked, group: GROUP.RESEARCH, withinTarget });
+            takenCounts.research++;
+            continue;
+          }
+        }
+
+        // Synoptic (requires 2 consecutive periods)
+        if (canTakeSynoptic) {
+          const nextKey = nextPeriodKey(key);
+          const nextMods = schedule.get(nextKey) || [];
+          // Reserve two consecutive periods regardless of listed modules (synoptic is listed frequently, but ensure continuity)
+          planned.push({ key, module: SYNOPTIC[0], group: GROUP.SYNOPTIC, withinTarget });
+          planned.push({ key: nextKey, module: SYNOPTIC[0] + ' (cont.)', group: GROUP.SYNOPTIC, withinTarget: nextKey <= targetKey });
+          takenCounts.synoptic++;
+          // Skip the nextKey in outer loop by marking a synthetic break entry so it won't double-fill when iterating
+          // We'll mark it as occupied in a side structure
+          occupiedKeys.add(nextKey);
+          continue;
+        }
+
+        // Nothing schedulable -> leave unfilled (idle)
+        planned.push({ key, module: '—', group: 'idle', withinTarget });
+      }
+
+      // Trim after meeting requirements
+      planned = trimAfterCompletion(planned, takenCounts, req);
+
+      renderTimeline(planned, startKey, targetKey, hardStopKey, req);
+      currentPlan = { planned, award, startKey, maxYears, pace, chosenOptions, notes: document.getElementById('notes').value };
+    }
+
+    // Helpers for dates encoded as keys YYYY-MM
+    function addYearsToKey(key, years) {
+      const [y, m] = key.split('-').map(Number);
+      return `${y + years}-${String(m).padStart(2,'0')}`;
+    }
+    function nextPeriodKey(key) {
+      const order = ['01','03','05','06','09','10'];
+      let [y, m] = key.split('-');
+      const idx = order.indexOf(m);
+      if (idx === -1) return key;
+      if (idx < order.length - 1) return `${y}-${order[idx+1]}`;
+      return `${(+y + 1)}-${order[0]}`;
+    }
+
+    function trimAfterCompletion(planned, takenCounts, req) {
+      function done() {
+        return takenCounts.foundation >= req.foundation &&
+               takenCounts.options >= req.options &&
+               takenCounts.research >= req.research &&
+               takenCounts.synoptic >= req.synoptic;
+      }
+      const out = [];
+      for (const p of planned) {
+        if (done()) break;
+        out.push(p);
+      }
+      return out;
+    }
+
+    // Rendering
+    let occupiedKeys = new Set();
+    let currentPlan = null;
+
+    function renderTimeline(planned, startKey, targetKey, hardStopKey, req) {
+      const el = document.getElementById('timeline');
+      el.innerHTML = '';
+      occupiedKeys = new Set(planned.filter(p => p.group === GROUP.SYNOPTIC && p.module.includes('(cont.)')).map(p => p.key));
+
+      planned.forEach(item => {
+        const term = document.createElement('div');
+        term.className = 'term';
+        term.dataset.key = item.key;
+        term.addEventListener('click', () => {
+          if (document.getElementById('pace').value !== 'custom') return;
+          if (term.dataset.clickable !== '1') return;
+          if (item.group === GROUP.SYNOPTIC) return; // don't toggle synoptic periods
+          const breaking = term.dataset.break === '1';
+          term.dataset.break = breaking ? '0' : '1';
+          term.style.outline = breaking ? '' : '2px dashed #3b82f6';
+          term.style.outlineOffset = '2px';
+        });
+
+        const meta = [];
+        if (item.key === targetKey) meta.push('<span class="warn">⏱️ 2‑year target</span>');
+        if (item.key === hardStopKey) meta.push('<span class="bad">🚫 6‑year max</span>');
+
+        const title = new Date(item.key.split('-')[0], Number(item.key.split('-')[1]) - 1, 1)
+          .toLocaleString(undefined, { month: 'short', year: 'numeric' });
+        term.innerHTML = `
+          <div class="termHeader">
+            <div class="termTitle">${title}</div>
+            <div class="termMeta">${meta.join(' · ')}</div>
+          </div>
+          ${renderModuleRow(item)}
+        `;
+        el.appendChild(term);
+      });
+
+      // Legend for completion
+      const counts = planned.reduce((acc, p) => {
+        acc[p.group] = (acc[p.group]||0) + (p.group!=='idle' && p.group!=='break' ? 1 : 0);
+        return acc;
+      }, {});
+
+      const need = `Need → Foundation: ${req.foundation}, Options: ${req.options}, Research: ${req.research}, Synoptic: ${req.synoptic}`;
+      const have = `Planned → Foundation: ${(counts[GROUP.FOUNDATION]||0)}, Options: ${(counts[GROUP.OPTIONS]||0)}, Research: ${(counts[GROUP.RESEARCH]||0)}, Synoptic periods: ${(counts[GROUP.SYNOPTIC]||0)}`;
+
+      const summary = document.createElement('div');
+      summary.className = 'mutetext';
+      summary.style.marginTop = '8px';
+      summary.innerHTML = `<span class="kbd">${need}</span> &nbsp; <span class="kbd">${have}</span>`;
+      el.appendChild(summary);
+    });
+
+        const meta = [];
+        if (item.key === targetKey) meta.push('<span class="warn">⏱️ 2‑year target</span>');
+        if (item.key === hardStopKey) meta.push('<span class="bad">🚫 6‑year max</span>');
+
+        const title = new Date(item.key.split('-')[0], Number(item.key.split('-')[1]) - 1, 1)
+          .toLocaleString(undefined, { month: 'short', year: 'numeric' });
+        term.innerHTML = `
+          <div class="termHeader">
+            <div class="termTitle">${title}</div>
+            <div class="termMeta">${meta.join(' · ')}</div>
+          </div>
+          ${renderModuleRow(item)}
+        `;
+        el.appendChild(term);
+      });
+
+      // Legend for completion
+      const counts = planned.reduce((acc, p) => {
+        acc[p.group] = (acc[p.group]||0) + (p.group!=='idle' && p.group!=='break' ? 1 : 0);
+        return acc;
+      }, {});
+
+      const need = `Need → Foundation: ${req.foundation}, Options: ${req.options}, Research: ${req.research}, Synoptic: ${req.synoptic}`;
+      const have = `Planned → Foundation: ${(counts[GROUP.FOUNDATION]||0)}, Options: ${(counts[GROUP.OPTIONS]||0)}, Research: ${(counts[GROUP.RESEARCH]||0)}, Synoptic periods: ${(counts[GROUP.SYNOPTIC]||0)}`;
+
+      const summary = document.createElement('div');
+      summary.className = 'mutetext';
+      summary.style.marginTop = '8px';
+      summary.innerHTML = `<span class="kbd">${need}</span> &nbsp; <span class="kbd">${have}</span>`;
+      el.appendChild(summary);
+    }
+
+    function renderModuleRow(item) {
+      const g = item.group;
+      const tag = (txt, extraClass='') => `<span class="moduleTag ${extraClass}">${txt}</span>`;
+      if (g === 'idle') return `<div class="tags">${tag('No eligible module', '')}</div>`;
+      if (g === 'break') return `<div class="tags">${tag('Planned break', 'softStop')}</div>`;
+      const prefix = g === GROUP.FOUNDATION ? '🟦' : g === GROUP.OPTIONS ? '🟥' : g === GROUP.RESEARCH ? '🟪' : '⬛';
+      return `<div class="tags">${tag(prefix + ' ' + item.module, g === GROUP.SYNOPTIC ? 'hardStop' : '')}</div>`;
+    }
+
+    // Impact helpers
+    function findCompletionKey(plan) {
+      const last = [...plan.planned].reverse().find(p => p.group !== 'idle' && p.group !== 'break');
+      return last ? last.key : plan.startKey;
+    }
+    function keyToDate(key){ const [y,m]=key.split('-').map(Number); return new Date(y, m-1, 1); }
+    function diffInMonths(aKey, bKey){ const a=keyToDate(aKey), b=keyToDate(bKey); return (b.getFullYear()-a.getFullYear())*12 + (b.getMonth()-a.getMonth()); }
+    function buildBaselineImpact(params){
+      // Temporarily run generatePlan without breaks by simulating a dry run
+      const { award, startKey, pace, chosenOptions } = params;
+      const req = { ...REQUIREMENTS[award] };
+      let remaining = {
+        foundation: new Set(FOUNDATIONS),
+        options: new Set(chosenOptions.length ? chosenOptions : OPTIONS),
+        research: new Set(RESEARCH),
+        synoptic: new Set(SYNOPTIC)
+      };
+      let planned = [];
+      let takenCounts = { foundation:0, options:0, research:0, synoptic:0 };
+      const keys = sortedKeys.filter(k => k >= startKey);
+      const hardStopKey = addYearsToKey(startKey, 6);
+      const targetKey   = addYearsToKey(startKey, 2);
+      const absoluteStop = keys.filter(k => k <= hardStopKey);
+      let skipEvery = (pace === 'light') ? 3 : 0;
+      let counter = 0;
+      occupiedKeys = new Set();
+      for (const key of absoluteStop) {
+        counter++;
+        const mods = schedule.get(key) || [];
+        const withinTarget = key <= targetKey;
+        // Apply auto breaks only (for light pace); do NOT apply custom marked breaks
+        const autoBreak = (skipEvery && counter % skipEvery === 0);
+        if (autoBreak) { planned.push({ key, module:'Break', group:'break', break:true, withinTarget }); continue; }
+        const canTakeSynoptic = (takenCounts.research === 2) && (req.synoptic > 0) && remaining.synoptic.size > 0;
+        let picked = null;
+        if (takenCounts.foundation < req.foundation) {
+          picked = mods.find(m => remaining.foundation.has(m));
+          if (picked) { remaining.foundation.delete(picked); planned.push({ key, module:picked, group:GROUP.FOUNDATION, withinTarget }); takenCounts.foundation++; continue; }
+        }
+        if (takenCounts.options < req.options) {
+          picked = mods.find(m => remaining.options.has(m));
+          if (picked) { remaining.options.delete(picked); planned.push({ key, module:picked, group:GROUP.OPTIONS, withinTarget }); takenCounts.options++; continue; }
+        }
+        if (takenCounts.research < req.research) {
+          picked = mods.find(m => remaining.research.has(m));
+          if (picked) { remaining.research.delete(picked); planned.push({ key, module:picked, group:GROUP.RESEARCH, withinTarget }); takenCounts.research++; continue; }
+        }
+        if (canTakeSynoptic) {
+          const nextKey = nextPeriodKey(key);
+          planned.push({ key, module:SYNOPTIC[0], group:GROUP.SYNOPTIC, withinTarget });
+          planned.push({ key: nextKey, module:SYNOPTIC[0]+' (cont.)', group:GROUP.SYNOPTIC, withinTarget: nextKey <= targetKey });
+          takenCounts.synoptic++; occupiedKeys.add(nextKey); continue;
+        }
+        planned.push({ key, module:'—', group:'idle', withinTarget });
+      }
+      planned = trimAfterCompletion(planned, takenCounts, req);
+      return { planned, award:params.award, startKey:params.startKey, pace:params.pace, chosenOptions:params.chosenOptions };
+    }
+
+    function renderImpact(baseline, current) {
+      const box = document.getElementById('impactBody');
+      if (!baseline || !current || !box) return;
+      const baseFinish = findCompletionKey(baseline);
+      const curFinish  = findCompletionKey(current);
+      const baseMonths = diffInMonths(current.startKey, baseFinish) + 1; // inclusive-ish
+      const curMonths  = diffInMonths(current.startKey, curFinish) + 1;
+      const delta = curMonths - baseMonths;
+      const targetKey = addYearsToKey(current.startKey, 2);
+      const hardKey   = addYearsToKey(current.startKey, 6);
+      const status = curFinish > hardKey ? '<span class="bad">⚠️ Exceeds 6‑year maximum</span>' : (curFinish > targetKey ? '<span class="warn">⏳ Beyond 2‑year target</span>' : '<span class="good">✅ Within 2‑year target</span>');
+
+      // Count breaks
+      const breaks = current.planned.filter(p => p.group==='break').length;
+
+      // Build a tiny missed-offers note: how many periods with modules available that we skipped
+      const skippedPeriods = current.planned.filter(p => p.group==='break').map(p => p.key);
+      const missed = skippedPeriods.reduce((n, key)=> n + (schedule.get(key)||[]).length, 0);
+
+      box.innerHTML = `
+        <div class="tags">
+          <span class="moduleTag">Baseline finish (no custom breaks): <strong>${formatKey(baseFinish)}</strong></span>
+          <span class="moduleTag ${curFinish > targetKey ? (curFinish > hardKey ? 'hardStop' : 'softStop') : ''}">Current finish: <strong>${formatKey(curFinish)}</strong></span>
+          <span class="moduleTag">Duration: <strong>${curMonths}</strong> months (${Math.ceil(curMonths/2)} teaching periods est.)</span>
+          <span class="moduleTag">Impact: <strong>${delta >= 0 ? '+'+delta : delta}</strong> months vs baseline</span>
+          <span class="moduleTag">Breaks selected: <strong>${breaks}</strong></span>
+          <span class="moduleTag">Offerings missed in break periods: <strong>${missed}</strong></span>
+        </div>
+        <div class="mutetext" style="margin-top:6px">${status}. Synoptic still requires <em>two consecutive periods</em> after completing Research Skills 1 & 2.</div>
+      `;
+    }
+
+    function formatKey(key){ const d = keyToDate(key); return d.toLocaleString(undefined, { month:'short', year:'numeric' }); }
+
+    // Export & share
+    document.getElementById('exportJSON').addEventListener('click', () => {
+      if (!currentPlan) generatePlan();
+      const blob = new Blob([JSON.stringify(currentPlan, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `pnomh-plan-${currentPlan.award}-${currentPlan.startKey}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('shareURL').addEventListener('click', () => {
+      if (!currentPlan) generatePlan();
+      const params = new URLSearchParams();
+      params.set('award', currentPlan.award);
+      params.set('start', currentPlan.startKey);
+      params.set('pace', currentPlan.pace);
+      params.set('opts', currentPlan.chosenOptions.join('|'));
+      const share = location.origin + location.pathname + '?' + params.toString();
+      navigator.clipboard.writeText(share).then(() => {
+        document.getElementById('shareStatus').textContent = 'Copied a shareable URL with your selections.';
+      });
+    });
+
+    // Support loading from URL params
+    (function hydrateFromURL(){
+      const q = new URLSearchParams(location.search);
+      if (q.has('award')) document.getElementById('award').value = q.get('award');
+      if (q.has('start') && sortedKeys.includes(q.get('start'))) document.getElementById('start').value = q.get('start');
+      if (q.has('pace')) document.getElementById('pace').value = q.get('pace');
+      const opts = (q.get('opts')||'').split('|').filter(Boolean);
+      opts.forEach(name => {
+        const id = '#opt-' + name.replace(/[^a-z0-9]/gi,'');
+        const cb = document.querySelector(id);
+        if (cb) cb.checked = true;
+      });
+    })();
+
+    document.getElementById('generate').addEventListener('click', generatePlan);
+
+    // Initial render (empty placeholders for the next few periods, then click Generate)
+    (function seedTimeline(){
+      const el = document.getElementById('timeline');
+      const startKey = document.getElementById('start').value;
+      const keys = sortedKeys.filter(k => k >= startKey).slice(0, 6);
+      keys.forEach(k => {
+        const term = document.createElement('div');
+        term.className = 'term';
+        term.dataset.key = k;
+        const title = new Date(k.split('-')[0], Number(k.split('-')[1]) - 1, 1)
+          .toLocaleString(undefined, { month: 'short', year: 'numeric' });
+        term.innerHTML = `
+          <div class="termHeader">
+            <div class="termTitle">${title}</div>
+            <div class="termMeta"></div>
+          </div>
+          <div class="tags"><span class="moduleTag">(Click <strong>Generate plan</strong>)</span></div>`;
+        el.appendChild(term);
+      });
+    })();
+  </script>
+</body>
+</html>
