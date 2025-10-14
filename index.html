@@ -11,9 +11,9 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,sans-serif;line
 header{background:var(--r);color:#fff;padding:1.25rem}
 h1{font-size:1.5rem;font-weight:700}
 .sub{opacity:.9;font-size:.9rem;margin-top:.25rem}
-.container{max-width:1400px;margin:0 auto;padding:1rem}
+.container{max-width:1100px;margin:0 auto;padding:1rem}
 .grid{display:grid;gap:1rem}
-@media(min-width:900px){.grid{grid-template-columns:360px 1fr}}
+@media(min-width:900px){.grid{grid-template-columns:340px 1fr}}
 .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 h3{font-size:1.1rem;margin-bottom:.75rem}
 label{display:block;font-size:.8rem;color:var(--mut);margin-bottom:.35rem;font-weight:500}
@@ -23,53 +23,56 @@ button{cursor:pointer;font-weight:600;transition:all .2s}
 .btn:hover{opacity:.9;transform:translateY(-1px)}
 .btn.sec{background:#fff;color:var(--ink)}
 .btn.sec:hover{background:#f9fafb}
+.btn.auto{background:#8b5cf6}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem}
 .tags{display:flex;gap:.4rem;flex-wrap:wrap}
 .chip{background:#f3f4f6;border:1px solid var(--line);border-radius:999px;padding:.25rem .6rem;font-size:.75rem;cursor:pointer;user-select:none;transition:all .2s}
 .chip:hover{background:#e5e7eb}
 .chip input{margin-right:.35rem}
-.timeline{display:grid;gap:.65rem}
-.term{border:1px solid var(--line);border-radius:8px;padding:.75rem;background:#fff;transition:all .2s}
+.timeline{display:grid;gap:.5rem}
+.term{border:1px solid var(--line);border-radius:8px;padding:.65rem;background:#fff;transition:all .2s}
 .term:hover{border-color:#94a3b8;box-shadow:0 2px 6px rgba(0,0,0,.08)}
-.termHd{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;padding-bottom:.5rem;border-bottom:1px solid var(--line)}
-.termTtl{font-weight:700;font-size:1rem}
-.modGrid{display:grid;gap:.4rem;margin-top:.5rem}
-.mod{border:1px solid #cbd5e1;background:#f8fafc;border-radius:8px;padding:.5rem .7rem;font-size:.85rem;display:flex;align-items:center;gap:.5rem;transition:all .2s}
-.mod:hover{background:#e2e8f0;border-color:#94a3b8}
+.termHd{display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem}
+.termTtl{font-weight:700;font-size:.9rem}
+.mod{border:1px solid #cbd5e1;background:#f8fafc;border-radius:8px;padding:.5rem .6rem;font-size:.85rem;display:flex;align-items:center;gap:.4rem;cursor:pointer;transition:all .2s}
+.mod:hover{background:#e2e8f0;border-color:#94a3b8;transform:translateX(2px)}
 .mod.taken{background:#dcfce7;border-color:#86efac;font-weight:600}
-.mod.available{background:#fff;border-color:#cbd5e1}
-.mod.unavailable{background:#f1f5f9;border-color:#e2e8f0;opacity:.6}
-.modIcon{font-size:1.1rem}
-.brk{background:#fff7ed;border-color:#fed7aa}
-.syn{background:#fef2f2;border-color:#fecaca}
+.mod.locked{opacity:.5;cursor:not-allowed}
+.mod.locked:hover{transform:none;background:#f8fafc}
+.modGrid{display:grid;gap:.35rem;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.brk{background:#fff7ed;border-color:#fed7aa;padding:.75rem;text-align:center;cursor:pointer}
+.brk:hover{background:#ffedd5}
 .kbd{border:1px solid var(--line);background:#f9fafb;border-radius:4px;font-size:.75rem;padding:.2rem .4rem;font-family:monospace}
 .sum{margin-top:.5rem;padding:.75rem;background:#f9fafb;border-radius:8px;font-size:.85rem}
 .grad{background:#f0f9ff;border:2px solid #0ea5e9;border-radius:8px;padding:.75rem;margin-top:.65rem;font-weight:600}
 .warn{color:#f59e0b;font-weight:600}
 .ok{color:#16a34a;font-weight:600}
 .bad{color:#ef4444;font-weight:600}
-.warnBox{margin-top:.75rem;padding:.6rem;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;font-size:.85rem;display:none}
+.warnBox{margin-top:.75rem;padding:.6rem;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;font-size:.85rem}
 .progBar{height:28px;background:#e5e7eb;border-radius:12px;overflow:hidden;margin:.5rem 0}
 .progFill{height:100%;background:linear-gradient(90deg,#0ea5e9,#06b6d4);transition:width .5s ease;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;font-weight:700}
-.vis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-top:1rem}
+.vis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem;margin-top:1rem}
 .visCard{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:12px;padding:1rem;color:#fff;text-align:center;box-shadow:0 4px 12px rgba(102,126,234,.3)}
 .visCard.alt1{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%)}
 .visCard.alt2{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%)}
 .visCard.alt3{background:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%)}
-.visNum{font-size:2.2rem;font-weight:700;margin:.5rem 0}
-.visLbl{font-size:.85rem;opacity:.9}
-.legend{display:flex;gap:.75rem;margin:.75rem 0;font-size:.8rem;flex-wrap:wrap}
-.legend span{display:flex;align-items:center;gap:.3rem}
-.breakBtn{cursor:pointer;padding:.35rem .6rem;background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;font-size:.8rem;font-weight:600;color:#f59e0b;transition:all .2s}
-.breakBtn:hover{background:#ffedd5;transform:scale(1.05)}
-.stage{background:#f0f9ff;border-left:4px solid #0ea5e9;padding:.5rem;margin-bottom:.5rem;border-radius:4px;font-size:.85rem;font-weight:600}
+.visNum{font-size:2rem;font-weight:700;margin:.5rem 0}
+.visLbl{font-size:.8rem;opacity:.9}
+.phase{background:#f0f9ff;border-left:4px solid #0ea5e9;padding:.6rem;margin:.75rem 0;border-radius:4px;font-size:.9rem;font-weight:600}
+.phase.complete{background:#f0fdf4;border-color:#16a34a}
+.alert{position:fixed;top:20px;right:20px;background:#fff;border:2px solid #0ea5e9;border-radius:12px;padding:1rem;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:1000;max-width:350px;animation:slideIn .3s ease}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.alert.success{border-color:#16a34a;background:#f0fdf4}
+.alert.warning{border-color:#f59e0b;background:#fffbeb}
+.closeAlert{float:right;cursor:pointer;font-weight:700;font-size:1.1rem;opacity:.5}
+.closeAlert:hover{opacity:1}
 </style>
 </head>
 <body>
 <header>
 <div class="container">
 <h1>King's College London — PNOMH Graduation Planner</h1>
-<div class="sub">Complete view of all modules per intake with prerequisite tracking</div>
+<div class="sub">Clear phased approach: Foundation → Options → Research → Synoptic</div>
 </div>
 </header>
 <main class="container grid">
@@ -85,41 +88,34 @@ button{cursor:pointer;font-weight:600;transition:all .2s}
 <div><label for="start">Start Window</label>
 <select id="start"></select></div>
 </div>
-<div class="row" style="margin-top:.75rem">
-<button id="gen" class="btn">Generate Plan</button>
-<button id="reset" class="btn sec">Reset All</button>
+<div style="display:grid;gap:.5rem;margin-top:.5rem">
+<button id="autoplan" class="btn auto">✨ Auto-Plan</button>
+<button id="save" class="btn sec">💾 Save</button>
+<button id="load" class="btn sec">📂 Load</button>
+<button id="reset" class="btn sec">🔄 Reset</button>
 </div>
 </section>
-<section class="card">
+<section class="card" id="optsCard" style="display:none">
 <h3>2) Choose 4 Options</h3>
 <div class="tags" id="opts"></div>
-<div id="wbox" class="warnBox"></div>
+<div id="wbox" class="warnBox" style="display:none"></div>
 </section>
 <section class="card" style="grid-column:1/-1">
-<h3>3) Visual Analytics</h3>
+<h3>Analytics</h3>
 <div class="vis">
-<div class="visCard"><div class="visLbl">Total Duration</div><div class="visNum" id="vDur">—</div><div class="visLbl">months</div></div>
-<div class="visCard alt1"><div class="visLbl">Study Breaks</div><div class="visNum" id="vBrk">—</div><div class="visLbl">breaks taken</div></div>
-<div class="visCard alt2"><div class="visLbl">Completion</div><div class="visNum" id="vPct">—</div><div class="visLbl">progress</div></div>
-<div class="visCard alt3"><div class="visLbl">Graduation</div><div class="visNum" id="vGrad">—</div><div class="visLbl">estimated</div></div>
+<div class="visCard"><div class="visLbl">Duration</div><div class="visNum" id="vDur">—</div><div class="visLbl">months</div></div>
+<div class="visCard alt1"><div class="visLbl">Breaks</div><div class="visNum" id="vBrk">0</div><div class="visLbl">taken</div></div>
+<div class="visCard alt2"><div class="visLbl">Progress</div><div class="visNum" id="vPct">0%</div></div>
+<div class="visCard alt3"><div class="visLbl">Graduation</div><div class="visNum" id="vGrad">—</div></div>
 </div>
-<div id="progWrap">
-<label style="margin:.75rem 0 .25rem 0">Overall Progress</label>
+<div style="margin-top:1rem">
+<label>Overall Progress</label>
 <div class="progBar"><div class="progFill" id="progFill" style="width:0%">0%</div></div>
 </div>
 </section>
 <section class="card" style="grid-column:1/-1">
-<h3>4) Your Study Plan - All Modules Per Intake</h3>
-<div class="legend">
-<span>✅ Module Taken</span>
-<span>⬜ Available to Take</span>
-<span>🔒 Prerequisites Not Met</span>
-<span>📅 Study Break</span>
-</div>
-<div class="stage">📘 Stage 1: Foundation Modules (must complete all 4 first)</div>
-<div class="stage" style="background:#fef2f2;border-color:#ef4444">📕 Stage 2: Option Modules (after foundation complete)</div>
-<div class="stage" style="background:#f3e8ff;border-color:#a855f7">📗 Stage 3: Research Skills (after options complete)</div>
-<div class="stage" style="background:#f3f4f6;border-color:#6b7280">📓 Stage 4: Synoptic Project (after research complete)</div>
+<h3>Your Study Plan</h3>
+<div id="phaseInfo"></div>
 <div id="tl" class="timeline"></div>
 <div class="sum" id="sum"></div>
 <div id="grad" class="grad" style="display:none"></div>
@@ -144,12 +140,18 @@ function getOpts(){return[...document.querySelectorAll('#opts input:checked')].m
 function addY(k,y){const[yr,m]=k.split('-').map(Number);return`${yr+y}-${String(m).padStart(2,'0')}`}
 function fmtD(k){const[y,m]=k.split('-').map(Number);return new Date(y,m-1,1).toLocaleString('en-GB',{month:'short',year:'numeric'})}
 function getType(m){if(F.includes(m))return'f';if(O.includes(m))return'o';if(R.includes(m))return'r';if(S.includes(m))return's';return'u'}
-function canTake(m,tkn,rq,cho){const t=getType(m);if(t==='f')return tkn.f<rq.f;if(t==='o')return tkn.f>=rq.f&&tkn.o<rq.o&&(cho.length===0||cho.includes(m));if(t==='r')return tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r<rq.r;if(t==='s')return tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s<rq.s;return false}
-function gen(){const aw=document.getElementById('award').value;const st=startS.value;const rq={...REQ[aw]};const cho=getOpts();const wb=document.getElementById('wbox');if(rq.o>0&&cho.length<4){wb.textContent=`⚠️ Select 4 options for ${aw}`;wb.style.display='block';}else{wb.style.display='none';}let tkn={f:0,o:0,r:0,s:0};const hs=addY(st,6);const itk=keys.filter(k=>k>=st&&k<=hs);taken.forEach((v,k)=>{const t=getType(v);if(t==='f')tkn.f++;if(t==='o')tkn.o++;if(t==='r')tkn.r++;if(t==='s')tkn.s++;});render(itk,st,rq,tkn,cho);vis(itk,tkn,rq,st);}
-function render(itk,st,rq,tkn,cho){const el=document.getElementById('tl');el.innerHTML='';itk.forEach(k=>{const term=document.createElement('div');term.className='term';const ttl=fmtD(k);const isBreak=brks.has(k);const inSyn=taken.get(k)==='Independent Synoptic Project';const meta=[];if(k===addY(st,2))meta.push('<span class="warn">⏱️ 2-yr target</span>');if(k===addY(st,6))meta.push('<span class="bad">🚫 6-yr max</span>');let hdr=`<div class="termHd"><div class="termTtl">${ttl}</div><div style="font-size:.85rem">${meta.join(' ')}</div></div>`;if(isBreak){const bb=document.createElement('button');bb.className='breakBtn';bb.textContent='❌ Remove Break';bb.onclick=()=>{brks.delete(k);gen();};hdr+=`<div style="background:#fff7ed;padding:.75rem;border-radius:8px;text-align:center"><div style="font-size:1.5rem">📅</div><div style="font-weight:600;margin-top:.25rem">Study Break</div></div>`;term.innerHTML=hdr;term.appendChild(bb);}else if(inSyn){hdr+=`<div class="mod taken syn"><span class="modIcon">⬛</span><span>Independent Synoptic Project (period 1 of 2)</span></div>`;term.innerHTML=hdr;}else{const mds=SCH[k]||[];const tkMod=taken.get(k);let curTkn={...tkn};for(const [pk,pm]of taken){if(pk<k){const pt=getType(pm);if(pt==='f')curTkn.f++;if(pt==='o')curTkn.o++;if(pt==='r')curTkn.r++;if(pt==='s')curTkn.s++;}}const grid=document.createElement('div');grid.className='modGrid';mds.forEach(m=>{const isTaken=tkMod===m;const canTk=canTake(m,curTkn,rq,cho);const div=document.createElement('div');div.className='mod';if(isTaken){div.classList.add('taken');const t=getType(m);const ic={'f':'🟦','o':'🟥','r':'🟪','s':'⬛'};div.innerHTML=`<span class="modIcon">✅</span><span><strong>${m}</strong></span>`;div.onclick=()=>{taken.delete(k);gen();};}else if(canTk){div.classList.add('available');const t=getType(m);const ic={'f':'🟦','o':'🟥','r':'🟪','s':'⬛'};div.innerHTML=`<span class="modIcon">${ic[t]}</span><span>${m}</span>`;div.onclick=()=>{if(t==='s'){taken.set(k,m);const nk=keys[keys.indexOf(k)+1];if(nk)taken.set(nk,m);}else{taken.set(k,m);}gen();};}else{div.classList.add('unavailable');div.innerHTML=`<span class="modIcon">🔒</span><span>${m}</span>`;}grid.appendChild(div);});const bb=document.createElement('button');bb.className='breakBtn';bb.textContent='📅 Set as Study Break';bb.style.marginTop='.5rem';bb.onclick=()=>{taken.delete(k);brks.add(k);gen();};term.innerHTML=hdr;term.appendChild(grid);term.appendChild(bb);}el.appendChild(term);});const se=document.getElementById('sum');se.innerHTML=`<strong>Progress:</strong> <span class="kbd">Foundation ${tkn.f}/${rq.f}</span> <span class="kbd">Options ${tkn.o}/${rq.o}</span> <span class="kbd">Research ${tkn.r}/${rq.r}</span> <span class="kbd">Synoptic ${tkn.s}/${rq.s}</span>`;const ge=document.getElementById('grad');const lastK=[...taken.keys()].sort().pop();if(lastK&&tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s>=rq.s){ge.style.display='block';ge.style.background='#f0f9ff';ge.style.borderColor='#0ea5e9';ge.innerHTML=`🎓 <strong>Estimated Graduation:</strong> <span class="ok">${fmtD(lastK)}</span>`;}else if(lastK){ge.style.display='block';ge.style.background='#fef2f2';ge.style.borderColor='#f87171';ge.innerHTML='⚠️ <strong>Incomplete Plan</strong> - Please complete all required modules';}else{ge.style.display='none';}}
-function vis(itk,tkn,rq,st){const lastK=[...taken.keys()].sort().pop();if(lastK){const[y,m]=lastK.split('-').map(Number);const[sy,sm]=st.split('-').map(Number);const dur=(y-sy)*12+(m-sm);document.getElementById('vDur').textContent=dur;}else{document.getElementById('vDur').textContent='—';}document.getElementById('vBrk').textContent=brks.size;const tot=rq.f+rq.o+rq.r+rq.s;const cur=tkn.f+tkn.o+tkn.r+tkn.s;const pct=tot>0?Math.round((cur/tot)*100):0;document.getElementById('vPct').textContent=pct+'%';const progF=document.getElementById('progFill');progF.style.width=pct+'%';progF.textContent=pct+'%';if(lastK){document.getElementById('vGrad').textContent=fmtD(lastK).replace(' ','\\n');}else{document.getElementById('vGrad').textContent='—';}}
-document.getElementById('gen').addEventListener('click',gen);
-document.getElementById('reset').addEventListener('click',()=>{taken.clear();brks.clear();[...document.querySelectorAll('#opts input')].forEach(i=>i.checked=false);gen();});
+function getTkn(){let t={f:0,o:0,r:0,s:0};taken.forEach(v=>{const ty=getType(v);if(ty==='f')t.f++;if(ty==='o')t.o++;if(ty==='r')t.r++;if(ty==='s')t.s++;});return t;}
+function gen(){const aw=document.getElementById('award').value;const st=startS.value;const rq={...REQ[aw]};const cho=getOpts();const tkn=getTkn();const optsCard=document.getElementById('optsCard');if(rq.o>0&&tkn.f>=rq.f){optsCard.style.display='block';const wb=document.getElementById('wbox');if(cho.length<4){wb.textContent=`⚠️ Select 4 option modules to continue`;wb.style.display='block';}else{wb.style.display='none';}}else{optsCard.style.display='none';}const hs=addY(st,6);const itk=keys.filter(k=>k>=st&&k<=hs);render(itk,st,rq,tkn,cho);vis(itk,tkn,rq,st);}
+function render(itk,st,rq,tkn,cho){const el=document.getElementById('tl');el.innerHTML='';const pi=document.getElementById('phaseInfo');if(tkn.f<rq.f){pi.innerHTML='<div class="phase">📘 Phase 1: Foundation Modules (Complete all 4 first - one per teaching period)</div>';}else if(tkn.o<rq.o){pi.innerHTML='<div class="phase complete">✅ Phase 1 Complete</div><div class="phase">📕 Phase 2: Option Modules (Select from available options)</div>';}else if(tkn.r<rq.r){pi.innerHTML='<div class="phase complete">✅ Phases 1 & 2 Complete</div><div class="phase">📗 Phase 3: Research Skills</div>';}else if(tkn.s<rq.s){pi.innerHTML='<div class="phase complete">✅ Phases 1-3 Complete</div><div class="phase">📓 Phase 4: Synoptic Project (spans 2 periods)</div>';}else{pi.innerHTML='<div class="phase complete">✅ All Phases Complete!</div>';}itk.forEach(k=>{const term=document.createElement('div');term.className='term';const ttl=fmtD(k);const tkMod=taken.get(k);const isBreak=brks.has(k);const meta=[];if(k===addY(st,2))meta.push('<span class="warn">⏱️ 2yr</span>');if(k===addY(st,6))meta.push('<span class="bad">🚫 6yr</span>');let hdr=`<div class="termHd"><div class="termTtl">${ttl}</div><div style="font-size:.8rem">${meta.join(' ')}</div></div>`;if(isBreak){term.innerHTML=hdr+'<div class="brk" onclick="brks.delete(\''+k+'\');gen()">📅 Study Break (click to remove)</div>';}else if(tkMod){const ic={'f':'🟦','o':'🟥','r':'🟪','s':'⬛'};const ty=getType(tkMod);term.innerHTML=hdr+'<div class="mod taken" onclick="taken.delete(\''+k+'\');gen()"><span>'+ic[ty]+'</span><span><strong>'+tkMod+'</strong></span><span style="margin-left:auto;opacity:.7">✓</span></div><div style="margin-top:.35rem;font-size:.8rem;color:var(--mut);text-align:center;cursor:pointer" onclick="brks.add(\''+k+'\');taken.delete(\''+k+'\');gen()">or set as break</div>';}else{const mds=SCH[k]||[];if(tkn.f<rq.f){const avail=mds.filter(m=>F.includes(m)&&![...taken.values()].includes(m));if(avail.length>0){term.innerHTML=hdr;avail.forEach(m=>{const d=document.createElement('div');d.className='mod';d.innerHTML='<span>🟦</span><span>'+m+'</span>';d.onclick=()=>{taken.set(k,m);gen();};term.appendChild(d);});}else{term.innerHTML=hdr+'<div class="mod locked"><span>🔒</span><span>No eligible foundation modules</span></div>';}}else if(tkn.o<rq.o){const avail=mds.filter(m=>cho.includes(m)&&![...taken.values()].includes(m));if(avail.length>0){term.innerHTML=hdr+'<div class="modGrid"></div>';const grid=term.querySelector('.modGrid');avail.forEach(m=>{const d=document.createElement('div');d.className='mod';d.innerHTML='<span>🟥</span><span>'+m+'</span>';d.onclick=()=>{taken.set(k,m);gen();};grid.appendChild(d);});}else{term.innerHTML=hdr+'<div class="mod locked"><span>🔒</span><span>No eligible options (already taken or not available)</span></div>';}}else if(tkn.r<rq.r){const avail=mds.filter(m=>R.includes(m)&&![...taken.values()].includes(m));if(avail.length>0){term.innerHTML=hdr;avail.forEach(m=>{const d=document.createElement('div');d.className='mod';d.innerHTML='<span>🟪</span><span>'+m+'</span>';d.onclick=()=>{taken.set(k,m);gen();};term.appendChild(d);});}else{term.innerHTML=hdr+'<div class="mod locked"><span>🔒</span><span>No eligible research modules</span></div>';}}else if(tkn.s<rq.s){const avail=mds.filter(m=>S.includes(m));if(avail.length>0){term.innerHTML=hdr;const d=document.createElement('div');d.className='mod';d.innerHTML='<span>⬛</span><span>Independent Synoptic Project (starts here, spans 2 periods)</span>';d.onclick=()=>{taken.set(k,S[0]);const ni=keys.indexOf(k);if(ni>=0&&ni<keys.length-1)taken.set(keys[ni+1],S[0]);gen();};term.appendChild(d);}else{term.innerHTML=hdr+'<div class="mod locked"><span>🔒</span><span>Synoptic not available this period</span></div>';}}else{term.innerHTML=hdr+'<div class="mod locked"><span>✅</span><span>All requirements complete</span></div>';}}el.appendChild(term);});const se=document.getElementById('sum');se.innerHTML=`<strong>Progress:</strong> <span class="kbd">Foundation ${tkn.f}/${rq.f}</span> <span class="kbd">Options ${tkn.o}/${rq.o}</span> <span class="kbd">Research ${tkn.r}/${rq.r}</span> <span class="kbd">Synoptic ${tkn.s}/${rq.s}</span>`;const ge=document.getElementById('grad');const lastK=[...taken.keys()].sort().pop();if(lastK&&tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s>=rq.s){ge.style.display='block';ge.innerHTML=`🎓 <strong>Estimated Graduation:</strong> <span class="ok">${fmtD(lastK)}</span>`;}else{ge.style.display='none';}}
+function vis(itk,tkn,rq,st){const lastK=[...taken.keys()].sort().pop();if(lastK){const[y,m]=lastK.split('-').map(Number);const[sy,sm]=st.split('-').map(Number);const dur=(y-sy)*12+(m-sm);document.getElementById('vDur').textContent=dur;}else{document.getElementById('vDur').textContent='—';}document.getElementById('vBrk').textContent=brks.size;const tot=rq.f+rq.o+rq.r+rq.s;const cur=tkn.f+tkn.o+tkn.r+tkn.s;const pct=tot>0?Math.round((cur/tot)*100):0;document.getElementById('vPct').textContent=pct+'%';const progF=document.getElementById('progFill');progF.style.width=pct+'%';progF.textContent=pct+'%';if(lastK){const fd=fmtD(lastK).split(' ');document.getElementById('vGrad').innerHTML=fd[0]+'<br>'+fd[1];}else{document.getElementById('vGrad').textContent='—';}}
+function autoGenerate(){const aw=document.getElementById('award').value;const st=startS.value;const rq={...REQ[aw]};if(rq.o>0){const selOpts=getOpts();if(selOpts.length<4){alert('Please select 4 option modules first');return;}}showAlert('✨ Generating optimal plan...','success');taken.clear();brks.clear();const cho=getOpts();let tkn={f:0,o:0,r:0,s:0};const hs=addY(st,6);const itk=keys.filter(k=>k>=st&&k<=hs);const remF=new Set(F);const remO=new Set(cho.length?cho:O.slice(0,4));const remR=new Set(R);for(const k of itk){if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s>=rq.s)break;const mds=SCH[k]||[];if(tkn.f<rq.f){const m=mds.find(x=>remF.has(x));if(m){taken.set(k,m);remF.delete(m);tkn.f++;continue;}}if(tkn.f>=rq.f&&tkn.o<rq.o){const m=mds.find(x=>remO.has(x));if(m){taken.set(k,m);remO.delete(m);tkn.o++;continue;}}if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r<rq.r){const m=mds.find(x=>remR.has(x));if(m){taken.set(k,m);remR.delete(m);tkn.r++;continue;}}if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s<rq.s){const m=mds.find(x=>S.includes(x));if(m){taken.set(k,m);const ni=itk.indexOf(k);if(ni>=0&&ni<itk.length-1)taken.set(itk[ni+1],m);tkn.s++;break;}}}gen();showAlert('✅ Optimal plan generated!','success');}
+function savePlan(){const data={award:document.getElementById('award').value,start:startS.value,options:getOpts(),taken:Array.from(taken.entries()),breaks:Array.from(brks)};localStorage.setItem('kclPlan',JSON.stringify(data));showAlert('✅ Plan saved!','success');}
+function loadPlan(){const data=localStorage.getItem('kclPlan');if(!data){showAlert('⚠️ No saved plan found','warning');return;}try{const p=JSON.parse(data);document.getElementById('award').value=p.award;startS.value=p.start;[...document.querySelectorAll('#opts input')].forEach(i=>i.checked=false);p.options.forEach(o=>{const inp=document.querySelector(`#opts input[data-name="${o}"]`);if(inp)inp.checked=true;});taken.clear();p.taken.forEach(([k,v])=>taken.set(k,v));brks.clear();p.breaks.forEach(b=>brks.add(b));gen();showAlert('✅ Plan loaded!','success');}catch(e){showAlert('❌ Error loading','warning');}}
+function showAlert(msg,type='success'){const al=document.createElement('div');al.className=`alert ${type}`;al.innerHTML=`<span class="closeAlert" onclick="this.parentElement.remove()">×</span><div style="padding-right:1.5rem">${msg}</div>`;document.body.appendChild(al);setTimeout(()=>al.remove(),4000);}
+document.getElementById('autoplan').addEventListener('click',autoGenerate);
+document.getElementById('save').addEventListener('click',savePlan);
+document.getElementById('load').addEventListener('click',loadPlan);
+document.getElementById('reset').addEventListener('click',()=>{if(confirm('Reset everything?')){taken.clear();brks.clear();[...document.querySelectorAll('#opts input')].forEach(i=>i.checked=false);gen();}});
 startS.addEventListener('change',gen);
 gen();
 </script>
