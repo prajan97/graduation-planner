@@ -1,529 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KCL PNOMH Graduation Planner</title>
-  <style>
-    :root{--kcl-red:#d50032;--ink:#111827;--muted:#6b7280;--bg:#fafafa;--card:#fff;--line:#e5e7eb;--ok:#16a34a;--warn:#f59e0b;--bad:#ef4444;--chip:#f3f4f6}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,sans-serif;line-height:1.5}
-    header{background:var(--kcl-red);color:#fff;padding:1.25rem}
-    header h1{font-size:1.5rem;font-weight:700}
-    header .sub{opacity:.9;font-size:.9rem;margin-top:.25rem}
-    .container{max-width:1200px;margin:0 auto;padding:1rem}
-    .grid{display:grid;gap:1rem;grid-template-columns:1fr}
-    @media(min-width:900px){.grid{grid-template-columns:360px 1fr}}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:1rem}
-    h3{font-size:1.1rem;margin-bottom:.75rem}
-    label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:.35rem;font-weight:500}
-    select,button{width:100%;padding:.6rem;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:.9rem}
-    button{cursor:pointer;font-weight:600}
-    .btn{background:var(--kcl-red);color:#fff;border:none}
-    .btn:hover{opacity:.9}
-    .btn.secondary{background:#fff;color:var(--ink)}
-    .btn.secondary:hover{background:#f9fafb}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem}
-    .row-btns{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
-    .tags{display:flex;gap:.4rem;flex-wrap:wrap}
-    .chip{background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:.25rem .6rem;font-size:.75rem;cursor:pointer;user-select:none}
-    .chip input{margin-right:.35rem}
-    .timeline{display:grid;gap:.65rem}
-    .term{border:1px solid var(--line);border-radius:8px;padding:.75rem;background:#fff;cursor:pointer;transition:all .2s}
-    .term:hover{border-color:#cbd5e1;box-shadow:0 2px 4px rgba(0,0,0,.05)}
-    .termHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem}
-    .termTitle{font-weight:700;font-size:.95rem}
-    .moduleTag{border:1px dashed #cbd5e1;background:#f8fafc;border-radius:8px;padding:.4rem .6rem;font-size:.8rem;display:inline-block}
-    .syn{background:#fef2f2;border-color:#fecaca}
-    .break{background:#fff7ed;border-color:#fed7aa}
-    .kbd{border:1px solid var(--line);background:#f9fafb;border-radius:4px;font-size:.75rem;padding:.2rem .4rem;font-family:monospace}
-    .ok{color:var(--ok);font-weight:600}
-    .warn{color:var(--warn);font-weight:600}
-    .bad{color:var(--bad);font-weight:600}
-    .summary{margin-top:.5rem;padding:.75rem;background:#f9fafb;border-radius:8px;font-size:.85rem}
-    .grad-box{background:#f0f9ff;border:2px solid #0ea5e9;border-radius:8px;padding:.75rem;margin-top:.65rem;font-weight:600}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KCL PNOMH Graduation Planner</title>
+<style>
+:root{--r:#d50032;--ink:#111827;--mut:#6b7280;--bg:#fafafa;--line:#e5e7eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,sans-serif;line-height:1.5}
+header{background:var(--r);color:#fff;padding:1.25rem}
+h1{font-size:1.5rem;font-weight:700}
+.sub{opacity:.9;font-size:.9rem;margin-top:.25rem}
+.container{max-width:1200px;margin:0 auto;padding:1rem}
+.grid{display:grid;gap:1rem}
+@media(min-width:900px){.grid{grid-template-columns:360px 1fr}}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+h3{font-size:1.1rem;margin-bottom:.75rem}
+label{display:block;font-size:.8rem;color:var(--mut);margin-bottom:.35rem;font-weight:500}
+select,button{width:100%;padding:.6rem;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:.9rem}
+button{cursor:pointer;font-weight:600;transition:all .2s}
+.btn{background:var(--r);color:#fff;border:none}
+.btn:hover{opacity:.9;transform:translateY(-1px)}
+.btn.sec{background:#fff;color:var(--ink)}
+.btn.sec:hover{background:#f9fafb}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem}
+.tags{display:flex;gap:.4rem;flex-wrap:wrap}
+.chip{background:#f3f4f6;border:1px solid var(--line);border-radius:999px;padding:.25rem .6rem;font-size:.75rem;cursor:pointer;user-select:none;transition:all .2s}
+.chip:hover{background:#e5e7eb}
+.chip input{margin-right:.35rem}
+.timeline{display:grid;gap:.65rem}
+.term{border:1px solid var(--line);border-radius:8px;padding:.75rem;background:#fff;cursor:pointer;transition:all .2s}
+.term:hover{border-color:#94a3b8;box-shadow:0 2px 6px rgba(0,0,0,.08);transform:translateY(-1px)}
+.termHd{display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem}
+.termTtl{font-weight:700;font-size:.95rem}
+.mod{border:1px dashed #cbd5e1;background:#f8fafc;border-radius:8px;padding:.4rem .6rem;font-size:.8rem;display:inline-block}
+.syn{background:#fef2f2;border-color:#fecaca}
+.brk{background:#fff7ed;border-color:#fed7aa}
+.kbd{border:1px solid var(--line);background:#f9fafb;border-radius:4px;font-size:.75rem;padding:.2rem .4rem;font-family:monospace}
+.sum{margin-top:.5rem;padding:.75rem;background:#f9fafb;border-radius:8px;font-size:.85rem}
+.grad{background:#f0f9ff;border:2px solid #0ea5e9;border-radius:8px;padding:.75rem;margin-top:.65rem;font-weight:600}
+.warn{color:#f59e0b;font-weight:600}
+.ok{color:#16a34a;font-weight:600}
+.bad{color:#ef4444;font-weight:600}
+.warnBox{margin-top:.75rem;padding:.6rem;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;font-size:.85rem;display:none}
+.progBar{height:24px;background:#e5e7eb;border-radius:12px;overflow:hidden;margin:.5rem 0}
+.progFill{height:100%;background:linear-gradient(90deg,#0ea5e9,#06b6d4);transition:width .5s ease;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.75rem;font-weight:700}
+.vis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem}
+.visCard{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:12px;padding:1rem;color:#fff;text-align:center;box-shadow:0 4px 12px rgba(102,126,234,.3)}
+.visCard.alt1{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%)}
+.visCard.alt2{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%)}
+.visCard.alt3{background:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%)}
+.visNum{font-size:2.5rem;font-weight:700;margin:.5rem 0}
+.visLbl{font-size:.85rem;opacity:.9}
+.chart{margin-top:1rem;background:#fff;border:1px solid var(--line);border-radius:12px;padding:1rem}
+.barChart{display:flex;align-items:flex-end;justify-content:space-around;height:150px;gap:.5rem}
+.bar{flex:1;background:linear-gradient(180deg,#0ea5e9,#06b6d4);border-radius:8px 8px 0 0;position:relative;transition:all .3s ease;min-height:20px}
+.bar:hover{opacity:.8;transform:scaleY(1.05)}
+.barLbl{position:absolute;bottom:-25px;left:0;right:0;text-align:center;font-size:.7rem;font-weight:600}
+.barVal{position:absolute;top:-20px;left:0;right:0;text-align:center;font-size:.75rem;font-weight:700;color:#0ea5e9}
+.timeline-vis{position:relative;height:60px;background:#f9fafb;border-radius:8px;margin:1rem 0;overflow:hidden}
+.timeline-segment{position:absolute;height:100%;top:0;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff;border-right:2px solid #fff;transition:all .3s}
+.timeline-segment:hover{opacity:.8;cursor:pointer}
+.tf{background:#3b82f6}
+.to{background:#ef4444}
+.tr{background:#8b5cf6}
+.ts{background:#6b7280}
+.tb{background:#f59e0b}
+</style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <h1>King's College London — PNOMH Graduation Planner</h1>
-      <div class="sub">Accurate 2024-2027 schedule with prerequisites and study break planning</div>
-    </div>
-  </header>
-
-  <main class="container grid">
-    <section class="card">
-      <h3>1) Your Setup</h3>
-      <div class="row">
-        <div>
-          <label for="award">Intended Award</label>
-          <select id="award">
-            <option value="PGCert">PG Cert (60 credits)</option>
-            <option value="PGDip">PG Dip (120 credits)</option>
-            <option value="MSc" selected>MSc (180 credits)</option>
-          </select>
-        </div>
-        <div>
-          <label for="start">Start Teaching Window</label>
-          <select id="start"></select>
-        </div>
-      </div>
-      <div>
-        <label for="breaks">Study Breaks (optional - select multiple)</label>
-        <select id="breaks" multiple style="height:80px"></select>
-      </div>
-      <div class="row-btns" style="margin-top:.75rem">
-        <button id="generate" class="btn">Generate Plan</button>
-        <button id="clearBreaks" class="btn secondary">Clear Breaks</button>
-      </div>
-    </section>
-
-    <section class="card">
-      <h3>2) Choose Your 4 Options</h3>
-      <div class="tags" id="options"></div>
-      <div id="warningBox" style="margin-top:.75rem;padding:.6rem;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;font-size:.85rem;display:none"></div>
-    </section>
-
-    <section class="card" style="grid-column:1/-1">
-      <h3>3) Your Study Plan</h3>
-      <div class="tags" style="margin-bottom:.75rem">
-        <span class="chip" style="background:#dbeafe;border-color:#93c5fd">🟦 Foundation</span>
-        <span class="chip" style="background:#fee2e2;border-color:#fca5a5">🟥 Option</span>
-        <span class="chip" style="background:#e9d5ff;border-color:#c084fc">🟪 Research</span>
-        <span class="chip" style="background:#f3f4f6;border-color:#9ca3af">⬛ Synoptic (2 periods)</span>
-        <span class="chip" style="background:#fef3c7;border-color:#fcd34d">⏱️ 2-yr target</span>
-        <span class="chip" style="background:#fee2e2;border-color:#f87171">🚫 6-yr maximum</span>
-      </div>
-      <div id="timeline" class="timeline"></div>
-      <div class="summary" id="summary"></div>
-      <div id="graduation" class="grad-box" style="display:none"></div>
-      <div id="impact" style="margin-top:.75rem;padding:.75rem;background:#f9fafb;border-radius:8px;font-size:.85rem"></div>
-    </section>
-  </main>
-
-  <script>
-    // ===== CORRECTED MODULE DATA =====
-    const FOUNDATIONS = [
-      'Biological Foundations of Mental Health',
-      'Techniques in Neuroscience',
-      'Psychological Foundations of Mental Health',
-      'Mental Health in the Community'
-    ];
-
-    const OPTIONS_LIST = [
-      'Mindfulness: Neuroscience & Application',
-      'Global Mental Health',
-      'Psychology & Neuroscience of Addiction',
-      'Child & Adolescent Mental Health',
-      'Social, Genetic & Environmental Basis of Mental Health',
-      'Neuroscience in Society',
-      'Psychology & Neuroscience of Affective Disorders',
-      'Psychology & Neuroscience of Psychosis',
-      'Neuroimaging in Mental Health',
-      'Pharmacotherapies in Mental Health',
-      'Contemporary Advances in Neuroscience',
-      'Neurodevelopmental Disorders: from Bench to Bedside'
-    ];
-
-    const RESEARCH = [
-      'Research Skills: From Reviewing & Critical Analysis to Research Ethics',
-      'Research Skills: From Methods & Procedures to Analysis & Reporting'
-    ];
-
-    const SYNOPTIC = ['Independent Synoptic Project'];
-
-    const GROUP = {
-      FOUNDATION: 'foundation',
-      OPTIONS: 'options',
-      RESEARCH: 'research',
-      SYNOPTIC: 'synoptic'
-    };
-
-    // ===== CORRECTED SCHEDULE DATA (2024-2027) =====
-    const SCHEDULE = {
-      '2024-09': ['Mental Health in the Community', 'Child & Adolescent Mental Health', 'Global Mental Health', 'Neurodevelopmental Disorders: from Bench to Bedside', 'Research Skills: From Reviewing & Critical Analysis to Research Ethics'],
-      '2024-10': ['Biological Foundations of Mental Health', 'Psychology & Neuroscience of Addiction', 'Mindfulness: Neuroscience & Application', 'Contemporary Advances in Neuroscience', 'Research Skills: From Methods & Procedures to Analysis & Reporting'],
-      '2025-01': ['Techniques in Neuroscience', 'Psychology & Neuroscience of Affective Disorders', 'Neuroscience in Society', 'Social, Genetic & Environmental Basis of Mental Health', 'Research Skills: From Reviewing & Critical Analysis to Research Ethics', 'Independent Synoptic Project'],
-      '2025-03': ['Psychological Foundations of Mental Health', 'Psychology & Neuroscience of Psychosis', 'Neuroimaging in Mental Health', 'Pharmacotherapies in Mental Health', 'Research Skills: From Methods & Procedures to Analysis & Reporting', 'Independent Synoptic Project'],
-      '2025-05': ['Mental Health in the Community', 'Child & Adolescent Mental Health', 'Global Mental Health', 'Neurodevelopmental Disorders: from Bench to Bedside', 'Research Skills: From Reviewing & Critical Analysis to Research Ethics', 'Independent Synoptic Project'],
-      '2025-06': ['Biological Foundations of Mental Health', 'Psychology & Neuroscience of Addiction', 'Mindfulness: Neuroscience & Application', 'Contemporary Advances in Neuroscience', 'Research Skills: From Methods & Procedures to Analysis & Reporting', 'Independent Synoptic Project'],
-      '2025-09': ['Mental Health in the Community', 'Child & Adolescent Mental Health', 'Global Mental Health', 'Neurodevelopmental Disorders: from Bench to Bedside', 'Research Skills: From Reviewing & Critical Analysis to Research Ethics', 'Independent Synoptic Project'],
-      '2025-10': ['Biological Foundations of Mental Health', 'Psychology & Neuroscience of Addiction', 'Mindfulness: Neuroscience & Application', 'Research Skills: From Methods & Procedures to Analysis & Reporting'],
-      '2026-01': ['Techniques in Neuroscience', 'Psychology & Neuroscience of Affective Disorders', 'Neuroscience in Society', 'Social, Genetic & Environmental Basis of Mental Health', 'Research Skills: From Reviewing & Critical Analysis to Research Ethics', 'Independent Synoptic Project'],
-      '2026-03': ['Psychological Foundations of Mental Health', 'Psychology & Neuroscience of Psychosis', 'Neuroimaging in Mental Health', 'Pharmacotherapies in Mental Health', 'Research Skills: From Methods & Procedures to Analysis & Reporting', 'Independent Synoptic Project'],
-      '2026-05': ['Mental Health in the Community', 'Child & Adolescent Mental Health', 'Global Mental Health', 'Neurodevelopmental Disorders: from Bench to Bedside', 'Research Skills: From Reviewing & Critical Analysis to Research Ethics', 'Independent Synoptic Project'],
-      '2026-06': ['Psychological Foundations of Mental Health', 'Psychology & Neuroscience of Psychosis', 'Neuroimaging in Mental Health', 'Research Skills: From Methods & Procedures to Analysis & Reporting', 'Independent Synoptic Project'],
-      '2026-09': ['Techniques in Neuroscience', 'Psychology & Neuroscience of Affective Disorders', 'Neuroscience in Society', 'Social, Genetic & Environmental Basis of Mental Health', 'Research Skills: From Reviewing & Critical Analysis to Research Ethics', 'Independent Synoptic Project'],
-      '2026-10': ['Psychological Foundations of Mental Health', 'Psychology & Neuroscience of Psychosis', 'Neuroimaging in Mental Health', 'Research Skills: From Methods & Procedures to Analysis & Reporting'],
-      '2027-01': ['Techniques in Neuroscience', 'Psychology & Neuroscience of Affective Disorders', 'Neuroscience in Society', 'Social, Genetic & Environmental Basis of Mental Health', 'Research Skills: From Reviewing & Critical Analysis to Research Ethics', 'Independent Synoptic Project'],
-      '2027-03': ['Psychological Foundations of Mental Health', 'Psychology & Neuroscience of Psychosis', 'Neuroimaging in Mental Health', 'Research Skills: From Methods & Procedures to Analysis & Reporting', 'Independent Synoptic Project'],
-      '2027-05': ['Mental Health in the Community', 'Child & Adolescent Mental Health', 'Global Mental Health', 'Neurodevelopmental Disorders: from Bench to Bedside', 'Research Skills: From Reviewing & Critical Analysis to Research Ethics', 'Independent Synoptic Project'],
-      '2027-06': ['Biological Foundations of Mental Health', 'Psychology & Neuroscience of Addiction', 'Mindfulness: Neuroscience & Application', 'Contemporary Advances in Neuroscience', 'Research Skills: From Methods & Procedures to Analysis & Reporting', 'Independent Synoptic Project'],
-      '2027-09': ['Techniques in Neuroscience', 'Psychology & Neuroscience of Affective Disorders', 'Neuroscience in Society', 'Social, Genetic & Environmental Basis of Mental Health', 'Research Skills: From Reviewing & Critical Analysis to Research Ethics', 'Independent Synoptic Project'],
-      '2027-10': ['Psychological Foundations of Mental Health', 'Psychology & Neuroscience of Psychosis', 'Neuroimaging in Mental Health', 'Research Skills: From Methods & Procedures to Analysis & Reporting']
-    };
-
-    const REQUIREMENTS = {
-      PGCert: { foundation: 4, options: 0, research: 0, synoptic: 0 },
-      PGDip: { foundation: 4, options: 4, research: 0, synoptic: 0 },
-      MSc: { foundation: 4, options: 4, research: 2, synoptic: 1 }
-    };
-
-    const keys = Object.keys(SCHEDULE).sort();
-    const selectedBreaks = new Set();
-
-    // ===== POPULATE START SELECTOR =====
-    const startSel = document.getElementById('start');
-    keys.forEach(k => {
-      const [y, m] = k.split('-').map(Number);
-      const d = new Date(y, m - 1, 1);
-      const opt = document.createElement('option');
-      opt.value = k;
-      opt.textContent = d.toLocaleString('en-GB', { month: 'short', year: 'numeric' });
-      startSel.appendChild(opt);
-    });
-    startSel.value = '2024-09';
-
-    // ===== POPULATE OPTIONS CHECKBOXES =====
-    const optsWrap = document.getElementById('options');
-    OPTIONS_LIST.forEach(name => {
-      const id = 'opt-' + name.replace(/[^a-z0-9]/gi, '');
-      const lbl = document.createElement('label');
-      lbl.className = 'chip';
-      lbl.innerHTML = `<input type="checkbox" id="${id}" data-name="${name}">${name}`;
-      optsWrap.appendChild(lbl);
-    });
-
-    function getSelectedOptions() {
-      const checked = [...document.querySelectorAll('#options input:checked')].map(cb => cb.dataset.name);
-      return checked.slice(0, 4);
-    }
-
-    // ===== POPULATE BREAKS SELECTOR =====
-    const breaksSel = document.getElementById('breaks');
-    function populateBreaksOptions() {
-      breaksSel.innerHTML = '';
-      const startKey = startSel.value;
-      const hardStop = addYears(startKey, 6);
-      const avail = keys.filter(k => k >= startKey && k <= hardStop);
-      avail.forEach(k => {
-        const [y, m] = k.split('-').map(Number);
-        const d = new Date(y, m - 1, 1);
-        const opt = document.createElement('option');
-        opt.value = k;
-        opt.textContent = d.toLocaleString('en-GB', { month: 'short', year: 'numeric' });
-        opt.selected = selectedBreaks.has(k);
-        breaksSel.appendChild(opt);
-      });
-    }
-
-    // ===== HELPERS =====
-    function addYears(key, yrs) {
-      const [y, m] = key.split('-').map(Number);
-      return `${y + yrs}-${String(m).padStart(2, '0')}`;
-    }
-
-    function nextKey(key) {
-      const order = ['01', '03', '05', '06', '09', '10'];
-      const [y, m] = key.split('-');
-      const i = order.indexOf(m);
-      return i < order.length - 1 ? `${y}-${order[i + 1]}` : `${+y + 1}-${order[0]}`;
-    }
-
-    function formatDate(key) {
-      const [y, m] = key.split('-').map(Number);
-      return new Date(y, m - 1, 1).toLocaleString('en-GB', { month: 'short', year: 'numeric' });
-    }
-
-    function isDone(taken, req) {
-      return taken.foundation >= req.foundation &&
-             taken.options >= req.options &&
-             taken.research >= req.research &&
-             taken.synoptic >= req.synoptic;
-    }
-
-    // ===== CORE PLANNING LOGIC =====
-    function generatePlan() {
-      // Sync breaks
-      [...breaksSel.options].forEach(o => {
-        if (o.selected) selectedBreaks.add(o.value);
-        else selectedBreaks.delete(o.value);
-      });
-
-      const award = document.getElementById('award').value;
-      const startKey = startSel.value;
-      const req = { ...REQUIREMENTS[award] };
-      const chosenOpts = getSelectedOptions();
-
-      // Validate options availability
-      const warning = document.getElementById('warningBox');
-      if (req.options > 0 && chosenOpts.length < 4) {
-        warning.textContent = `⚠️ Please select 4 option modules for ${award}`;
-        warning.style.display = 'block';
-      } else {
-        warning.style.display = 'none';
-      }
-
-      const remaining = {
-        foundation: new Set(FOUNDATIONS),
-        options: new Set(chosenOpts.length ? chosenOpts : OPTIONS_LIST),
-        research: new Set(RESEARCH),
-        synoptic: new Set(SYNOPTIC)
-      };
-
-      let taken = { foundation: 0, options: 0, research: 0, synoptic: 0 };
-      let planned = [];
-      const hardStop = addYears(startKey, 6);
-      const target = addYears(startKey, 2);
-      const iterKeys = keys.filter(k => k >= startKey && k <= hardStop);
-
-      for (const key of iterKeys) {
-        if (isDone(taken, req)) break;
-
-        const withinTarget = key <= target;
-        const mods = SCHEDULE[key] || [];
-
-        if (selectedBreaks.has(key)) {
-          planned.push({ key, module: 'Study Break', group: 'break', withinTarget });
-          continue;
-        }
-
-        const canSyn = taken.research === 2 && req.synoptic > 0 && remaining.synoptic.size > 0;
-
-        // Priority: Foundation → Options → Research → Synoptic
-        let picked = null;
-
-        if (taken.foundation < req.foundation) {
-          picked = mods.find(m => remaining.foundation.has(m));
-          if (picked) {
-            remaining.foundation.delete(picked);
-            taken.foundation++;
-            planned.push({ key, module: picked, group: GROUP.FOUNDATION, withinTarget });
-            continue;
-          }
-        }
-
-        if (taken.options < req.options) {
-          picked = mods.find(m => remaining.options.has(m));
-          if (picked) {
-            remaining.options.delete(picked);
-            taken.options++;
-            planned.push({ key, module: picked, group: GROUP.OPTIONS, withinTarget });
-            continue;
-          }
-        }
-
-        if (taken.research < req.research) {
-          picked = mods.find(m => remaining.research.has(m));
-          if (picked) {
-            remaining.research.delete(picked);
-            taken.research++;
-            planned.push({ key, module: picked, group: GROUP.RESEARCH, withinTarget });
-            continue;
-          }
-        }
-
-        if (canSyn) {
-          const next = nextKey(key);
-          planned.push({ key, module: SYNOPTIC[0], group: GROUP.SYNOPTIC, withinTarget });
-          planned.push({ key: next, module: SYNOPTIC[0] + ' (cont.)', group: GROUP.SYNOPTIC, withinTarget: next <= target });
-          taken.synoptic++;
-          continue;
-        }
-
-        planned.push({ key, module: 'No eligible module', group: 'idle', withinTarget });
-      }
-
-      renderTimeline(planned, startKey, target, hardStop, req, taken);
-      
-      // Calculate baseline for comparison
-      const baseline = buildBaseline(award, startKey, chosenOpts);
-      renderImpact(baseline, planned);
-    }
-
-    // ===== BASELINE (NO BREAKS) =====
-    function buildBaseline(award, startKey, chosenOpts) {
-      const req = { ...REQUIREMENTS[award] };
-      const remaining = {
-        foundation: new Set(FOUNDATIONS),
-        options: new Set(chosenOpts.length ? chosenOpts : OPTIONS_LIST),
-        research: new Set(RESEARCH),
-        synoptic: new Set(SYNOPTIC)
-      };
-      let taken = { foundation: 0, options: 0, research: 0, synoptic: 0 };
-      let planned = [];
-      const hardStop = addYears(startKey, 6);
-      const iterKeys = keys.filter(k => k >= startKey && k <= hardStop);
-
-      for (const key of iterKeys) {
-        if (isDone(taken, req)) break;
-        const mods = SCHEDULE[key] || [];
-        const canSyn = taken.research === 2 && req.synoptic > 0 && remaining.synoptic.size > 0;
-        let picked = null;
-
-        if (taken.foundation < req.foundation) {
-          picked = mods.find(m => remaining.foundation.has(m));
-          if (picked) {
-            remaining.foundation.delete(picked);
-            taken.foundation++;
-            planned.push({ key, module: picked, group: GROUP.FOUNDATION });
-            continue;
-          }
-        }
-
-        if (taken.options < req.options) {
-          picked = mods.find(m => remaining.options.has(m));
-          if (picked) {
-            remaining.options.delete(picked);
-            taken.options++;
-            planned.push({ key, module: picked, group: GROUP.OPTIONS });
-            continue;
-          }
-        }
-
-        if (taken.research < req.research) {
-          picked = mods.find(m => remaining.research.has(m));
-          if (picked) {
-            remaining.research.delete(picked);
-            taken.research++;
-            planned.push({ key, module: picked, group: GROUP.RESEARCH });
-            continue;
-          }
-        }
-
-        if (canSyn) {
-          const next = nextKey(key);
-          planned.push({ key, module: SYNOPTIC[0], group: GROUP.SYNOPTIC });
-          planned.push({ key: next, module: SYNOPTIC[0] + ' (cont.)', group: GROUP.SYNOPTIC });
-          taken.synoptic++;
-          continue;
-        }
-
-        planned.push({ key, module: 'No eligible module', group: 'idle' });
-      }
-      return planned;
-    }
-
-    // ===== RENDER TIMELINE =====
-    function renderTimeline(planned, startKey, target, hardStop, req, taken) {
-      const el = document.getElementById('timeline');
-      el.innerHTML = '';
-
-      planned.forEach(item => {
-        const term = document.createElement('div');
-        term.className = 'term';
-        term.dataset.key = item.key;
-        term.addEventListener('click', () => {
-          if (selectedBreaks.has(item.key)) selectedBreaks.delete(item.key);
-          else selectedBreaks.add(item.key);
-          populateBreaksOptions();
-          generatePlan();
-        });
-
-        const title = formatDate(item.key);
-        const meta = [];
-        if (item.key === target) meta.push('<span class="warn">⏱️ 2-yr</span>');
-        if (item.key === hardStop) meta.push('<span class="bad">🚫 6-yr max</span>');
-
-        let content = '';
-        if (selectedBreaks.has(item.key)) {
-          content = '<span class="moduleTag break">📅 Study Break</span>';
-        } else if (item.group === 'idle') {
-          content = '<span class="moduleTag">—</span>';
-        } else if (item.group === 'break') {
-          content = '<span class="moduleTag break">📅 Study Break</span>';
-        } else {
-          const icons = {
-            foundation: '🟦',
-            options: '🟥',
-            research: '🟪',
-            synoptic: '⬛'
-          };
-          const cls = item.group === 'synoptic' ? 'moduleTag syn' : 'moduleTag';
-          content = `<span class="${cls}">${icons[item.group]} ${item.module}</span>`;
-        }
-
-        term.innerHTML = `
-          <div class="termHeader">
-            <div class="termTitle">${title}</div>
-            <div class="muted" style="font-size:.8rem">${meta.join(' ')}</div>
-          </div>
-          <div>${content}</div>
-        `;
-        el.appendChild(term);
-      });
-
-      // Summary
-      const summaryEl = document.getElementById('summary');
-      summaryEl.innerHTML = `
-        <strong>Progress:</strong>
-        <span class="kbd">Foundation ${taken.foundation}/${req.foundation}</span>
-        <span class="kbd">Options ${taken.options}/${req.options}</span>
-        <span class="kbd">Research ${taken.research}/${req.research}</span>
-        <span class="kbd">Synoptic ${taken.synoptic}/${req.synoptic}</span>
-      `;
-
-      // Graduation
-      const last = planned.filter(p => p.group !== 'idle' && p.group !== 'break').pop();
-      const gradEl = document.getElementById('graduation');
-      if (last && isDone(taken, req)) {
-        gradEl.style.display = 'block';
-        gradEl.innerHTML = `🎓 <strong>Estimated Graduation:</strong> <span class="ok">${formatDate(last.key)}</span>`;
-      } else if (last) {
-        gradEl.style.display = 'block';
-        gradEl.innerHTML = `⚠️ <strong>Incomplete plan</strong> - some requirements not met within 6 years`;
-        gradEl.style.background = '#fef2f2';
-        gradEl.style.borderColor = '#f87171';
-      } else {
-        gradEl.style.display = 'none';
-      }
-    }
-
-    // ===== RENDER IMPACT =====
-    function renderImpact(baseline, current) {
-      const el = document.getElementById('impact');
-      const lastBase = baseline.filter(p => p.group !== 'idle' && p.group !== 'break').pop();
-      const lastCurr = current.filter(p => p.group !== 'idle' && p.group !== 'break').pop();
-
-      if (!lastBase || !lastCurr) {
-        el.innerHTML = '<strong>Impact Analysis:</strong> Generate a plan to see impact of study breaks';
-        return;
-      }
-
-      const monthsDiff = (a, b) => {
-        const [ay, am] = a.split('-').map(Number);
-        const [by, bm] = b.split('-').map(Number);
-        return (by - ay) * 12 + (bm - am);
-      };
-
-      const delta = monthsDiff(lastBase.key, lastCurr.key);
-      const deltaText = delta === 0 ? 'No impact' : `${delta > 0 ? '+' : ''}${delta} months`;
-      const color = delta === 0 ? 'var(--ok)' : delta > 0 ? 'var(--warn)' : 'var(--ok)';
-
-      el.innerHTML = `
-        <strong>Impact Analysis:</strong>
-        Baseline: <strong>${formatDate(lastBase.key)}</strong> ·
-        Current: <strong>${formatDate(lastCurr.key)}</strong> ·
-        Impact: <strong style="color:${color}">${deltaText}</strong>
-      `;
-    }
-
-    // ===== EVENT LISTENERS =====
-    document.getElementById('generate').addEventListener('click', generatePlan);
-    document.getElementById('clearBreaks').addEventListener('click', () => {
-      selectedBreaks.clear();
-      populateBreaksOptions();
-      generatePlan();
-    });
-    startSel.addEventListener('change', () => {
-      populateBreaksOptions();
-      generatePlan();
-    });
-
-    // ===== INIT =====
-    populateBreaksOptions();
-    generatePlan();
-  </script>
+<header>
+<div class="container">
+<h1>King's College London — PNOMH Graduation Planner</h1>
+<div class="sub">Accurate 2024-2027 schedule with correct prerequisites and visual analytics</div>
+</div>
+</header>
+<main class="container grid">
+<section class="card">
+<h3>1) Your Setup</h3>
+<div class="row">
+<div><label for="award">Award</label>
+<select id="award">
+<option value="PGCert">PG Cert (60c)</option>
+<option value="PGDip">PG Dip (120c)</option>
+<option value="MSc" selected>MSc (180c)</option>
+</select></div>
+<div><label for="start">Start Window</label>
+<select id="start"></select></div>
+</div>
+<div><label for="breaks">Study Breaks (optional)</label>
+<select id="breaks" multiple style="height:80px"></select></div>
+<div class="row" style="margin-top:.75rem">
+<button id="gen" class="btn">Generate Plan</button>
+<button id="clr" class="btn sec">Clear Breaks</button>
+</div>
+</section>
+<section class="card">
+<h3>2) Choose 4 Options</h3>
+<div class="tags" id="opts"></div>
+<div id="wbox" class="warnBox"></div>
+</section>
+<section class="card" style="grid-column:1/-1">
+<h3>3) Visual Analytics</h3>
+<div class="vis">
+<div class="visCard"><div class="visLbl">Total Duration</div><div class="visNum" id="vDur">—</div><div class="visLbl">months</div></div>
+<div class="visCard alt1"><div class="visLbl">Study Breaks</div><div class="visNum" id="vBrk">—</div><div class="visLbl">breaks taken</div></div>
+<div class="visCard alt2"><div class="visLbl">Completion</div><div class="visNum" id="vPct">—</div><div class="visLbl">progress</div></div>
+<div class="visCard alt3"><div class="visLbl">vs Baseline</div><div class="visNum" id="vImp">—</div><div class="visLbl">months delay</div></div>
+</div>
+<div class="chart">
+<h4 style="margin-bottom:.75rem;font-size:.95rem">Module Progress by Type</h4>
+<div class="barChart" id="barChart"></div>
+</div>
+<div class="chart">
+<h4 style="margin-bottom:.75rem;font-size:.95rem">Study Timeline Visualization</h4>
+<div class="timeline-vis" id="timelineVis"></div>
+<div style="display:flex;gap:.5rem;margin-top:.5rem;font-size:.75rem;flex-wrap:wrap">
+<span>🟦 Foundation</span>
+<span>🟥 Options</span>
+<span>🟪 Research</span>
+<span>⬛ Synoptic</span>
+<span>🟧 Breaks</span>
+</div>
+</div>
+</section>
+<section class="card" style="grid-column:1/-1">
+<h3>4) Your Study Plan</h3>
+<div class="tags" style="margin-bottom:.75rem">
+<span class="chip" style="background:#dbeafe">🟦 Foundation (complete first)</span>
+<span class="chip" style="background:#fee2e2">🟥 Options (after foundation)</span>
+<span class="chip" style="background:#e9d5ff">🟪 Research (after options)</span>
+<span class="chip" style="background:#f3f4f6">⬛ Synoptic (after research)</span>
+</div>
+<div id="progWrap">
+<label style="margin-bottom:.25rem">Overall Progress</label>
+<div class="progBar"><div class="progFill" id="progFill" style="width:0%">0%</div></div>
+</div>
+<div id="tl" class="timeline"></div>
+<div class="sum" id="sum"></div>
+<div id="grad" class="grad" style="display:none"></div>
+<div id="imp" style="margin-top:.75rem;padding:.75rem;background:#f9fafb;border-radius:8px;font-size:.85rem"></div>
+</section>
+</main>
+<script>
+const F=['Biological Foundations of Mental Health','Techniques in Neuroscience','Psychological Foundations of Mental Health','Mental Health in the Community'];
+const O=['Mindfulness: Neuroscience & Application','Global Mental Health','Psychology & Neuroscience of Addiction','Child & Adolescent Mental Health','Social, Genetic & Environmental Basis of Mental Health','Neuroscience in Society','Psychology & Neuroscience of Affective Disorders','Psychology & Neuroscience of Psychosis','Neuroimaging in Mental Health','Pharmacotherapies in Mental Health','Contemporary Advances in Neuroscience','Neurodevelopmental Disorders: from Bench to Bedside'];
+const R=['Research Skills: From Reviewing & Critical Analysis to Research Ethics','Research Skills: From Methods & Procedures to Analysis & Reporting'];
+const S=['Independent Synoptic Project'];
+const SCH={'2024-09':['Mental Health in the Community','Child & Adolescent Mental Health','Global Mental Health','Neurodevelopmental Disorders: from Bench to Bedside','Research Skills: From Reviewing & Critical Analysis to Research Ethics'],'2024-10':['Biological Foundations of Mental Health','Psychology & Neuroscience of Addiction','Mindfulness: Neuroscience & Application','Contemporary Advances in Neuroscience','Research Skills: From Methods & Procedures to Analysis & Reporting'],'2025-01':['Techniques in Neuroscience','Psychology & Neuroscience of Affective Disorders','Neuroscience in Society','Social, Genetic & Environmental Basis of Mental Health','Research Skills: From Reviewing & Critical Analysis to Research Ethics','Independent Synoptic Project'],'2025-03':['Psychological Foundations of Mental Health','Psychology & Neuroscience of Psychosis','Neuroimaging in Mental Health','Pharmacotherapies in Mental Health','Research Skills: From Methods & Procedures to Analysis & Reporting','Independent Synoptic Project'],'2025-05':['Mental Health in the Community','Child & Adolescent Mental Health','Global Mental Health','Neurodevelopmental Disorders: from Bench to Bedside','Research Skills: From Reviewing & Critical Analysis to Research Ethics','Independent Synoptic Project'],'2025-06':['Biological Foundations of Mental Health','Psychology & Neuroscience of Addiction','Mindfulness: Neuroscience & Application','Contemporary Advances in Neuroscience','Research Skills: From Methods & Procedures to Analysis & Reporting','Independent Synoptic Project'],'2025-09':['Mental Health in the Community','Child & Adolescent Mental Health','Global Mental Health','Neurodevelopmental Disorders: from Bench to Bedside','Research Skills: From Reviewing & Critical Analysis to Research Ethics','Independent Synoptic Project'],'2025-10':['Biological Foundations of Mental Health','Psychology & Neuroscience of Addiction','Mindfulness: Neuroscience & Application','Research Skills: From Methods & Procedures to Analysis & Reporting'],'2026-01':['Techniques in Neuroscience','Psychology & Neuroscience of Affective Disorders','Neuroscience in Society','Social, Genetic & Environmental Basis of Mental Health','Research Skills: From Reviewing & Critical Analysis to Research Ethics','Independent Synoptic Project'],'2026-03':['Psychological Foundations of Mental Health','Psychology & Neuroscience of Psychosis','Neuroimaging in Mental Health','Pharmacotherapies in Mental Health','Research Skills: From Methods & Procedures to Analysis & Reporting','Independent Synoptic Project'],'2026-05':['Mental Health in the Community','Child & Adolescent Mental Health','Global Mental Health','Neurodevelopmental Disorders: from Bench to Bedside','Research Skills: From Reviewing & Critical Analysis to Research Ethics','Independent Synoptic Project'],'2026-06':['Psychological Foundations of Mental Health','Psychology & Neuroscience of Psychosis','Neuroimaging in Mental Health','Research Skills: From Methods & Procedures to Analysis & Reporting','Independent Synoptic Project'],'2026-09':['Techniques in Neuroscience','Psychology & Neuroscience of Affective Disorders','Neuroscience in Society','Social, Genetic & Environmental Basis of Mental Health','Research Skills: From Reviewing & Critical Analysis to Research Ethics','Independent Synoptic Project'],'2026-10':['Psychological Foundations of Mental Health','Psychology & Neuroscience of Psychosis','Neuroimaging in Mental Health','Research Skills: From Methods & Procedures to Analysis & Reporting'],'2027-01':['Techniques in Neuroscience','Psychology & Neuroscience of Affective Disorders','Neuroscience in Society','Social, Genetic & Environmental Basis of Mental Health','Research Skills: From Reviewing & Critical Analysis to Research Ethics','Independent Synoptic Project'],'2027-03':['Psychological Foundations of Mental Health','Psychology & Neuroscience of Psychosis','Neuroimaging in Mental Health','Research Skills: From Methods & Procedures to Analysis & Reporting','Independent Synoptic Project'],'2027-05':['Mental Health in the Community','Child & Adolescent Mental Health','Global Mental Health','Neurodevelopmental Disorders: from Bench to Bedside','Research Skills: From Reviewing & Critical Analysis to Research Ethics','Independent Synoptic Project'],'2027-06':['Biological Foundations of Mental Health','Psychology & Neuroscience of Addiction','Mindfulness: Neuroscience & Application','Contemporary Advances in Neuroscience','Research Skills: From Methods & Procedures to Analysis & Reporting','Independent Synoptic Project'],'2027-09':['Techniques in Neuroscience','Psychology & Neuroscience of Affective Disorders','Neuroscience in Society','Social, Genetic & Environmental Basis of Mental Health','Research Skills: From Reviewing & Critical Analysis to Research Ethics','Independent Synoptic Project'],'2027-10':['Psychological Foundations of Mental Health','Psychology & Neuroscience of Psychosis','Neuroimaging in Mental Health','Research Skills: From Methods & Procedures to Analysis & Reporting']};
+const REQ={PGCert:{f:4,o:0,r:0,s:0},PGDip:{f:4,o:4,r:0,s:0},MSc:{f:4,o:4,r:2,s:1}};
+const keys=Object.keys(SCH).sort();
+const brks=new Set();
+const startS=document.getElementById('start');
+keys.forEach(k=>{const[y,m]=k.split('-').map(Number);const d=new Date(y,m-1,1);const o=document.createElement('option');o.value=k;o.textContent=d.toLocaleString('en-GB',{month:'short',year:'numeric'});startS.appendChild(o);});
+startS.value='2024-09';
+const optsW=document.getElementById('opts');
+O.forEach(n=>{const id='o'+n.replace(/[^a-z0-9]/gi,'');const l=document.createElement('label');l.className='chip';l.innerHTML=`<input type="checkbox" id="${id}" data-name="${n}">${n}`;optsW.appendChild(l);});
+function getOpts(){return[...document.querySelectorAll('#opts input:checked')].map(c=>c.dataset.name).slice(0,4)}
+const brksS=document.getElementById('breaks');
+function popBrks(){brksS.innerHTML='';const st=startS.value;const hs=addY(st,6);const av=keys.filter(k=>k>=st&&k<=hs);av.forEach(k=>{const[y,m]=k.split('-').map(Number);const d=new Date(y,m-1,1);const o=document.createElement('option');o.value=k;o.textContent=d.toLocaleString('en-GB',{month:'short',year:'numeric'});o.selected=brks.has(k);brksS.appendChild(o);});}
+function addY(k,y){const[yr,m]=k.split('-').map(Number);return`${yr+y}-${String(m).padStart(2,'0')}`}
+function nxtK(k){const ord=['01','03','05','06','09','10'];const[y,m]=k.split('-');const i=ord.indexOf(m);return i<ord.length-1?`${y}-${ord[i+1]}`:`${+y+1}-${ord[0]}`}
+function fmtD(k){const[y,m]=k.split('-').map(Number);return new Date(y,m-1,1).toLocaleString('en-GB',{month:'short',year:'numeric'})}
+function done(t,r){return t.f>=r.f&&t.o>=r.o&&t.r>=r.r&&t.s>=r.s}
+function gen(){[...brksS.options].forEach(o=>{if(o.selected)brks.add(o.value);else brks.delete(o.value);});const aw=document.getElementById('award').value;const st=startS.value;const rq={...REQ[aw]};const cho=getOpts();const wb=document.getElementById('wbox');if(rq.o>0&&cho.length<4){wb.textContent=`⚠️ Select 4 options for ${aw}`;wb.style.display='block';}else{wb.style.display='none';}const rem={f:new Set(F),o:new Set(cho.length?cho:O),r:new Set(R),s:new Set(S)};let tkn={f:0,o:0,r:0,s:0};let pln=[];const hs=addY(st,6);const tg=addY(st,2);const itk=keys.filter(k=>k>=st&&k<=hs);for(const k of itk){if(done(tkn,rq))break;const wt=k<=tg;const mds=SCH[k]||[];if(brks.has(k)){pln.push({k,m:'Study Break',g:'brk',wt});continue;}const cS=tkn.r===2&&rq.s>0&&rem.s.size>0;let p=null;if(tkn.f<rq.f){p=mds.find(m=>rem.f.has(m));if(p){rem.f.delete(p);tkn.f++;pln.push({k,m:p,g:'f',wt});continue;}}if(tkn.f===rq.f&&tkn.o<rq.o){p=mds.find(m=>rem.o.has(m));if(p){rem.o.delete(p);tkn.o++;pln.push({k,m:p,g:'o',wt});continue;}}if(tkn.f===rq.f&&tkn.o===rq.o&&tkn.r<rq.r){p=mds.find(m=>rem.r.has(m));if(p){rem.r.delete(p);tkn.r++;pln.push({k,m:p,g:'r',wt});continue;}}if(cS){const nx=nxtK(k);pln.push({k,m:S[0],g:'s',wt});pln.push({k:nx,m:S[0]+' (cont.)',g:'s',wt:nx<=tg});tkn.s++;continue;}pln.push({k,m:'—',g:'idle',wt});}render(pln,st,tg,hs,rq,tkn);const bs=bldB(aw,st,cho);impct(bs,pln);vis(pln,tkn,rq,bs);}
+function bldB(aw,st,cho){const rq={...REQ[aw]};const rem={f:new Set(F),o:new Set(cho.length?cho:O),r:new Set(R),s:new Set(S)};let tkn={f:0,o:0,r:0,s:0};let pln=[];const hs=addY(st,6);const itk=keys.filter(k=>k>=st&&k<=hs);for(const k of itk){if(done(tkn,rq))break;const mds=SCH[k]||[];const cS=tkn.r===2&&rq.s>0&&rem.s.size>0;let p=null;if(tkn.f<rq.f){p=mds.find(m=>rem.f.has(m));if(p){rem.f.delete(p);tkn.f++;pln.push({k,m:p,g:'f'});continue;}}if(tkn.f===rq.f&&tkn.o<rq.o){p=mds.find(m=>rem.o.has(m));if(p){rem.o.delete(p);tkn.o++;pln.push({k,m:p,g:'o'});continue;}}if(tkn.f===rq.f&&tkn.o===rq.o&&tkn.r<rq.r){p=mds.find(m=>rem.r.has(m));if(p){rem.r.delete(p);tkn.r++;pln.push({k,m:p,g:'r'});continue;}}if(cS){const nx=nxtK(k);pln.push({k,m:S[0],g:'s'});pln.push({k:nx,m:S[0]+' (cont.)',g:'s'});tkn.s++;continue;}pln.push({k,m:'—',g:'idle'});}return pln;}
+function vis(pln,tkn,rq,bs){const st=startS.value;const lst=pln.filter(p=>p.g!=='idle'&&p.g!=='brk').pop();const lbs=bs.filter(p=>p.g!=='idle'&&p.g!=='brk').pop();if(lst){const[y,m]=lst.k.split('-').map(Number);const[sy,sm]=st.split('-').map(Number);const dur=(y-sy)*12+(m-sm);document.getElementById('vDur').textContent=dur;}else{document.getElementById('vDur').textContent='—';}document.getElementById('vBrk').textContent=brks.size;const tot=rq.f+rq.o+rq.r+rq.s;const cur=tkn.f+tkn.o+tkn.r+tkn.s;const pct=tot>0?Math.round((cur/tot)*100):0;document.getElementById('vPct').textContent=pct+'%';const progF=document.getElementById('progFill');progF.style.width=pct+'%';progF.textContent=pct+'%';if(lst&&lbs){const md=(a,b)=>{const[ay,am]=a.split('-').map(Number);const[by,bm]=b.split('-').map(Number);return(by-ay)*12+(bm-am);};const d=md(lbs.k,lst.k);document.getElementById('vImp').textContent=d>=0?'+'+d:d;}else{document.getElementById('vImp').textContent='—';}const bc=document.getElementById('barChart');bc.innerHTML='';const types=[{l:'Foundation',v:tkn.f,m:rq.f},{l:'Options',v:tkn.o,m:rq.o},{l:'Research',v:tkn.r,m:rq.r},{l:'Synoptic',v:tkn.s,m:rq.s}];const mx=Math.max(...types.map(t=>t.m),1);types.forEach(t=>{const h=t.m>0?(t.v/t.m)*100:0;const b=document.createElement('div');b.className='bar';b.style.height=Math.max(h,5)+'%';b.innerHTML=`<div class="barVal">${t.v}/${t.m}</div><div class="barLbl">${t.l}</div>`;bc.appendChild(b);});const tv=document.getElementById('timelineVis');tv.innerHTML='';const totP=pln.length;pln.forEach((p,i)=>{const w=(100/totP);const seg=document.createElement('div');seg.className='timeline-segment';const cls={'f':'tf','o':'to','r':'tr','s':'ts','brk':'tb','idle':'tb'};seg.classList.add(cls[p.g]||'tb');seg.style.left=(i*w)+'%';seg.style.width=w+'%';seg.title=fmtD(p.k)+': '+p.m;tv.appendChild(seg);});}
+function render(pln,st,tg,hs,rq,tkn){const el=document.getElementById('tl');el.innerHTML='';pln.forEach(it=>{const t=document.createElement('div');t.className='term';t.dataset.key=it.k;t.addEventListener('click',()=>{if(brks.has(it.k))brks.delete(it.k);else brks.add(it.k);popBrks();gen();});const ttl=fmtD(it.k);const mt=[];if(it.k===tg)mt.push('<span class="warn">⏱️</span>');if(it.k===hs)mt.push('<span class="bad">🚫</span>');let ct='';if(brks.has(it.k)||it.g==='brk'){ct='<span class="mod brk">📅 Study Break</span>';}else if(it.g==='idle'){ct='<span class="mod">⚠️ No eligible module (prerequisites not met)</span>';}else{const ic={f:'🟦',o:'🟥',r:'🟪',s:'⬛'};const cl=it.g==='s'?'mod syn':'mod';ct=`<span class="${cl}">${ic[it.g]} ${it.m}</span>`;}t.innerHTML=`<div class="termHd"><div class="termTtl">${ttl}</div><div style="font-size:.8rem">${mt.join(' ')}</div></div><div>${ct}</div>`;el.appendChild(t);});const se=document.getElementById('sum');se.innerHTML=`<strong>Progress:</strong> <span class="kbd">Foundation ${tkn.f}/${rq.f}</span> <span class="kbd">Options ${tkn.o}/${rq.o}</span> <span class="kbd">Research ${tkn.r}/${rq.r}</span> <span class="kbd">Synoptic ${tkn.s}/${rq.s}</span>`;const lst=pln.filter(p=>p.g!=='idle'&&p.g!=='brk').pop();const ge=document.getElementById('grad');if(lst&&done(tkn,rq)){ge.style.display='block';ge.innerHTML=`🎓 <strong>Estimated Graduation:</strong> <span class="ok">${fmtD(lst.k)}</span>`;}else if(lst){ge.style.display='block';ge.innerHTML='⚠️ <strong>Incomplete Plan</strong> - Requirements not met within 6 years. Check prerequisites!';ge.style.background='#fef2f2';ge.style.borderColor='#f87171';}else{ge.style.display='none';}}
+function impct(bs,cr){const el=document.getElementById('imp');const lb=bs.filter(p=>p.g!=='idle'&&p.g!=='brk').pop();const lc=cr.filter(p=>p.g!=='idle'&&p.g!=='brk').pop();if(!lb||!lc){el.innerHTML='<strong>Impact:</strong> Generate plan to see impact';return;}const md=(a,b)=>{const[ay,am]=a.split('-').map(Number);const[by,bm]=b.split('-').map(Number);return(by-ay)*12+(bm-am);};const d=md(lb.k,lc.k);const dt=d===0?'No impact':`${d>0?'+':''}${d} months`;const cl=d===0?'ok':d>0?'warn':'ok';el.innerHTML=`<strong>Impact Analysis:</strong> Baseline: <strong>${fmtD(lb.k)}</strong> · Current: <strong>${fmtD(lc.k)}</strong> · <span class="${cl}">${dt}</span>`;}
+document.getElementById('gen').addEventListener('click',gen);
+document.getElementById('clr').addEventListener('click',()=>{brks.clear();popBrks();gen();});
+startS.addEventListener('change',()=>{popBrks();gen();});
+popBrks();gen();
+</script>
 </body>
 </html>
