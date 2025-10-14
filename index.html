@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PNOMH Graduation Planner (Start Jan 2026)</title>
+  <title>KCL PNOMH Advanced Graduation Planner</title>
   <style>
     :root {
       --kcl-red: #d50032;
       --kcl-dark: #2c2a29;
-      --kcl-light: #f5f5f5;
-      --kcl-grey: #c4c4c4;
+      --kcl-light: #ffffff;
+      --kcl-grey: #d9d9d9;
+      --kcl-accent: #f4f4f4;
     }
 
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
-      background: var(--kcl-light);
+      background: var(--kcl-accent);
       color: var(--kcl-dark);
       margin: 0;
       min-height: 100vh;
@@ -28,147 +29,223 @@
       color: white;
       width: 100%;
       text-align: center;
-      padding: 20px 10px;
+      padding: 20px 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     h1 {
       margin: 0;
-      font-size: 1.8rem;
       font-weight: 700;
     }
 
     main {
-      width: 100%;
-      max-width: 700px;
       background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      margin: 30px 0;
-      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      padding: 30px;
+      width: 95%;
+      max-width: 900px;
+      margin-top: 30px;
+      margin-bottom: 40px;
     }
 
-    label {
-      display: block;
-      margin-top: 12px;
-      font-weight: 600;
-      color: var(--kcl-dark);
-    }
+    label { display: block; margin-top: 16px; font-weight: 600; }
+    select, button { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--kcl-grey); margin-top: 5px; }
+    button { background: var(--kcl-red); color: white; font-weight: 600; cursor: pointer; transition: 0.3s; }
+    button:hover { background: #b00028; transform: scale(1.02); }
 
-    select, button {
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid var(--kcl-grey);
-      background: #fff;
-      color: var(--kcl-dark);
-      margin-top: 5px;
-      font-size: 1rem;
-    }
-
-    button {
-      background: var(--kcl-red);
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background: #b00028;
-    }
-
-    .timeline {
-      margin-top: 25px;
-      border-top: 2px solid var(--kcl-red);
-      padding-top: 15px;
-    }
-
+    .timeline { margin-top: 30px; border-top: 3px solid var(--kcl-red); padding-top: 15px; }
     .term {
-      border-left: 5px solid var(--kcl-red);
-      background: #fafafa;
+      background: var(--kcl-accent);
+      border-left: 6px solid var(--kcl-red);
+      padding: 12px 18px;
+      border-radius: 6px;
       margin: 10px 0;
-      padding: 10px 15px;
-      border-radius: 4px;
+      transition: 0.3s ease;
+    }
+    .term:hover { background: #ffe6eb; }
+    .term strong { color: var(--kcl-red); }
+
+    .summary {
+      background: #f9fafb;
+      border: 1px solid var(--kcl-grey);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 20px;
     }
 
-    .term strong {
-      color: var(--kcl-red);
+    .chart-container {
+      margin-top: 30px;
+      height: 250px;
     }
 
     footer {
-      margin-top: auto;
       background: var(--kcl-dark);
       color: white;
       text-align: center;
-      padding: 10px 0;
-      font-size: 0.9rem;
+      padding: 12px 0;
+      width: 100%;
     }
   </style>
 </head>
 <body>
   <header>
     <h1>King's College London – PNOMH Graduation Planner</h1>
-    <p>Start: January 2026 (fixed)</p>
+    <p>Interactive study tracker: explore intakes, modules, breaks, and graduation estimates.</p>
   </header>
 
   <main>
-    <label for="award">Intended award:</label>
+    <div class="summary">
+      <p>Use this tool to simulate your study journey through the <strong>Part‑Time Online MSc</strong>. Choose your intake, pace, optional modules, and study breaks to estimate your graduation window.</p>
+    </div>
+
+    <label for="start">Select intake (earliest 2025):</label>
+    <select id="start"></select>
+
+    <label for="award">Select intended award:</label>
     <select id="award">
-      <option value="PGCert">PG Cert (60 credits)</option>
-      <option value="PGDip">PG Dip (120 credits)</option>
+      <option value="PGCert">PGCert (60 credits)</option>
+      <option value="PGDip">PGDip (120 credits)</option>
       <option value="MSc" selected>MSc (180 credits)</option>
     </select>
 
-    <label for="pace">Study pace:</label>
-    <select id="pace">
-      <option value="continuous" selected>Continuous (no breaks)</option>
-      <option value="light">Light (skip every 3rd period)</option>
-      <option value="custom">Custom (I'll choose breaks)</option>
+    <label for="options">Choose your optional modules (up to 4):</label>
+    <select id="options" multiple size="5">
+      <option value="Mindfulness">Mindfulness</option>
+      <option value="Global Mental Health">Global Mental Health</option>
+      <option value="Addictions">Addictions</option>
+      <option value="ChildMentalHealth">Child & Adolescent Mental Health</option>
+      <option value="Neurodevelopmental">Neurodevelopmental Disorders</option>
+      <option value="Psychosis">Psychosis</option>
+      <option value="Affective">Affective Disorders</option>
     </select>
 
-    <button id="generate">Generate plan</button>
+    <label for="breaks">Study breaks (select multiple):</label>
+    <select id="breaks" multiple size="5"></select>
+
+    <button id="generate">Generate Plan</button>
 
     <div id="timeline" class="timeline"></div>
+    <canvas id="progressChart" class="chart-container"></canvas>
   </main>
 
   <footer>
-    &copy; 2025 King's College London | Part-Time Online MSc Programme Planner
+    © 2025 King's College London | PNOMH Online Programme Planner
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    const startKey = '2026-01'; // Fixed start window
+    // Generate all teaching windows dynamically (2025-2030)
+    const months = ['Jan','Mar','May','Jun','Sep','Oct'];
+    const schedule = new Map();
+    for (let year = 2025; year <= 2030; year++) {
+      months.forEach((m,i) => {
+        const monthNum = ['01','03','05','06','09','10'][i];
+        schedule.set(`${year}-${monthNum}`, []);
+      });
+    }
 
-    // simplified placeholder modules list for demo (replace with real schedule data)
-    const schedule = new Map([
-      ['2026-01', ['Mental Health in the Community', 'Research Skills 1']],
-      ['2026-03', ['Biological Foundations of Mental Health']],
-      ['2026-05', ['Techniques in Neuroscience']],
-      ['2026-06', ['Psychological Foundations of Mental Health']],
-      ['2026-09', ['Research Skills 2']],
-      ['2026-10', ['Independent Synoptic Project']]
-    ]);
+    const coreModules = [
+      'Biological Foundations of Mental Health',
+      'Psychological Foundations of Mental Health',
+      'Mental Health in the Community',
+      'Research Skills 1',
+      'Research Skills 2',
+      'Independent Synoptic Project (Part 1)',
+      'Independent Synoptic Project (Part 2)'
+    ];
+
+    // Populate dynamic dropdowns
+    const startSel = document.getElementById('start');
+    const breaksSel = document.getElementById('breaks');
+    Array.from(schedule.keys()).forEach(k => {
+      const date = new Date(k.split('-')[0], Number(k.split('-')[1]) - 1);
+      const label = date.toLocaleString(undefined, { month: 'short', year: 'numeric' });
+      startSel.innerHTML += `<option value="${k}">${label}</option>`;
+      breaksSel.innerHTML += `<option value="${k}">${label}</option>`;
+    });
+    startSel.value = '2025-01';
 
     const sortedKeys = Array.from(schedule.keys()).sort();
 
     function generatePlan() {
       const award = document.getElementById('award').value;
-      const pace = document.getElementById('pace').value;
+      const startKey = document.getElementById('start').value;
+      const breakKeys = Array.from(document.getElementById('breaks').selectedOptions).map(o => o.value);
+      const chosenOptions = Array.from(document.getElementById('options').selectedOptions).map(o => o.value);
       const timeline = document.getElementById('timeline');
       timeline.innerHTML = '';
 
+      let completedCredits = 0;
+      const totalCredits = award === 'PGCert' ? 60 : award === 'PGDip' ? 120 : 180;
+      let graduationDate = null;
+      let foundStart = false;
+
+      const planData = [];
+
       sortedKeys.forEach(k => {
+        if (!foundStart && k !== startKey) return;
+        foundStart = true;
         const date = new Date(k.split('-')[0], Number(k.split('-')[1]) - 1);
         const monthLabel = date.toLocaleString(undefined, { month: 'short', year: 'numeric' });
-        const mods = schedule.get(k) || [];
         const div = document.createElement('div');
         div.className = 'term';
-        div.innerHTML = `<strong>${monthLabel}</strong>: ${mods.join(', ')}`;
+
+        if (breakKeys.includes(k)) {
+          div.innerHTML = `<strong>${monthLabel}</strong>: Study Break`;
+          planData.push({ period: monthLabel, credits: completedCredits });
+        } else if (completedCredits < totalCredits) {
+          let moduleName = coreModules.shift() || chosenOptions[(completedCredits / 30) % chosenOptions.length] || 'Optional Module';
+          completedCredits += 30;
+          div.innerHTML = `<strong>${monthLabel}</strong>: ${moduleName} (Total Credits: ${completedCredits}/${totalCredits})`;
+          planData.push({ period: monthLabel, credits: completedCredits });
+          if (completedCredits >= totalCredits && !graduationDate) graduationDate = monthLabel;
+        } else {
+          div.innerHTML = `<strong>${monthLabel}</strong>: —`;
+          planData.push({ period: monthLabel, credits: completedCredits });
+        }
+
         timeline.appendChild(div);
       });
 
       const msg = document.createElement('p');
-      msg.innerHTML = `Plan generated for <strong>${award}</strong> starting in <strong>January 2026</strong> with <strong>${pace}</strong> pace.`;
+      if (graduationDate) {
+        msg.innerHTML = `🎓 You are expected to graduate by <strong>${graduationDate}</strong> (start: ${startKey}).`;
+      } else {
+        msg.innerHTML = `Plan generated for <strong>${award}</strong>. Graduation could not yet be calculated.`;
+      }
       timeline.prepend(msg);
+
+      renderChart(planData, totalCredits);
+    }
+
+    function renderChart(planData, totalCredits) {
+      const ctx = document.getElementById('progressChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: planData.map(p => p.period),
+          datasets: [{
+            label: 'Credits Completed',
+            data: planData.map(p => p.credits),
+            borderColor: '#d50032',
+            backgroundColor: 'rgba(213, 0, 50, 0.1)',
+            tension: 0.3,
+            fill: true,
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              suggestedMax: totalCredits
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
     }
 
     document.getElementById('generate').addEventListener('click', generatePlan);
