@@ -11,7 +11,7 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,sans-serif;line
 header{background:var(--r);color:#fff;padding:1.25rem}
 h1{font-size:1.5rem;font-weight:700}
 .sub{opacity:.9;font-size:.9rem;margin-top:.25rem}
-.container{max-width:1200px;margin:0 auto;padding:1rem}
+.container{max-width:1400px;margin:0 auto;padding:1rem}
 .grid{display:grid;gap:1rem}
 @media(min-width:900px){.grid{grid-template-columns:360px 1fr}}
 .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,.04)}
@@ -29,13 +29,19 @@ button{cursor:pointer;font-weight:600;transition:all .2s}
 .chip:hover{background:#e5e7eb}
 .chip input{margin-right:.35rem}
 .timeline{display:grid;gap:.65rem}
-.term{border:1px solid var(--line);border-radius:8px;padding:.75rem;background:#fff;cursor:pointer;transition:all .2s}
-.term:hover{border-color:#94a3b8;box-shadow:0 2px 6px rgba(0,0,0,.08);transform:translateY(-1px)}
-.termHd{display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem}
-.termTtl{font-weight:700;font-size:.95rem}
-.mod{border:1px dashed #cbd5e1;background:#f8fafc;border-radius:8px;padding:.4rem .6rem;font-size:.8rem;display:inline-block}
-.syn{background:#fef2f2;border-color:#fecaca}
+.term{border:1px solid var(--line);border-radius:8px;padding:.75rem;background:#fff;transition:all .2s}
+.term:hover{border-color:#94a3b8;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.termHd{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;padding-bottom:.5rem;border-bottom:1px solid var(--line)}
+.termTtl{font-weight:700;font-size:1rem}
+.modGrid{display:grid;gap:.4rem;margin-top:.5rem}
+.mod{border:1px solid #cbd5e1;background:#f8fafc;border-radius:8px;padding:.5rem .7rem;font-size:.85rem;display:flex;align-items:center;gap:.5rem;transition:all .2s}
+.mod:hover{background:#e2e8f0;border-color:#94a3b8}
+.mod.taken{background:#dcfce7;border-color:#86efac;font-weight:600}
+.mod.available{background:#fff;border-color:#cbd5e1}
+.mod.unavailable{background:#f1f5f9;border-color:#e2e8f0;opacity:.6}
+.modIcon{font-size:1.1rem}
 .brk{background:#fff7ed;border-color:#fed7aa}
+.syn{background:#fef2f2;border-color:#fecaca}
 .kbd{border:1px solid var(--line);background:#f9fafb;border-radius:4px;font-size:.75rem;padding:.2rem .4rem;font-family:monospace}
 .sum{margin-top:.5rem;padding:.75rem;background:#f9fafb;border-radius:8px;font-size:.85rem}
 .grad{background:#f0f9ff;border:2px solid #0ea5e9;border-radius:8px;padding:.75rem;margin-top:.65rem;font-weight:600}
@@ -43,36 +49,27 @@ button{cursor:pointer;font-weight:600;transition:all .2s}
 .ok{color:#16a34a;font-weight:600}
 .bad{color:#ef4444;font-weight:600}
 .warnBox{margin-top:.75rem;padding:.6rem;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;font-size:.85rem;display:none}
-.progBar{height:24px;background:#e5e7eb;border-radius:12px;overflow:hidden;margin:.5rem 0}
-.progFill{height:100%;background:linear-gradient(90deg,#0ea5e9,#06b6d4);transition:width .5s ease;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.75rem;font-weight:700}
-.vis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem}
+.progBar{height:28px;background:#e5e7eb;border-radius:12px;overflow:hidden;margin:.5rem 0}
+.progFill{height:100%;background:linear-gradient(90deg,#0ea5e9,#06b6d4);transition:width .5s ease;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;font-weight:700}
+.vis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-top:1rem}
 .visCard{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:12px;padding:1rem;color:#fff;text-align:center;box-shadow:0 4px 12px rgba(102,126,234,.3)}
 .visCard.alt1{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%)}
 .visCard.alt2{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%)}
 .visCard.alt3{background:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%)}
-.visNum{font-size:2.5rem;font-weight:700;margin:.5rem 0}
+.visNum{font-size:2.2rem;font-weight:700;margin:.5rem 0}
 .visLbl{font-size:.85rem;opacity:.9}
-.chart{margin-top:1rem;background:#fff;border:1px solid var(--line);border-radius:12px;padding:1rem}
-.barChart{display:flex;align-items:flex-end;justify-content:space-around;height:150px;gap:.5rem}
-.bar{flex:1;background:linear-gradient(180deg,#0ea5e9,#06b6d4);border-radius:8px 8px 0 0;position:relative;transition:all .3s ease;min-height:20px}
-.bar:hover{opacity:.8;transform:scaleY(1.05)}
-.barLbl{position:absolute;bottom:-25px;left:0;right:0;text-align:center;font-size:.7rem;font-weight:600}
-.barVal{position:absolute;top:-20px;left:0;right:0;text-align:center;font-size:.75rem;font-weight:700;color:#0ea5e9}
-.timeline-vis{position:relative;height:60px;background:#f9fafb;border-radius:8px;margin:1rem 0;overflow:hidden}
-.timeline-segment{position:absolute;height:100%;top:0;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff;border-right:2px solid #fff;transition:all .3s}
-.timeline-segment:hover{opacity:.8;cursor:pointer}
-.tf{background:#3b82f6}
-.to{background:#ef4444}
-.tr{background:#8b5cf6}
-.ts{background:#6b7280}
-.tb{background:#f59e0b}
+.legend{display:flex;gap:.75rem;margin:.75rem 0;font-size:.8rem;flex-wrap:wrap}
+.legend span{display:flex;align-items:center;gap:.3rem}
+.breakBtn{cursor:pointer;padding:.35rem .6rem;background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;font-size:.8rem;font-weight:600;color:#f59e0b;transition:all .2s}
+.breakBtn:hover{background:#ffedd5;transform:scale(1.05)}
+.stage{background:#f0f9ff;border-left:4px solid #0ea5e9;padding:.5rem;margin-bottom:.5rem;border-radius:4px;font-size:.85rem;font-weight:600}
 </style>
 </head>
 <body>
 <header>
 <div class="container">
 <h1>King's College London — PNOMH Graduation Planner</h1>
-<div class="sub">Accurate 2024-2027 schedule with correct prerequisites and visual analytics</div>
+<div class="sub">Complete view of all modules per intake with prerequisite tracking</div>
 </div>
 </header>
 <main class="container grid">
@@ -88,11 +85,9 @@ button{cursor:pointer;font-weight:600;transition:all .2s}
 <div><label for="start">Start Window</label>
 <select id="start"></select></div>
 </div>
-<div><label for="breaks">Study Breaks (optional)</label>
-<select id="breaks" multiple style="height:80px"></select></div>
 <div class="row" style="margin-top:.75rem">
 <button id="gen" class="btn">Generate Plan</button>
-<button id="clr" class="btn sec">Clear Breaks</button>
+<button id="reset" class="btn sec">Reset All</button>
 </div>
 </section>
 <section class="card">
@@ -106,40 +101,28 @@ button{cursor:pointer;font-weight:600;transition:all .2s}
 <div class="visCard"><div class="visLbl">Total Duration</div><div class="visNum" id="vDur">—</div><div class="visLbl">months</div></div>
 <div class="visCard alt1"><div class="visLbl">Study Breaks</div><div class="visNum" id="vBrk">—</div><div class="visLbl">breaks taken</div></div>
 <div class="visCard alt2"><div class="visLbl">Completion</div><div class="visNum" id="vPct">—</div><div class="visLbl">progress</div></div>
-<div class="visCard alt3"><div class="visLbl">vs Baseline</div><div class="visNum" id="vImp">—</div><div class="visLbl">months delay</div></div>
+<div class="visCard alt3"><div class="visLbl">Graduation</div><div class="visNum" id="vGrad">—</div><div class="visLbl">estimated</div></div>
 </div>
-<div class="chart">
-<h4 style="margin-bottom:.75rem;font-size:.95rem">Module Progress by Type</h4>
-<div class="barChart" id="barChart"></div>
-</div>
-<div class="chart">
-<h4 style="margin-bottom:.75rem;font-size:.95rem">Study Timeline Visualization</h4>
-<div class="timeline-vis" id="timelineVis"></div>
-<div style="display:flex;gap:.5rem;margin-top:.5rem;font-size:.75rem;flex-wrap:wrap">
-<span>🟦 Foundation</span>
-<span>🟥 Options</span>
-<span>🟪 Research</span>
-<span>⬛ Synoptic</span>
-<span>🟧 Breaks</span>
-</div>
+<div id="progWrap">
+<label style="margin:.75rem 0 .25rem 0">Overall Progress</label>
+<div class="progBar"><div class="progFill" id="progFill" style="width:0%">0%</div></div>
 </div>
 </section>
 <section class="card" style="grid-column:1/-1">
-<h3>4) Your Study Plan</h3>
-<div class="tags" style="margin-bottom:.75rem">
-<span class="chip" style="background:#dbeafe">🟦 Foundation (complete first)</span>
-<span class="chip" style="background:#fee2e2">🟥 Options (after foundation)</span>
-<span class="chip" style="background:#e9d5ff">🟪 Research (after options)</span>
-<span class="chip" style="background:#f3f4f6">⬛ Synoptic (after research)</span>
+<h3>4) Your Study Plan - All Modules Per Intake</h3>
+<div class="legend">
+<span>✅ Module Taken</span>
+<span>⬜ Available to Take</span>
+<span>🔒 Prerequisites Not Met</span>
+<span>📅 Study Break</span>
 </div>
-<div id="progWrap">
-<label style="margin-bottom:.25rem">Overall Progress</label>
-<div class="progBar"><div class="progFill" id="progFill" style="width:0%">0%</div></div>
-</div>
+<div class="stage">📘 Stage 1: Foundation Modules (must complete all 4 first)</div>
+<div class="stage" style="background:#fef2f2;border-color:#ef4444">📕 Stage 2: Option Modules (after foundation complete)</div>
+<div class="stage" style="background:#f3e8ff;border-color:#a855f7">📗 Stage 3: Research Skills (after options complete)</div>
+<div class="stage" style="background:#f3f4f6;border-color:#6b7280">📓 Stage 4: Synoptic Project (after research complete)</div>
 <div id="tl" class="timeline"></div>
 <div class="sum" id="sum"></div>
 <div id="grad" class="grad" style="display:none"></div>
-<div id="imp" style="margin-top:.75rem;padding:.75rem;background:#f9fafb;border-radius:8px;font-size:.85rem"></div>
 </section>
 </main>
 <script>
@@ -151,27 +134,24 @@ const SCH={'2024-09':['Mental Health in the Community','Child & Adolescent Menta
 const REQ={PGCert:{f:4,o:0,r:0,s:0},PGDip:{f:4,o:4,r:0,s:0},MSc:{f:4,o:4,r:2,s:1}};
 const keys=Object.keys(SCH).sort();
 const brks=new Set();
+const taken=new Map();
 const startS=document.getElementById('start');
 keys.forEach(k=>{const[y,m]=k.split('-').map(Number);const d=new Date(y,m-1,1);const o=document.createElement('option');o.value=k;o.textContent=d.toLocaleString('en-GB',{month:'short',year:'numeric'});startS.appendChild(o);});
 startS.value='2024-09';
 const optsW=document.getElementById('opts');
 O.forEach(n=>{const id='o'+n.replace(/[^a-z0-9]/gi,'');const l=document.createElement('label');l.className='chip';l.innerHTML=`<input type="checkbox" id="${id}" data-name="${n}">${n}`;optsW.appendChild(l);});
 function getOpts(){return[...document.querySelectorAll('#opts input:checked')].map(c=>c.dataset.name).slice(0,4)}
-const brksS=document.getElementById('breaks');
-function popBrks(){brksS.innerHTML='';const st=startS.value;const hs=addY(st,6);const av=keys.filter(k=>k>=st&&k<=hs);av.forEach(k=>{const[y,m]=k.split('-').map(Number);const d=new Date(y,m-1,1);const o=document.createElement('option');o.value=k;o.textContent=d.toLocaleString('en-GB',{month:'short',year:'numeric'});o.selected=brks.has(k);brksS.appendChild(o);});}
 function addY(k,y){const[yr,m]=k.split('-').map(Number);return`${yr+y}-${String(m).padStart(2,'0')}`}
-function nxtK(k){const ord=['01','03','05','06','09','10'];const[y,m]=k.split('-');const i=ord.indexOf(m);return i<ord.length-1?`${y}-${ord[i+1]}`:`${+y+1}-${ord[0]}`}
 function fmtD(k){const[y,m]=k.split('-').map(Number);return new Date(y,m-1,1).toLocaleString('en-GB',{month:'short',year:'numeric'})}
-function done(t,r){return t.f>=r.f&&t.o>=r.o&&t.r>=r.r&&t.s>=r.s}
-function gen(){[...brksS.options].forEach(o=>{if(o.selected)brks.add(o.value);else brks.delete(o.value);});const aw=document.getElementById('award').value;const st=startS.value;const rq={...REQ[aw]};const cho=getOpts();const wb=document.getElementById('wbox');if(rq.o>0&&cho.length<4){wb.textContent=`⚠️ Select 4 options for ${aw}`;wb.style.display='block';}else{wb.style.display='none';}const rem={f:new Set(F),o:new Set(cho.length?cho:O),r:new Set(R),s:new Set(S)};let tkn={f:0,o:0,r:0,s:0};let pln=[];const hs=addY(st,6);const tg=addY(st,2);const itk=keys.filter(k=>k>=st&&k<=hs);for(const k of itk){if(done(tkn,rq))break;const wt=k<=tg;const mds=SCH[k]||[];if(brks.has(k)){pln.push({k,m:'Study Break',g:'brk',wt});continue;}const cS=tkn.r===2&&rq.s>0&&rem.s.size>0;let p=null;if(tkn.f<rq.f){p=mds.find(m=>rem.f.has(m));if(p){rem.f.delete(p);tkn.f++;pln.push({k,m:p,g:'f',wt});continue;}}if(tkn.f===rq.f&&tkn.o<rq.o){p=mds.find(m=>rem.o.has(m));if(p){rem.o.delete(p);tkn.o++;pln.push({k,m:p,g:'o',wt});continue;}}if(tkn.f===rq.f&&tkn.o===rq.o&&tkn.r<rq.r){p=mds.find(m=>rem.r.has(m));if(p){rem.r.delete(p);tkn.r++;pln.push({k,m:p,g:'r',wt});continue;}}if(cS){const nx=nxtK(k);pln.push({k,m:S[0],g:'s',wt});pln.push({k:nx,m:S[0]+' (cont.)',g:'s',wt:nx<=tg});tkn.s++;continue;}pln.push({k,m:'—',g:'idle',wt});}render(pln,st,tg,hs,rq,tkn);const bs=bldB(aw,st,cho);impct(bs,pln);vis(pln,tkn,rq,bs);}
-function bldB(aw,st,cho){const rq={...REQ[aw]};const rem={f:new Set(F),o:new Set(cho.length?cho:O),r:new Set(R),s:new Set(S)};let tkn={f:0,o:0,r:0,s:0};let pln=[];const hs=addY(st,6);const itk=keys.filter(k=>k>=st&&k<=hs);for(const k of itk){if(done(tkn,rq))break;const mds=SCH[k]||[];const cS=tkn.r===2&&rq.s>0&&rem.s.size>0;let p=null;if(tkn.f<rq.f){p=mds.find(m=>rem.f.has(m));if(p){rem.f.delete(p);tkn.f++;pln.push({k,m:p,g:'f'});continue;}}if(tkn.f===rq.f&&tkn.o<rq.o){p=mds.find(m=>rem.o.has(m));if(p){rem.o.delete(p);tkn.o++;pln.push({k,m:p,g:'o'});continue;}}if(tkn.f===rq.f&&tkn.o===rq.o&&tkn.r<rq.r){p=mds.find(m=>rem.r.has(m));if(p){rem.r.delete(p);tkn.r++;pln.push({k,m:p,g:'r'});continue;}}if(cS){const nx=nxtK(k);pln.push({k,m:S[0],g:'s'});pln.push({k:nx,m:S[0]+' (cont.)',g:'s'});tkn.s++;continue;}pln.push({k,m:'—',g:'idle'});}return pln;}
-function vis(pln,tkn,rq,bs){const st=startS.value;const lst=pln.filter(p=>p.g!=='idle'&&p.g!=='brk').pop();const lbs=bs.filter(p=>p.g!=='idle'&&p.g!=='brk').pop();if(lst){const[y,m]=lst.k.split('-').map(Number);const[sy,sm]=st.split('-').map(Number);const dur=(y-sy)*12+(m-sm);document.getElementById('vDur').textContent=dur;}else{document.getElementById('vDur').textContent='—';}document.getElementById('vBrk').textContent=brks.size;const tot=rq.f+rq.o+rq.r+rq.s;const cur=tkn.f+tkn.o+tkn.r+tkn.s;const pct=tot>0?Math.round((cur/tot)*100):0;document.getElementById('vPct').textContent=pct+'%';const progF=document.getElementById('progFill');progF.style.width=pct+'%';progF.textContent=pct+'%';if(lst&&lbs){const md=(a,b)=>{const[ay,am]=a.split('-').map(Number);const[by,bm]=b.split('-').map(Number);return(by-ay)*12+(bm-am);};const d=md(lbs.k,lst.k);document.getElementById('vImp').textContent=d>=0?'+'+d:d;}else{document.getElementById('vImp').textContent='—';}const bc=document.getElementById('barChart');bc.innerHTML='';const types=[{l:'Foundation',v:tkn.f,m:rq.f},{l:'Options',v:tkn.o,m:rq.o},{l:'Research',v:tkn.r,m:rq.r},{l:'Synoptic',v:tkn.s,m:rq.s}];const mx=Math.max(...types.map(t=>t.m),1);types.forEach(t=>{const h=t.m>0?(t.v/t.m)*100:0;const b=document.createElement('div');b.className='bar';b.style.height=Math.max(h,5)+'%';b.innerHTML=`<div class="barVal">${t.v}/${t.m}</div><div class="barLbl">${t.l}</div>`;bc.appendChild(b);});const tv=document.getElementById('timelineVis');tv.innerHTML='';const totP=pln.length;pln.forEach((p,i)=>{const w=(100/totP);const seg=document.createElement('div');seg.className='timeline-segment';const cls={'f':'tf','o':'to','r':'tr','s':'ts','brk':'tb','idle':'tb'};seg.classList.add(cls[p.g]||'tb');seg.style.left=(i*w)+'%';seg.style.width=w+'%';seg.title=fmtD(p.k)+': '+p.m;tv.appendChild(seg);});}
-function render(pln,st,tg,hs,rq,tkn){const el=document.getElementById('tl');el.innerHTML='';pln.forEach(it=>{const t=document.createElement('div');t.className='term';t.dataset.key=it.k;t.addEventListener('click',()=>{if(brks.has(it.k))brks.delete(it.k);else brks.add(it.k);popBrks();gen();});const ttl=fmtD(it.k);const mt=[];if(it.k===tg)mt.push('<span class="warn">⏱️</span>');if(it.k===hs)mt.push('<span class="bad">🚫</span>');let ct='';if(brks.has(it.k)||it.g==='brk'){ct='<span class="mod brk">📅 Study Break</span>';}else if(it.g==='idle'){ct='<span class="mod">⚠️ No eligible module (prerequisites not met)</span>';}else{const ic={f:'🟦',o:'🟥',r:'🟪',s:'⬛'};const cl=it.g==='s'?'mod syn':'mod';ct=`<span class="${cl}">${ic[it.g]} ${it.m}</span>`;}t.innerHTML=`<div class="termHd"><div class="termTtl">${ttl}</div><div style="font-size:.8rem">${mt.join(' ')}</div></div><div>${ct}</div>`;el.appendChild(t);});const se=document.getElementById('sum');se.innerHTML=`<strong>Progress:</strong> <span class="kbd">Foundation ${tkn.f}/${rq.f}</span> <span class="kbd">Options ${tkn.o}/${rq.o}</span> <span class="kbd">Research ${tkn.r}/${rq.r}</span> <span class="kbd">Synoptic ${tkn.s}/${rq.s}</span>`;const lst=pln.filter(p=>p.g!=='idle'&&p.g!=='brk').pop();const ge=document.getElementById('grad');if(lst&&done(tkn,rq)){ge.style.display='block';ge.innerHTML=`🎓 <strong>Estimated Graduation:</strong> <span class="ok">${fmtD(lst.k)}</span>`;}else if(lst){ge.style.display='block';ge.innerHTML='⚠️ <strong>Incomplete Plan</strong> - Requirements not met within 6 years. Check prerequisites!';ge.style.background='#fef2f2';ge.style.borderColor='#f87171';}else{ge.style.display='none';}}
-function impct(bs,cr){const el=document.getElementById('imp');const lb=bs.filter(p=>p.g!=='idle'&&p.g!=='brk').pop();const lc=cr.filter(p=>p.g!=='idle'&&p.g!=='brk').pop();if(!lb||!lc){el.innerHTML='<strong>Impact:</strong> Generate plan to see impact';return;}const md=(a,b)=>{const[ay,am]=a.split('-').map(Number);const[by,bm]=b.split('-').map(Number);return(by-ay)*12+(bm-am);};const d=md(lb.k,lc.k);const dt=d===0?'No impact':`${d>0?'+':''}${d} months`;const cl=d===0?'ok':d>0?'warn':'ok';el.innerHTML=`<strong>Impact Analysis:</strong> Baseline: <strong>${fmtD(lb.k)}</strong> · Current: <strong>${fmtD(lc.k)}</strong> · <span class="${cl}">${dt}</span>`;}
+function getType(m){if(F.includes(m))return'f';if(O.includes(m))return'o';if(R.includes(m))return'r';if(S.includes(m))return's';return'u'}
+function canTake(m,tkn,rq,cho){const t=getType(m);if(t==='f')return tkn.f<rq.f;if(t==='o')return tkn.f>=rq.f&&tkn.o<rq.o&&(cho.length===0||cho.includes(m));if(t==='r')return tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r<rq.r;if(t==='s')return tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s<rq.s;return false}
+function gen(){const aw=document.getElementById('award').value;const st=startS.value;const rq={...REQ[aw]};const cho=getOpts();const wb=document.getElementById('wbox');if(rq.o>0&&cho.length<4){wb.textContent=`⚠️ Select 4 options for ${aw}`;wb.style.display='block';}else{wb.style.display='none';}let tkn={f:0,o:0,r:0,s:0};const hs=addY(st,6);const itk=keys.filter(k=>k>=st&&k<=hs);taken.forEach((v,k)=>{const t=getType(v);if(t==='f')tkn.f++;if(t==='o')tkn.o++;if(t==='r')tkn.r++;if(t==='s')tkn.s++;});render(itk,st,rq,tkn,cho);vis(itk,tkn,rq,st);}
+function render(itk,st,rq,tkn,cho){const el=document.getElementById('tl');el.innerHTML='';itk.forEach(k=>{const term=document.createElement('div');term.className='term';const ttl=fmtD(k);const isBreak=brks.has(k);const inSyn=taken.get(k)==='Independent Synoptic Project';const meta=[];if(k===addY(st,2))meta.push('<span class="warn">⏱️ 2-yr target</span>');if(k===addY(st,6))meta.push('<span class="bad">🚫 6-yr max</span>');let hdr=`<div class="termHd"><div class="termTtl">${ttl}</div><div style="font-size:.85rem">${meta.join(' ')}</div></div>`;if(isBreak){const bb=document.createElement('button');bb.className='breakBtn';bb.textContent='❌ Remove Break';bb.onclick=()=>{brks.delete(k);gen();};hdr+=`<div style="background:#fff7ed;padding:.75rem;border-radius:8px;text-align:center"><div style="font-size:1.5rem">📅</div><div style="font-weight:600;margin-top:.25rem">Study Break</div></div>`;term.innerHTML=hdr;term.appendChild(bb);}else if(inSyn){hdr+=`<div class="mod taken syn"><span class="modIcon">⬛</span><span>Independent Synoptic Project (period 1 of 2)</span></div>`;term.innerHTML=hdr;}else{const mds=SCH[k]||[];const tkMod=taken.get(k);let curTkn={...tkn};for(const [pk,pm]of taken){if(pk<k){const pt=getType(pm);if(pt==='f')curTkn.f++;if(pt==='o')curTkn.o++;if(pt==='r')curTkn.r++;if(pt==='s')curTkn.s++;}}const grid=document.createElement('div');grid.className='modGrid';mds.forEach(m=>{const isTaken=tkMod===m;const canTk=canTake(m,curTkn,rq,cho);const div=document.createElement('div');div.className='mod';if(isTaken){div.classList.add('taken');const t=getType(m);const ic={'f':'🟦','o':'🟥','r':'🟪','s':'⬛'};div.innerHTML=`<span class="modIcon">✅</span><span><strong>${m}</strong></span>`;div.onclick=()=>{taken.delete(k);gen();};}else if(canTk){div.classList.add('available');const t=getType(m);const ic={'f':'🟦','o':'🟥','r':'🟪','s':'⬛'};div.innerHTML=`<span class="modIcon">${ic[t]}</span><span>${m}</span>`;div.onclick=()=>{if(t==='s'){taken.set(k,m);const nk=keys[keys.indexOf(k)+1];if(nk)taken.set(nk,m);}else{taken.set(k,m);}gen();};}else{div.classList.add('unavailable');div.innerHTML=`<span class="modIcon">🔒</span><span>${m}</span>`;}grid.appendChild(div);});const bb=document.createElement('button');bb.className='breakBtn';bb.textContent='📅 Set as Study Break';bb.style.marginTop='.5rem';bb.onclick=()=>{taken.delete(k);brks.add(k);gen();};term.innerHTML=hdr;term.appendChild(grid);term.appendChild(bb);}el.appendChild(term);});const se=document.getElementById('sum');se.innerHTML=`<strong>Progress:</strong> <span class="kbd">Foundation ${tkn.f}/${rq.f}</span> <span class="kbd">Options ${tkn.o}/${rq.o}</span> <span class="kbd">Research ${tkn.r}/${rq.r}</span> <span class="kbd">Synoptic ${tkn.s}/${rq.s}</span>`;const ge=document.getElementById('grad');const lastK=[...taken.keys()].sort().pop();if(lastK&&tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s>=rq.s){ge.style.display='block';ge.style.background='#f0f9ff';ge.style.borderColor='#0ea5e9';ge.innerHTML=`🎓 <strong>Estimated Graduation:</strong> <span class="ok">${fmtD(lastK)}</span>`;}else if(lastK){ge.style.display='block';ge.style.background='#fef2f2';ge.style.borderColor='#f87171';ge.innerHTML='⚠️ <strong>Incomplete Plan</strong> - Please complete all required modules';}else{ge.style.display='none';}}
+function vis(itk,tkn,rq,st){const lastK=[...taken.keys()].sort().pop();if(lastK){const[y,m]=lastK.split('-').map(Number);const[sy,sm]=st.split('-').map(Number);const dur=(y-sy)*12+(m-sm);document.getElementById('vDur').textContent=dur;}else{document.getElementById('vDur').textContent='—';}document.getElementById('vBrk').textContent=brks.size;const tot=rq.f+rq.o+rq.r+rq.s;const cur=tkn.f+tkn.o+tkn.r+tkn.s;const pct=tot>0?Math.round((cur/tot)*100):0;document.getElementById('vPct').textContent=pct+'%';const progF=document.getElementById('progFill');progF.style.width=pct+'%';progF.textContent=pct+'%';if(lastK){document.getElementById('vGrad').textContent=fmtD(lastK).replace(' ','\\n');}else{document.getElementById('vGrad').textContent='—';}}
 document.getElementById('gen').addEventListener('click',gen);
-document.getElementById('clr').addEventListener('click',()=>{brks.clear();popBrks();gen();});
-startS.addEventListener('change',()=>{popBrks();gen();});
-popBrks();gen();
+document.getElementById('reset').addEventListener('click',()=>{taken.clear();brks.clear();[...document.querySelectorAll('#opts input')].forEach(i=>i.checked=false);gen();});
+startS.addEventListener('change',gen);
+gen();
 </script>
 </body>
 </html>
