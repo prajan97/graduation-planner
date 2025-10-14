@@ -3,165 +3,328 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>KCL PNOMH Graduation Planner</title>
+  <title>KCL PNOMH Graduation Planner — Accurate Carousel + Breaks</title>
   <style>
-    :root {
-      --kcl-red: #d50032;
-      --kcl-dark: #2c2a29;
-      --kcl-light: #fff;
-      --kcl-grey: #d9d9d9;
-      --kcl-accent: #f9f9f9;
+    :root{
+      --kcl-red:#d50032;--ink:#111827;--muted:#6b7280;--bg:#fafafa;--card:#ffffff;--line:#e5e7eb;--ok:#16a34a;--warn:#f59e0b;--bad:#ef4444;--chip:#f3f4f6
     }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--kcl-accent); color: var(--kcl-dark); margin: 0; }
-    header { background: var(--kcl-red); color: white; padding: 20px; text-align: center; }
-    main { max-width: 950px; margin: 30px auto; background: white; padding: 30px 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
-    select, button { width: 100%; padding: 10px; margin-top: 5px; border-radius: 6px; border: 1px solid var(--kcl-grey); }
-    button { background: var(--kcl-red); color: white; font-weight: bold; cursor: pointer; }
-    .timeline { margin-top: 20px; border-top: 3px solid var(--kcl-red); padding-top: 10px; }
-    .term { background: var(--kcl-accent); padding: 10px 15px; border-left: 6px solid var(--kcl-red); border-radius: 6px; margin: 8px 0; transition: background 0.3s; }
-    .term:hover { background: #ffe6ea; }
-    .term strong { color: var(--kcl-red); }
-    canvas { margin-top: 30px; }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Segoe UI,system-ui,-apple-system,Roboto,Arial,sans-serif}
+    header{background:var(--kcl-red);color:#fff;padding:18px}
+    header h1{margin:0;font-size:22px}
+    header .sub{opacity:.9}
+    .container{max-width:1100px;margin:0 auto;padding:16px}
+    .grid{display:grid;gap:14px;grid-template-columns:1fr}
+    @media(min-width:900px){.grid{grid-template-columns:360px 1fr}}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.06)}
+    .card .inner{padding:14px}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+    select,button,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#fff}
+    .btn{background:var(--kcl-red);color:#fff;border:none;font-weight:700;cursor:pointer}
+    .btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .tags{display:flex;gap:6px;flex-wrap:wrap}
+    .chip{background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:4px 8px;font-size:12px}
+    .timeline{display:grid;gap:10px}
+    .term{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}
+    .termHeader{display:flex;justify-content:space-between;align-items:center}
+    .termTitle{font-weight:700}
+    .kbd{border:1px solid var(--line);background:#fff;border-radius:6px;font-size:12px;padding:2px 6px}
+    .moduleTag{border:1px dashed #cfd4dc;background:#f8fafc;border-radius:10px;padding:6px 8px;font-size:12px}
+    .syn{background:#fff1f2;border-color:#fecaca}
+    .break{background:#fff7ed;border-color:#fed7aa}
+    .ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}
   </style>
 </head>
 <body>
-<header>
-  <h1>King's College London – PNOMH Graduation Planner</h1>
-  <p>Estimate your graduation by selecting intakes, options, and study breaks with live visualisation.</p>
-</header>
-<main>
-  <label for="start">Select your intake:</label>
-  <select id="start"></select>
-  
-  <label for="options">Choose four optional modules:</label>
-  <select id="options" multiple size="6">
-    <option value="Global Mental Health">Global Mental Health</option>
-    <option value="Psychosis">Psychosis</option>
-    <option value="Addictions">Addictions</option>
-    <option value="ChildMentalHealth">Child and Adolescent Mental Health</option>
-    <option value="Neurodevelopmental">Neurodevelopmental Disorders</option>
-    <option value="Affective">Affective Disorders</option>
-  </select>
-  
-  <label for="breaks">Select study breaks (you can choose multiple):</label>
-  <select id="breaks" multiple size="6"></select>
+  <header>
+    <div class="container">
+      <h1>King's College London — PNOMH Graduation Planner</h1>
+      <div class="sub">Accurate module carousel (2025/2026 pattern), real prerequisites, study breaks, and graduation estimate.</div>
+    </div>
+  </header>
 
-  <button id="generate">Generate Plan</button>
+  <main class="container grid">
+    <section class="card">
+      <div class="inner">
+        <h3>1) Your setup</h3>
+        <div class="row">
+          <div>
+            <label for="award">Intended award</label>
+            <select id="award">
+              <option value="PGCert">PG Cert (60c)</option>
+              <option value="PGDip">PG Dip (120c)</option>
+              <option value="MSc" selected>MSc (180c)</option>
+            </select>
+          </div>
+          <div>
+            <label for="start">Start teaching window</label>
+            <select id="start"></select>
+          </div>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <div>
+            <label for="pace">Pace</label>
+            <select id="pace">
+              <option value="continuous" selected>Continuous (no breaks)</option>
+              <option value="light">Light (skip every 3rd period)</option>
+              <option value="custom">Custom (I'll click breaks)</option>
+            </select>
+          </div>
+          <div>
+            <label for="maxYears">Max duration</label>
+            <select id="maxYears">
+              <option value="2">Target: 2 years</option>
+              <option value="3">Up to 3 years</option>
+              <option value="4">Up to 4 years</option>
+              <option value="5">Up to 5 years</option>
+              <option value="6" selected>Absolute max: 6 years</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <div id="timeline" class="timeline"></div>
-  <canvas id="progressChart" height="150"></canvas>
-</main>
+    <section class="card">
+      <div class="inner">
+        <h3>2) Choose up to 4 options</h3>
+        <div class="tags" id="options"></div>
+        <div style="margin-top:8px" class="tags" id="availabilityNote"></div>
+      </div>
+    </section>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  // Generate all teaching windows 2025-2031 (2-month intervals)
-  const schedule = new Map();
-  const months = ['Jan','Mar','May','Jul','Sep','Nov'];
-  for(let year=2025; year<=2031; year++){
-    months.forEach((m,i)=>{
-      const monthNum = ['01','03','05','07','09','11'][i];
-      schedule.set(`${year}-${monthNum}`, []);
-    });
-  }
+    <section class="card" style="grid-column:1 / -1">
+      <div class="inner">
+        <h3>3) Plan</h3>
+        <div class="tags" style="margin-bottom:8px">
+          <span class="chip">🟦 Foundation</span>
+          <span class="chip">🟥 Option</span>
+          <span class="chip">🟪 Research Skills</span>
+          <span class="chip">⬛ Synoptic (2 periods)</span>
+          <span class="chip">⏱️ 2‑yr target</span>
+          <span class="chip">🚫 6‑yr max</span>
+        </div>
+        <div id="timeline" class="timeline"></div>
+        <div id="impact" class="term" style="margin-top:8px">
+          <div class="termHeader"><div class="termTitle">What‑if impact</div><div class="muted">Compare vs no custom breaks</div></div>
+          <div id="impactBody" class="muted">Set <span class="kbd">Pace → Custom</span>, click periods to mark breaks, then click <b>Generate plan</b>.</div>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <button id="generate" class="btn">Generate plan</button>
+          <button id="toggleBreaks" class="btn secondary">Toggle breaks (custom)</button>
+        </div>
+      </div>
+    </section>
+  </main>
 
-  const coreModules = [
-    'Biological Foundations of Mental Health',
-    'Psychological Foundations of Mental Health',
-    'Mental Health in the Community',
-    'Research Skills 1',
-    'Research Skills 2',
-    'Independent Synoptic Project (Part 1)',
-    'Independent Synoptic Project (Part 2)'
-  ];
+  <script>
+    // === Programme data from Carousel (2025/2026 swing) ===
+    const FOUNDATIONS=['Biological Foundations of Mental Health','Techniques in Neuroscience','Psychological Foundations of Mental Health','Mental Health in the Community'];
+    const OPTIONS_LIST=['Mindfulness','Global Mental Health','Psychology & Neuroscience of Addictions','Child & Adolescent Mental Health','Social, Genetic & Environmental Basis of Mental Health','Neuroscience in Society','Psychology & Neuroscience of Affective Disorders','Psychology & Neuroscience of Psychosis','Neuroimaging & Mental Health','Contemporary Advances in Neuroscience','Neurodevelopmental Disorders: From Bench to Bedside'];
+    const RESEARCH=['Research Skills 1: From Reviewing & Critical Analysis to Research Ethics','Research Skills 2: From Methods & Procedures to Analysis & Reporting'];
+    const SYNOPTIC=['Independent Synoptic Project'];
 
-  const startSel = document.getElementById('start');
-  const breaksSel = document.getElementById('breaks');
-  Array.from(schedule.keys()).forEach(k => {
-    const d = new Date(k.split('-')[0], Number(k.split('-')[1]) - 1);
-    const label = d.toLocaleString(undefined, {month:'short', year:'numeric'});
-    startSel.innerHTML += `<option value="${k}">${label}</option>`;
-    breaksSel.innerHTML += `<option value="${k}">${label}</option>`;
-  });
-  startSel.value='2025-01';
+    const GROUP={FOUNDATION:'foundation',OPTIONS:'options',RESEARCH:'research',SYNOPTIC:'synoptic'};
 
-  const sortedKeys = Array.from(schedule.keys()).sort();
-  let chartInstance = null;
+    const S2025={
+      '2025-01':['Techniques in Neuroscience','Psychology & Neuroscience of Affective Disorders','Neuroscience in Society','Social, Genetic & Environmental Basis of Mental Health','Research Skills 1: From Reviewing & Critical Analysis to Research Ethics','Independent Synoptic Project'],
+      '2025-03':['Psychological Foundations of Mental Health','Psychology & Neuroscience of Psychosis','Neuroimaging & Mental Health','Research Skills 2: From Methods & Procedures to Analysis & Reporting','Independent Synoptic Project'],
+      '2025-05':['Mental Health in the Community','Child & Adolescent Mental Health','Global Mental Health','Neurodevelopmental Disorders: From Bench to Bedside','Research Skills 1: From Reviewing & Critical Analysis to Research Ethics','Independent Synoptic Project'],
+      '2025-06':['Biological Foundations of Mental Health','Psychology & Neuroscience of Addictions','Mindfulness','Contemporary Advances in Neuroscience','Research Skills 2: From Methods & Procedures to Analysis & Reporting','Independent Synoptic Project'],
+      '2025-09':['Techniques in Neuroscience','Psychology & Neuroscience of Affective Disorders','Neuroscience in Society','Social, Genetic & Environmental Basis of Mental Health','Research Skills 1: From Reviewing & Critical Analysis to Research Ethics','Independent Synoptic Project'],
+      '2025-10':['Psychological Foundations of Mental Health','Psychology & Neuroscience of Psychosis','Neuroimaging & Mental Health','Research Skills 2: From Methods & Procedures to Analysis & Reporting']
+    };
+    const S2026={
+      '2026-01':['Mental Health in the Community','Child & Adolescent Mental Health','Global Mental Health','Neurodevelopmental Disorders: From Bench to Bedside','Research Skills 1: From Reviewing & Critical Analysis to Research Ethics','Independent Synoptic Project'],
+      '2026-03':['Biological Foundations of Mental Health','Psychology & Neuroscience of Addictions','Mindfulness','Contemporary Advances in Neuroscience','Research Skills 2: From Methods & Procedures to Analysis & Reporting','Independent Synoptic Project'],
+      '2026-05':['Techniques in Neuroscience','Psychology & Neuroscience of Affective Disorders','Neuroscience in Society','Social, Genetic & Environmental Basis of Mental Health','Research Skills 1: From Reviewing & Critical Analysis to Research Ethics','Independent Synoptic Project'],
+      '2026-06':['Psychological Foundations of Mental Health','Psychology & Neuroscience of Psychosis','Neuroimaging & Mental Health','Research Skills 2: From Methods & Procedures to Analysis & Reporting','Independent Synoptic Project'],
+      '2026-09':['Mental Health in the Community','Child & Adolescent Mental Health','Global Mental Health','Neurodevelopmental Disorders: From Bench to Bedside','Research Skills 1: From Reviewing & Critical Analysis to Research Ethics','Independent Synoptic Project'],
+      '2026-10':['Biological Foundations of Mental Health','Psychology & Neuroscience of Addictions','Mindfulness','Contemporary Advances in Neuroscience','Research Skills 2: From Methods & Procedures to Analysis & Reporting']
+    };
 
-  document.getElementById('generate').addEventListener('click',()=>{
-    const startKey=startSel.value;
-    const breaks=Array.from(breaksSel.selectedOptions).map(o=>o.value);
-    const chosenOptions=Array.from(document.getElementById('options').selectedOptions).map(o=>o.value).slice(0,4);
-    const timeline=document.getElementById('timeline');
-    timeline.innerHTML='';
-
-    let allModules=[...coreModules,...chosenOptions];
-    let totalModules=allModules.length; // 7 core + 4 option = 11 total
-    let completed=0;
-    let foundStart=false;
-    let graduationDate=null;
-
-    const progressData = [];
-
-    sortedKeys.forEach(k=>{
-      if(!foundStart && k!==startKey)return;
-      foundStart=true;
-      const d=new Date(k.split('-')[0],Number(k.split('-')[1])-1);
-      const label=d.toLocaleString(undefined,{month:'short',year:'numeric'});
-      const div=document.createElement('div');
-      div.className='term';
-
-      if(breaks.includes(k)){
-        div.innerHTML=`<strong>${label}</strong>: Study Break`;
-        progressData.push({period:label,progress:completed});
-      }else if(completed<totalModules){
-        const mod=allModules[completed];
-        div.innerHTML=`<strong>${label}</strong>: ${mod}`;
-        completed++;
-        progressData.push({period:label,progress:completed});
-        if(completed===totalModules&&!graduationDate)graduationDate=label;
-      }else{
-        div.innerHTML=`<strong>${label}</strong>: —`;
-        progressData.push({period:label,progress:completed});
+    function buildSchedule(startYear,years=8){
+      const m=new Map();
+      for(let y=startYear;y<startYear+years;y++){
+        const base=(y%2===1)?S2025:S2026; // odd→2025 pattern
+        Object.entries(base).forEach(([k,mods])=>{const mm=k.split('-')[1];m.set(`${y}-${mm}`,[...mods]);});
       }
-      timeline.appendChild(div);
-    });
-
-    const msg=document.createElement('p');
-    if(graduationDate){
-      msg.innerHTML=`🎓 Estimated graduation by <strong>${graduationDate}</strong>. Total modules completed: ${totalModules}.`;
-    }else{
-      msg.innerHTML='Unable to calculate graduation date yet.';
+      return m;
     }
-    timeline.prepend(msg);
 
-    // Chart visualisation
-    const ctx=document.getElementById('progressChart').getContext('2d');
-    const labels=progressData.map(d=>d.period);
-    const dataPoints=progressData.map(d=>d.progress);
+    // Requirements per award
+    const REQUIREMENTS={
+      PGCert:{foundation:4,options:0,research:0,synoptic:0},
+      PGDip:{foundation:4,options:4,research:0,synoptic:0},
+      MSc:{foundation:4,options:4,research:2,synoptic:1}
+    };
 
-    if(chartInstance){chartInstance.destroy();}
-    chartInstance=new Chart(ctx,{
-      type:'line',
-      data:{
-        labels:labels,
-        datasets:[{
-          label:'Modules Completed',
-          data:dataPoints,
-          borderColor:'#d50032',
-          backgroundColor:'rgba(213,0,50,0.1)',
-          fill:true,
-          tension:0.3,
-          pointRadius:4
-        }]
-      },
-      options:{
-        scales:{
-          y:{beginAtZero:true,suggestedMax:totalModules,ticks:{stepSize:1}}
-        },
-        plugins:{legend:{display:false}}
-      }
+    // Populate UI: start windows from earliest known (Jan 2025)
+    const startSel=document.getElementById('start');
+    const schedule=buildSchedule(2025,10);
+    const keys=[...schedule.keys()].sort();
+    keys.forEach(k=>{const d=new Date(+k.split('-')[0],+k.split('-')[1]-1,1);const lab=d.toLocaleString(undefined,{month:'short',year:'numeric'});const o=document.createElement('option');o.value=k;o.textContent=lab;startSel.appendChild(o);});
+    startSel.value='2025-01';
+
+    // Render option chips with checkboxes (limit 4)
+    const optsWrap=document.getElementById('options');
+    OPTIONS_LIST.forEach(name=>{
+      const id='opt-'+name.replace(/[^a-z0-9]/gi,'');
+      const lbl=document.createElement('label');lbl.className='chip';lbl.style.userSelect='none';
+      lbl.innerHTML=`<input type="checkbox" id="${id}" data-name="${name}" style="margin-right:6px">${name}`;
+      optsWrap.appendChild(lbl);
     });
-  });
-</script>
+
+    function selectedOptions(){
+      const chosen=[...document.querySelectorAll('#options input:checked')].map(cb=>cb.dataset.name);
+      return chosen.slice(0,4); // limit to 4
+    }
+
+    document.getElementById('toggleBreaks').addEventListener('click',()=>{
+      document.getElementById('pace').value='custom';
+      document.querySelectorAll('.term').forEach(el=>{el.dataset.clickable='1';el.title='Click to toggle break for this period'});
+      document.getElementById('impactBody').textContent='Break mode on. Click periods to mark breaks, then Generate plan.';
+    });
+
+    // Core planning
+    let occupiedKeys=new Set();
+    let currentPlan=null;
+
+    function generatePlan(applyCustomBreaks=true){
+      const award=document.getElementById('award').value;
+      const startKey=document.getElementById('start').value;
+      const pace=document.getElementById('pace').value;
+      const req={...REQUIREMENTS[award]};
+
+      const remaining={
+        foundation:new Set(FOUNDATIONS),
+        options:new Set(selectedOptions().length?selectedOptions():OPTIONS_LIST),
+        research:new Set(RESEARCH),
+        synoptic:new Set(SYNOPTIC)
+      };
+
+      let taken={foundation:0,options:0,research:0,synoptic:0};
+      let planned=[];
+
+      const allKeys=keys.filter(k=>k>=startKey);
+      const hardStop=addYears(startKey,6); // absolute max
+      const target=addYears(startKey,2);
+      const iterKeys=allKeys.filter(k=>k<=hardStop);
+
+      let skipEvery=(document.getElementById('pace').value==='light')?3:0;let counter=0;
+      occupiedKeys=new Set();
+
+      for(const key of iterKeys){
+        counter++;
+        const withinTarget=key<=target;
+        const mods=schedule.get(key)||[];
+        const isCustomBreak=document.querySelector(`.term[data-key="${key}"]`)?.dataset.break==='1';
+        const autoBreak=(skipEvery && counter%skipEvery===0);
+        if(applyCustomBreaks && ((pace==='custom' && isCustomBreak) || autoBreak)){
+          planned.push({key,module:'Break',group:'break',withinTarget});
+          continue;
+        }
+
+        const canSyn=(taken.research===2 && req.synoptic>0 && remaining.synoptic.size>0);
+        let picked=null;
+        if(taken.foundation<req.foundation){
+          picked=mods.find(m=>remaining.foundation.has(m));
+          if(picked){remaining.foundation.delete(picked);taken.foundation++;planned.push({key,module:picked,group:GROUP.FOUNDATION,withinTarget});continue;}
+        }
+        if(taken.options<req.options){
+          picked=mods.find(m=>remaining.options.has(m));
+          if(picked){remaining.options.delete(picked);taken.options++;planned.push({key,module:picked,group:GROUP.OPTIONS,withinTarget});continue;}
+        }
+        if(taken.research<req.research){
+          picked=mods.find(m=>remaining.research.has(m));
+          if(picked){remaining.research.delete(picked);taken.research++;planned.push({key,module:picked,group:GROUP.RESEARCH,withinTarget});continue;}
+        }
+        if(canSyn){
+          const next=nextKey(key);
+          planned.push({key,module:SYNOPTIC[0],group:GROUP.SYNOPTIC,withinTarget});
+          planned.push({key:next,module:SYNOPTIC[0]+' (cont.)',group:GROUP.SYNOPTIC,withinTarget:next<=target});
+          taken.synoptic++;occupiedKeys.add(next);continue;
+        }
+        planned.push({key,module:'—',group:'idle',withinTarget});
+      }
+
+      planned=trimAfterDone(planned,taken,req);
+      renderTimeline(planned,startKey,target,hardStop,req);
+      currentPlan={planned,award,startKey,pace,chosenOptions:selectedOptions()};
+
+      const baseline=buildBaseline({award,startKey,pace,chosenOptions:selectedOptions()});
+      renderImpact(baseline,currentPlan);
+    }
+
+    function addYears(key,yrs){const [y,m]=key.split('-').map(Number);return `${y+yrs}-${String(m).padStart(2,'0')}`}
+    function nextKey(key){const order=['01','03','05','06','09','10'];const[y,m]=key.split('-');const i=order.indexOf(m);return i<order.length-1?`${y}-${order[i+1]}`:`${(+y+1)}-${order[0]}`}
+    function trimAfterDone(list,taken,req){function done(){return taken.foundation>=req.foundation&&taken.options>=req.options&&taken.research>=req.research&&taken.synoptic>=req.synoptic}const out=[];for(const p of list){if(done())break;out.push(p)}return out}
+
+    function renderTimeline(planned,startKey,target,hardStop,req){
+      const el=document.getElementById('timeline');el.innerHTML='';
+      planned.forEach(item=>{
+        const term=document.createElement('div');term.className='term';term.dataset.key=item.key;
+        term.addEventListener('click',()=>{if(document.getElementById('pace').value!=='custom')return; if(item.group==='synoptic')return; const b=term.dataset.break==='1';term.dataset.break=b?'0':'1';term.style.outline=b?'':'2px dashed #d50032';term.style.outlineOffset='2px';});
+        const title=new Date(+item.key.split('-')[0],+item.key.split('-')[1]-1,1).toLocaleString(undefined,{month:'short',year:'numeric'});
+        const meta=[];if(item.key===target)meta.push('<span class="warn">⏱️ 2‑yr target</span>');if(item.key===hardStop)meta.push('<span class="bad">🚫 6‑yr max</span>');
+        term.innerHTML=`<div class="termHeader"><div class="termTitle">${title}</div><div class="muted">${meta.join(' · ')}</div></div>${renderRow(item)}`;
+        el.appendChild(term);
+      });
+
+      const summary=document.createElement('div');summary.className='muted';summary.style.marginTop='6px';
+      const counts=planned.reduce((a,p)=>{a[p.group]=(a[p.group]||0)+(p.group!=='idle'&&p.group!=='break'?1:0);return a;},{});
+      summary.innerHTML=`<span class="kbd">Need → Foundation ${req.foundation}, Options ${req.options}, Research ${req.research}, Synoptic ${req.synoptic}</span> &nbsp; <span class="kbd">Planned → F ${(counts.foundation||0)}, O ${(counts.options||0)}, R ${(counts.research||0)}, Syn ${(counts.synoptic||0)}</span>`;
+      el.appendChild(summary);
+
+      // Graduation estimate
+      const last=planned.filter(p=>p.group!=='idle'&&p.group!=='break').pop();
+      const grad=document.createElement('div');grad.className='term';grad.style.background='#f1f5f9';
+      if(last){grad.innerHTML=`<b>🎓 Estimated graduation:</b> <span class="ok">${new Date(+last.key.split('-')[0],+last.key.split('-')[1]-1,1).toLocaleString(undefined,{month:'short',year:'numeric'})}</span>`} else {grad.textContent='No plan generated.'}
+      el.appendChild(grad);
+    }
+
+    function renderRow(item){
+      if(item.group==='idle')return `<div class="tags"><span class="moduleTag">No eligible module</span></div>`;
+      if(item.group==='break')return `<div class="tags"><span class="moduleTag break">Study break</span></div>`;
+      const prefix=item.group==='foundation'?'🟦':item.group==='options'?'🟥':item.group==='research'?'🟪':'⬛';
+      const extra=item.group==='synoptic'?' syn':'';
+      return `<div class="tags"><span class="moduleTag${extra}">${prefix} ${item.module}</span></div>`;
+    }
+
+    function buildBaseline({award,startKey,pace,chosenOptions}){
+      const req={...REQUIREMENTS[award]};
+      const remaining={foundation:new Set(FOUNDATIONS),options:new Set(chosenOptions.length?chosenOptions:OPTIONS_LIST),research:new Set(RESEARCH),synoptic:new Set(SYNOPTIC)};
+      let taken={foundation:0,options:0,research:0,synoptic:0};
+      let planned=[];let skipEvery=(pace==='light')?3:0;let counter=0;occupiedKeys=new Set();
+      const allKeys=keys.filter(k=>k>=startKey);const hard=addYears(startKey,6);const target=addYears(startKey,2);const iter=allKeys.filter(k=>k<=hard);
+      for(const key of iter){counter++;const withinTarget=key<=target;const mods=schedule.get(key)||[];const autoBreak=(skipEvery && counter%skipEvery===0);if(autoBreak){planned.push({key,module:'Break',group:'break',withinTarget});continue;}
+        const canSyn=(taken.research===2 && req.synoptic>0 && remaining.synoptic.size>0);
+        let picked=null;
+        if(taken.foundation<req.foundation){picked=mods.find(m=>remaining.foundation.has(m));if(picked){remaining.foundation.delete(picked);taken.foundation++;planned.push({key,module:picked,group:GROUP.FOUNDATION,withinTarget});continue;}}
+        if(taken.options<req.options){picked=mods.find(m=>remaining.options.has(m));if(picked){remaining.options.delete(picked);taken.options++;planned.push({key,module:picked,group:GROUP.OPTIONS,withinTarget});continue;}}
+        if(taken.research<req.research){picked=mods.find(m=>remaining.research.has(m));if(picked){remaining.research.delete(picked);taken.research++;planned.push({key,module:picked,group:GROUP.RESEARCH,withinTarget});continue;}}
+        if(canSyn){const next=nextKey(key);planned.push({key,module:SYNOPTIC[0],group:GROUP.SYNOPTIC,withinTarget});planned.push({key:next,module:SYNOPTIC[0]+' (cont.)',group:GROUP.SYNOPTIC,withinTarget:next<=target});taken.synoptic++;occupiedKeys.add(next);continue;}
+        planned.push({key,module:'—',group:'idle',withinTarget});
+      }
+      planned=trimAfterDone(planned,taken,req);
+      return {planned,award,startKey};
+    }
+
+    function renderImpact(baseline,current){
+      const el=document.getElementById('impactBody');if(!baseline||!current){el.textContent='';return}
+      const last1=baseline.planned.filter(p=>p.group!=='idle'&&p.group!=='break').pop();
+      const last2=current.planned.filter(p=>p.group!=='idle'&&p.group!=='break').pop();
+      if(!last1||!last2){el.textContent='Generate a plan to see impact.';return}
+      const fmt=k=>new Date(+k.split('-')[0],+k.split('-')[1]-1,1).toLocaleString(undefined,{month:'short',year:'numeric'});
+      const monthsDiff=(a,b)=>{const [ay,am]=a.split('-').map(Number);const [by,bm]=b.split('-').map(Number);return (by-ay)*12+(bm-am)};
+      const delta=monthsDiff(baseline.planned[baseline.planned.length-1].key,current.planned[current.planned.length-1].key);
+      el.innerHTML=`Baseline finish: <b>${fmt(last1.key)}</b> · Current finish: <b>${fmt(last2.key)}</b> · Impact: <b>${delta>=0?"+"+delta:delta}</b> months`;
+    }
+
+    document.getElementById('generate').addEventListener('click',()=>generatePlan(true));
+
+    // Initial placeholder rows for UX
+    (function seed(){const el=document.getElementById('timeline');const firstKeys=keys.slice(0,6);firstKeys.forEach(k=>{const d=new Date(+k.split('-')[0],+k.split('-')[1]-1,1);const t=d.toLocaleString(undefined,{month:'short',year:'numeric'});const term=document.createElement('div');term.className='term';term.dataset.key=k;term.innerHTML=`<div class="termHeader"><div class="termTitle">${t}</div></div><div class="tags"><span class="moduleTag">(Click <b>Generate plan</b>)</span></div>`;el.appendChild(term);});})();
+  </script>
 </body>
 </html>
