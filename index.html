@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+const isMarkedBreak = selectedBreaks.has(key);
+        const autoBreak = (skipEvery && counter % skipEvery === 0);
+        if (isMarkedBreak || autoBreak) {<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -63,23 +65,10 @@
           </div>
         </div>
         <div class="row" style="margin-top:8px">
-          <div>
-            <label for="pace">Pace</label>
-            <select id="pace">
-              <option value="continuous" selected>Continuous (no breaks)</option>
-              <option value="light">Light (skip every 3rd period)</option>
-              <option value="custom">Custom (I'll click breaks)</option>
-            </select>
-          </div>
-          <div>
-            <label for="maxYears">Max duration</label>
-            <select id="maxYears">
-              <option value="2">Target: 2 years</option>
-              <option value="3">Up to 3 years</option>
-              <option value="4">Up to 4 years</option>
-              <option value="5">Up to 5 years</option>
-              <option value="6" selected>Absolute max: 6 years</option>
-            </select>
+          <button id="generate" class="btn">Generate plan</button>
+          <button id="clearBreaks" class="btn secondary">Clear all breaks</button>
+        </div>reaks (pick any)</label>
+            <select id="breaks" multiple></select>
           </div>
         </div>
       </div>
@@ -107,7 +96,7 @@
         <div id="timeline" class="timeline"></div>
         <div id="impact" class="term" style="margin-top:8px">
           <div class="termHeader"><div class="termTitle">What‑if impact</div><div class="muted">Compare vs no custom breaks</div></div>
-          <div id="impactBody" class="muted">Set <span class="kbd">Pace → Custom</span>, click periods to mark breaks, then click <b>Generate plan</b>.</div>
+          <div id="impactBody" class="muted">Click periods to toggle ad‑hoc breaks (no need to change Pace). Or pick breaks from the dropdown above. Then click <b>Generate plan</b> to update.</div>
         </div>
         <div class="row" style="margin-top:8px">
           <button id="generate" class="btn">Generate plan</button>
@@ -180,10 +169,35 @@
       return chosen.slice(0,4); // limit to 4
     }
 
-    document.getElementById('toggleBreaks').addEventListener('click',()=>{
-      document.getElementById('pace').value='custom';
-      document.querySelectorAll('.term').forEach(el=>{el.dataset.clickable='1';el.title='Click to toggle break for this period'});
-      document.getElementById('impactBody').textContent='Break mode on. Click periods to mark breaks, then Generate plan.';
+    // Breaks state (persist across re-renders)
+    const selectedBreaks = new Set();
+
+    document.getElementById('clearBreaks').addEventListener('click', () => {
+      selectedBreaks.clear();
+      const breaksSel = document.getElementById('breaks');
+      [...breaksSel.options].forEach(o => (o.selected = false));
+      generatePlan();
+    });
+
+    // Populate breaks selector based on current start window
+    function populateBreaksOptions() {
+      const breaksSel = document.getElementById('breaks');
+      breaksSel.innerHTML = '';
+      const startKey = document.getElementById('start').value;
+      const hardStop = addYears(startKey, 6);
+      const avail = keys.filter(k => k >= startKey && k <= hardStop);
+      avail.forEach(k => {
+        const d = new Date(+k.split('-')[0], +k.split('-')[1]-1, 1);
+        const lab = d.toLocaleString(undefined, { month:'short', year:'numeric' });
+        const opt = document.createElement('option');
+        opt.value = k; opt.textContent = lab; opt.selected = selectedBreaks.has(k);
+        breaksSel.appendChild(opt);
+      });
+    }
+
+    document.getElementById('start').addEventListener('change', () => {
+      populateBreaksOptions();
+      generatePlan();
     });
 
     // Core planning
@@ -194,6 +208,10 @@
       const award=document.getElementById('award').value;
       const startKey=document.getElementById('start').value;
       const pace=document.getElementById('pace').value;
+      // Merge breaks chosen from the dropdown into the persistent set
+      const breaksSelEl = document.getElementById('breaks');
+      const dropdownBreaks = new Set([...breaksSelEl.options].filter(o=>o.selected).map(o=>o.value));
+      dropdownBreaks.forEach(k => selectedBreaks.add(k));
       const req={...REQUIREMENTS[award]};
 
       const remaining={
@@ -264,10 +282,15 @@
       const el=document.getElementById('timeline');el.innerHTML='';
       planned.forEach(item=>{
         const term=document.createElement('div');term.className='term';term.dataset.key=item.key;
-        term.addEventListener('click',()=>{if(document.getElementById('pace').value!=='custom')return; if(item.group==='synoptic')return; const b=term.dataset.break==='1';term.dataset.break=b?'0':'1';term.style.outline=b?'':'2px dashed #d50032';term.style.outlineOffset='2px';});
+        term.addEventListener('click', () => {
+          const isBreak = selectedBreaks.has(item.key);
+          if (!isBreak) selectedBreaks.add(item.key); else selectedBreaks.delete(item.key);
+          generatePlan();
+        });
         const title=new Date(+item.key.split('-')[0],+item.key.split('-')[1]-1,1).toLocaleString(undefined,{month:'short',year:'numeric'});
         const meta=[];if(item.key===target)meta.push('<span class="warn">⏱️ 2‑yr target</span>');if(item.key===hardStop)meta.push('<span class="bad">🚫 6‑yr max</span>');
-        term.innerHTML=`<div class="termHeader"><div class="termTitle">${title}</div><div class="muted">${meta.join(' · ')}</div></div>${renderRow(item)}`;
+        const isBreak = selectedBreaks.has(item.key);
+        term.innerHTML=`<div class="termHeader"><div class="termTitle">${title}</div><div class="muted">${meta.join(' · ')}</div></div>${isBreak ? '<div class="tags"><span class="moduleTag break">Study break</span></div>' : renderRow(item)}`;
         el.appendChild(term);
       });
 
@@ -321,10 +344,11 @@
       el.innerHTML=`Baseline finish: <b>${fmt(last1.key)}</b> · Current finish: <b>${fmt(last2.key)}</b> · Impact: <b>${delta>=0?"+"+delta:delta}</b> months`;
     }
 
-    document.getElementById('generate').addEventListener('click',()=>generatePlan(true));
+    document.getElementById('generate').addEventListener('click', () => generatePlan(true));
 
-    // Initial placeholder rows for UX
-    (function seed(){const el=document.getElementById('timeline');const firstKeys=keys.slice(0,6);firstKeys.forEach(k=>{const d=new Date(+k.split('-')[0],+k.split('-')[1]-1,1);const t=d.toLocaleString(undefined,{month:'short',year:'numeric'});const term=document.createElement('div');term.className='term';term.dataset.key=k;term.innerHTML=`<div class="termHeader"><div class="termTitle">${t}</div></div><div class="tags"><span class="moduleTag">(Click <b>Generate plan</b>)</span></div>`;el.appendChild(term);});})();
+    // Auto-generate baseline on load and populate breaks selector
+    populateBreaksOptions();
+    generatePlan();
   </script>
 </body>
 </html>
