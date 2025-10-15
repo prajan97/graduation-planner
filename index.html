@@ -206,6 +206,19 @@ this.checked = false;
 showAlert('You can only select 4 option modules', 'warning');
 return;
 }
+
+// If deselecting, remove any taken modules that are no longer valid
+if (!this.checked) {
+const deselectedModule = this.dataset.name;
+const toRemove = [];
+taken.forEach((module, period) => {
+if (module === deselectedModule) {
+toRemove.push(period);
+}
+});
+toRemove.forEach(period => taken.delete(period));
+}
+
 updateChipSelection();
 gen();
 });
@@ -418,7 +431,7 @@ grid.appendChild(d);
 if(avail.length===0){
 const d=document.createElement('div');
 d.className='mod locked';
-d.innerHTML='<span>🔒</span><span>No eligible options</span>';
+d.innerHTML='<span>🔒</span><span>No eligible options available</span>';
 grid.appendChild(d);
 }
 term.appendChild(grid);
