@@ -257,77 +257,135 @@
             font-size: 0.85rem;
         }
 
+        /* COMPACT TIMELINE STYLES */
         .timeline {
             margin-top: 20px;
-        }
-
-        .timeline-item {
-            display: flex;
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .timeline-date {
-            min-width: 100px;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .timeline-content {
-            flex: 1;
-            padding: 15px;
-            background: white;
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
             border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            position: relative;
-        }
-
-        .timeline-content:before {
-            content: '';
-            position: absolute;
-            left: -10px;
-            top: 20px;
-            width: 0;
-            height: 0;
-            border-top: 10px solid transparent;
-            border-bottom: 10px solid transparent;
-            border-right: 10px solid white;
-        }
-
-        .module-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .module-item {
             padding: 10px;
-            background: #f8f9fa;
+        }
+
+        .timeline-period {
+            margin-bottom: 15px;
+            border: 1px solid #e9ecef;
             border-radius: var(--border-radius);
-            font-size: 0.85rem;
+            overflow: hidden;
+        }
+
+        .period-header {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .period-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .period-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .period-modules {
+            padding: 10px 15px;
+            background: white;
+        }
+
+        .compact-module-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 8px;
+        }
+
+        .compact-module-item {
+            padding: 8px 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: var(--transition);
+            border-left: 3px solid var(--info);
         }
 
-        .module-item:hover {
+        .compact-module-item:hover {
             background: #e9ecef;
         }
 
-        .module-item.taken {
+        .compact-module-item.option {
+            border-left-color: var(--primary);
+        }
+
+        .compact-module-item.research {
+            border-left-color: var(--warning);
+        }
+
+        .compact-module-item.synoptic {
+            border-left-color: var(--success);
+        }
+
+        .compact-module-item.taken {
             background: #d4edda;
-            border-left: 4px solid var(--success);
+            font-weight: 600;
         }
 
-        .module-item.break {
+        .compact-module-item.break {
             background: #fff3cd;
-            border-left: 4px solid var(--warning);
+            border-left-color: var(--warning);
         }
 
-        .module-item.locked {
+        .compact-module-item.locked {
             background: #f8d7da;
-            border-left: 4px solid var(--danger);
+            border-left-color: var(--danger);
             cursor: not-allowed;
+        }
+
+        .small-btn {
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+        }
+
+        .phase-indicator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .phase {
+            padding: 10px;
+            text-align: center;
+            border-radius: var(--border-radius);
+            background: white;
+            box-shadow: var(--shadow);
+        }
+
+        .phase.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .phase.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        .phase-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 2px;
+        }
+
+        .phase-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.9;
         }
 
         .impact-section {
@@ -426,55 +484,6 @@
             float: right;
             cursor: pointer;
             font-weight: 700;
-        }
-
-        .phase-indicator {
-            display: flex;
-            margin: 20px 0;
-            background: white;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-        }
-
-        .phase {
-            flex: 1;
-            padding: 15px;
-            text-align: center;
-            position: relative;
-        }
-
-        .phase:not(:last-child):after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 0;
-            height: 0;
-            border-top: 10px solid transparent;
-            border-bottom: 10px solid transparent;
-            border-left: 10px solid #f8f9fa;
-        }
-
-        .phase.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .phase.completed {
-            background: var(--success);
-            color: white;
-        }
-
-        .phase-title {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .phase-subtitle {
-            font-size: 0.8rem;
-            opacity: 0.9;
         }
     </style>
 </head>
@@ -767,11 +776,11 @@
         
         // Get module type
         function getType(m) {
-            if (F.includes(m)) return 'f';
-            if (O.includes(m)) return 'o';
-            if (R.includes(m)) return 'r';
-            if (S.includes(m)) return 's';
-            return 'u';
+            if (F.includes(m)) return 'foundation';
+            if (O.includes(m)) return 'option';
+            if (R.includes(m)) return 'research';
+            if (S.includes(m)) return 'synoptic';
+            return 'unknown';
         }
         
         // Get count of taken modules by type
@@ -779,10 +788,10 @@
             let t = { f: 0, o: 0, r: 0, s: 0 };
             taken.forEach(v => {
                 const ty = getType(v);
-                if (ty === 'f') t.f++;
-                else if (ty === 'o') t.o++;
-                else if (ty === 'r') t.r++;
-                else if (ty === 's') t.s++;
+                if (ty === 'foundation') t.f++;
+                else if (ty === 'option') t.o++;
+                else if (ty === 'research') t.r++;
+                else if (ty === 'synoptic') t.s++;
             });
             return t;
         }
@@ -801,6 +810,18 @@
                 research: completedResearch,
                 synoptic: completedSynoptic
             };
+        }
+        
+        // Update phase indicator
+        function updatePhaseIndicator(actualCompletion, rq) {
+            const phases = document.querySelectorAll('.phase');
+            phases[0].className = actualCompletion.foundations >= rq.f ? 'phase completed' : 'phase active';
+            phases[1].className = actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o ? 'phase completed' : 
+                             actualCompletion.foundations >= rq.f ? 'phase active' : 'phase';
+            phases[2].className = actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r ? 'phase completed' : 
+                             actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o ? 'phase active' : 'phase';
+            phases[3].className = actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r && actualCompletion.synoptic >= rq.s ? 'phase completed' : 
+                             actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r ? 'phase active' : 'phase';
         }
         
         // Generate the main view
@@ -830,137 +851,132 @@
             updateOptimalGraduation(st, rq, cho);
         }
         
-        // Render the timeline
+        // Render the timeline - COMPACT VERSION
         function render(itk, st, rq, tkn, cho, actualCompletion) {
             const el = document.getElementById('tl');
             if (!el) return;
-        
+
             el.innerHTML = '';
+            
+            // Update phase indicator
+            updatePhaseIndicator(actualCompletion, rq);
+            
             const pi = document.getElementById('phaseInfo');
             if (pi) {
                 if (actualCompletion.foundations < rq.f) {
-                    pi.innerHTML = `<div class="alert" style="position: static; margin-bottom: 15px;">
-                        Complete all ${rq.f} Foundation modules before proceeding (${actualCompletion.foundations}/${rq.f} completed)
+                    pi.innerHTML = `<div style="font-size: 0.85rem; color: var(--info); margin-bottom: 10px;">
+                        <strong>Current Phase:</strong> Complete ${rq.f - actualCompletion.foundations} more foundation modules
                     </div>`;
                 } else if (actualCompletion.foundations >= rq.f && actualCompletion.options < rq.o) {
-                    pi.innerHTML = `<div class="alert" style="position: static; margin-bottom: 15px;">
-                        Select and complete ${rq.o} Option modules (${actualCompletion.options}/${rq.o} completed)
+                    pi.innerHTML = `<div style="font-size: 0.85rem; color: var(--primary); margin-bottom: 10px;">
+                        <strong>Current Phase:</strong> Complete ${rq.o - actualCompletion.options} more option modules
                     </div>`;
                 } else if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research < rq.r) {
-                    pi.innerHTML = `<div class="alert" style="position: static; margin-bottom: 15px;">
-                        Complete Research Skills modules (${actualCompletion.research}/${rq.r} completed)
+                    pi.innerHTML = `<div style="font-size: 0.85rem; color: var(--warning); margin-bottom: 10px;">
+                        <strong>Current Phase:</strong> Complete ${rq.r - actualCompletion.research} more research modules
                     </div>`;
                 } else if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r && actualCompletion.synoptic < rq.s) {
-                    pi.innerHTML = '<div class="alert" style="position: static; margin-bottom: 15px;">Complete the Synoptic Project</div>';
+                    pi.innerHTML = `<div style="font-size: 0.85rem; color: var(--success); margin-bottom: 10px;">
+                        <strong>Current Phase:</strong> Complete the Synoptic Project
+                    </div>`;
                 } else {
-                    pi.innerHTML = '<div class="alert" style="position: static; margin-bottom: 15px;">All requirements complete!</div>';
+                    pi.innerHTML = `<div style="font-size: 0.85rem; color: var(--success); margin-bottom: 10px;">
+                        <strong>All requirements complete!</strong>
+                    </div>`;
                 }
             }
-        
+
             itk.forEach(k => {
-                const term = document.createElement('div');
-                term.className = 'timeline-item';
-                
-                const date = document.createElement('div');
-                date.className = 'timeline-date';
-                date.textContent = fmtD(k);
-                term.appendChild(date);
-                
-                const content = document.createElement('div');
-                content.className = 'timeline-content';
+                const period = document.createElement('div');
+                period.className = 'timeline-period';
                 
                 const tkMod = taken.get(k);
                 const isBreak = brks.has(k);
                 
+                const header = document.createElement('div');
+                header.className = 'period-header';
+                
+                const title = document.createElement('div');
+                title.className = 'period-title';
+                title.textContent = fmtD(k);
+                header.appendChild(title);
+                
+                const actions = document.createElement('div');
+                actions.className = 'period-actions';
+                
                 if (isBreak) {
-                    content.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div><strong>Study Break</strong></div>
-                            <button class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="brks.delete('${k}'); gen();">Remove Break</button>
-                        </div>
-                    `;
+                    actions.innerHTML = `<button class="btn btn-outline small-btn" onclick="brks.delete('${k}'); gen();">Remove Break</button>`;
                 } else if (tkMod) {
-                    const type = getType(tkMod);
-                    const typeColors = {
-                        'f': 'var(--info)',
-                        'o': 'var(--primary)',
-                        'r': 'var(--warning)',
-                        's': 'var(--success)'
-                    };
-                    content.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div><strong>${tkMod}</strong></div>
-                            <div style="display: flex; gap: 5px;">
-                                <button class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="taken.delete('${k}'); gen();">Remove</button>
-                                <button class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="brks.add('${k}'); taken.delete('${k}'); gen();">Take Break</button>
-                            </div>
-                        </div>
+                    actions.innerHTML = `
+                        <button class="btn btn-outline small-btn" onclick="taken.delete('${k}'); gen();">Remove</button>
+                        <button class="btn btn-outline small-btn" onclick="brks.add('${k}'); taken.delete('${k}'); gen();">Break</button>
                     `;
-                    content.style.borderLeft = `4px solid ${typeColors[type] || 'var(--gray)'}`;
                 } else {
+                    actions.innerHTML = `<button class="btn btn-outline small-btn" onclick="brks.add('${k}'); gen();">Set Break</button>`;
+                }
+                
+                header.appendChild(actions);
+                period.appendChild(header);
+                
+                const modules = document.createElement('div');
+                modules.className = 'period-modules';
+                
+                if (!isBreak && !tkMod) {
                     const mds = SCH[k] || [];
                     let availableModules = [];
                     
                     // STRICT PREREQUISITE CHECKING
                     if (actualCompletion.foundations < rq.f) {
-                        // Only show foundation modules
-                        availableModules = mds.filter(m => 
-                            F.includes(m) && 
-                            ![...taken.values()].includes(m)
-                        );
+                        availableModules = mds.filter(m => F.includes(m) && ![...taken.values()].includes(m));
                     } else if (actualCompletion.foundations >= rq.f && actualCompletion.options < rq.o) {
-                        // Only show selected option modules
-                        availableModules = mds.filter(m => 
-                            cho.includes(m) && 
-                            ![...taken.values()].includes(m)
-                        );
+                        availableModules = mds.filter(m => cho.includes(m) && ![...taken.values()].includes(m));
                     } else if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research < rq.r) {
-                        // Only show research modules
-                        availableModules = mds.filter(m => 
-                            R.includes(m) && 
-                            ![...taken.values()].includes(m)
-                        );
+                        availableModules = mds.filter(m => R.includes(m) && ![...taken.values()].includes(m));
                     } else if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r && actualCompletion.synoptic < rq.s) {
-                        // Only show synoptic project
                         availableModules = mds.filter(m => S.includes(m));
                     }
                     
                     if (availableModules.length > 0) {
-                        content.innerHTML = `
-                            <div style="margin-bottom: 10px;">
-                                <strong>Available Modules</strong>
-                                <button class="btn btn-outline" style="float: right; padding: 5px 10px; font-size: 0.8rem;" onclick="brks.add('${k}'); gen();">Set Break</button>
-                            </div>
-                            <div class="module-list">
-                                ${availableModules.map(m => `
-                                    <div class="module-item" onclick="taken.set('${k}', '${m}'); gen();">
-                                        ${m}
-                                    </div>
-                                `).join('')}
-                            </div>
-                        `;
+                        const moduleList = document.createElement('div');
+                        moduleList.className = 'compact-module-list';
+                        
+                        availableModules.forEach(m => {
+                            const moduleItem = document.createElement('div');
+                            const type = getType(m);
+                            moduleItem.className = `compact-module-item ${type}`;
+                            moduleItem.textContent = m;
+                            moduleItem.title = m;
+                            moduleItem.addEventListener('click', () => {
+                                taken.set(k, m);
+                                gen();
+                            });
+                            moduleList.appendChild(moduleItem);
+                        });
+                        
+                        modules.appendChild(moduleList);
                     } else {
                         let message = 'No available modules';
                         if (actualCompletion.foundations < rq.f) {
-                            message = `Complete ${rq.f - actualCompletion.foundations} more foundation modules`;
+                            message = `Complete ${rq.f - actualCompletion.foundations} more foundation modules first`;
                         } else if (actualCompletion.foundations >= rq.f && actualCompletion.options < rq.o) {
-                            message = `Complete ${rq.o - actualCompletion.options} more option modules`;
-                        } else if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research < rq.r) {
-                            message = `Complete ${rq.r - actualCompletion.research} more research modules`;
+                            message = `Complete ${rq.o - actualCompletion.options} more option modules first`;
                         }
                         
-                        content.innerHTML = `
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <div>${message}</div>
-                                <button class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="brks.add('${k}'); gen();">Set Break</button>
-                            </div>
-                        `;
-                        content.classList.add('locked');
+                        modules.innerHTML = `<div style="font-size: 0.8rem; color: var(--gray); text-align: center; padding: 10px;">${message}</div>`;
                     }
+                } else if (tkMod) {
+                    const moduleItem = document.createElement('div');
+                    const type = getType(tkMod);
+                    moduleItem.className = `compact-module-item ${type} taken`;
+                    moduleItem.textContent = tkMod;
+                    moduleItem.title = tkMod;
+                    modules.appendChild(moduleItem);
+                } else if (isBreak) {
+                    modules.innerHTML = `<div style="font-size: 0.8rem; color: var(--warning); text-align: center; padding: 10px;">Study Break Period</div>`;
                 }
                 
-                term.appendChild(content);
-                el.appendChild(term);
+                period.appendChild(modules);
+                el.appendChild(period);
             });
         }
         
