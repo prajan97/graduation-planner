@@ -35,7 +35,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -65,12 +65,12 @@
 
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 2fr 1fr;
             gap: 20px;
             margin: 30px 0;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
             }
@@ -406,47 +406,6 @@
             color: var(--primary);
         }
 
-        .scenario-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .scenario-card {
-            padding: 15px;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .scenario-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .scenario-card.active {
-            border: 2px solid var(--primary);
-        }
-
-        .scenario-title {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .scenario-date {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-
-        .scenario-delay {
-            font-size: 0.85rem;
-            color: var(--gray);
-        }
-
         .alert {
             position: fixed;
             top: 20px;
@@ -484,6 +443,43 @@
             float: right;
             cursor: pointer;
             font-weight: 700;
+        }
+
+        .compact-analytics {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .compact-analytics-card {
+            padding: 15px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .compact-analytics-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 5px 0;
+        }
+
+        .compact-analytics-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .study-break-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .study-break-controls .btn {
+            flex: 1;
+            padding: 0.5rem;
+            font-size: 0.85rem;
         }
     </style>
 </head>
@@ -525,6 +521,14 @@
             <div>
                 <div class="card">
                     <div class="card-header">
+                        <div class="card-title">Study Timeline</div>
+                    </div>
+                    <div id="phaseInfo"></div>
+                    <div id="tl" class="timeline"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
                         <div class="card-title">Program Setup</div>
                     </div>
                     <div class="form-group">
@@ -553,41 +557,28 @@
                     <div class="module-tags" id="opts"></div>
                     <div id="wbox" class="alert warning" style="display: none; position: static; margin-top: 15px;"></div>
                 </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Study Timeline</div>
-                    </div>
-                    <div id="phaseInfo"></div>
-                    <div id="tl" class="timeline"></div>
-                </div>
             </div>
 
             <div>
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Analytics Dashboard</div>
+                        <div class="card-title">Graduation Plan</div>
                     </div>
-                    <div class="analytics-grid">
-                        <div class="analytics-card">
-                            <div class="analytics-label">Estimated Duration</div>
-                            <div class="analytics-value" id="vDur">—</div>
-                            <div class="analytics-label">months</div>
+                    <div class="compact-analytics">
+                        <div class="compact-analytics-card">
+                            <div class="compact-analytics-label">Estimated Graduation</div>
+                            <div class="compact-analytics-value" id="vGrad">—</div>
+                            <div class="compact-analytics-label">with current plan</div>
                         </div>
-                        <div class="analytics-card">
-                            <div class="analytics-label">Study Breaks</div>
-                            <div class="analytics-value" id="vBrk">0</div>
-                            <div class="analytics-label">taken</div>
+                        <div class="compact-analytics-card">
+                            <div class="compact-analytics-label">Study Duration</div>
+                            <div class="compact-analytics-value" id="vDur">—</div>
+                            <div class="compact-analytics-label">months</div>
                         </div>
-                        <div class="analytics-card">
-                            <div class="analytics-label">Progress</div>
-                            <div class="analytics-value" id="vPct">0%</div>
-                            <div class="analytics-label">completed</div>
-                        </div>
-                        <div class="analytics-card">
-                            <div class="analytics-label">Graduation</div>
-                            <div class="analytics-value" id="vGrad">—</div>
-                            <div class="analytics-label">estimated</div>
+                        <div class="compact-analytics-card">
+                            <div class="compact-analytics-label">Progress</div>
+                            <div class="compact-analytics-value" id="vPct">0%</div>
+                            <div class="compact-analytics-label">completed</div>
                         </div>
                     </div>
                     <div class="progress-container">
@@ -604,25 +595,17 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Break Impact Analysis</div>
+                        <div class="card-title">Study Break Controls</div>
                     </div>
                     <div class="impact-section">
-                        <div class="impact-title">Current Break Impact</div>
+                        <div class="impact-title">Break Impact</div>
                         <div class="impact-value" id="breakImpact">No breaks selected</div>
                     </div>
-                    <div class="btn-group">
-                        <button class="btn btn-outline" onclick="addBreaksToYear(1)">Add Year 1 Breaks</button>
-                        <button class="btn btn-outline" onclick="addBreaksToYear(2)">Add Year 2 Breaks</button>
+                    <div class="study-break-controls">
+                        <button class="btn btn-outline" onclick="addBreaksToYear(1)">Year 1 Breaks</button>
+                        <button class="btn btn-outline" onclick="addBreaksToYear(2)">Year 2 Breaks</button>
                     </div>
                     <button class="btn btn-secondary" style="width: 100%; margin-top: 10px;" onclick="clearAllBreaks()">Clear All Breaks</button>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Graduation Scenarios</div>
-                    </div>
-                    <div class="scenario-cards" id="scenarioGrid"></div>
-                    <button class="btn btn-outline" style="width: 100%; margin-top: 15px;" onclick="generateScenarios()">Show All Scenarios</button>
                 </div>
 
                 <div class="card">
@@ -646,7 +629,7 @@
         const R = ['Research Skills: From Reviewing & Critical Analysis to Research Ethics', 'Research Skills: From Methods & Procedures to Analysis & Reporting'];
         const S = ['Independent Synoptic Project'];
         
-        // Complete schedule data
+        // Extended schedule data
         const SCH = {
             "2023-01": ["Techniques in Neuroscience", "Psychology & Neuroscience of Affective Disorders", "Neuroscience in Society", "Social, Genetic & Environmental Basis of Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics"],
             "2023-03": ["Psychological Foundations of Mental Health", "Psychology & Neuroscience of Psychosis", "Neuroimaging in Mental Health", "Pharmacotherapies in Mental Health", "Research Skills: From Methods & Procedures to Analysis & Reporting"],
@@ -659,7 +642,15 @@
             "2024-05": ["Techniques in Neuroscience", "Psychology & Neuroscience of Affective Disorders", "Neuroscience in Society", "Social, Genetic & Environmental Basis of Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics"],
             "2024-06": ["Psychological Foundations of Mental Health", "Psychology & Neuroscience of Psychosis", "Neuroimaging in Mental Health", "Pharmacotherapies in Mental Health", "Research Skills: From Methods & Procedures to Analysis & Reporting"],
             "2024-09": ["Mental Health in the Community", "Child & Adolescent Mental Health", "Global Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics"],
-            "2024-10": ["Biological Foundations of Mental Health", "Psychology & Neuroscience of Addiction", "Mindfulness: Neuroscience & Application", "Research Skills: From Methods & Procedures to Analysis & Reporting"]
+            "2024-10": ["Biological Foundations of Mental Health", "Psychology & Neuroscience of Addiction", "Mindfulness: Neuroscience & Application", "Research Skills: From Methods & Procedures to Analysis & Reporting"],
+            "2025-01": ["Techniques in Neuroscience", "Psychology & Neuroscience of Affective Disorders", "Neuroscience in Society", "Social, Genetic & Environmental Basis of Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics"],
+            "2025-03": ["Psychological Foundations of Mental Health", "Psychology & Neuroscience of Psychosis", "Neuroimaging in Mental Health", "Pharmacotherapies in Mental Health", "Research Skills: From Methods & Procedures to Analysis & Reporting"],
+            "2025-05": ["Mental Health in the Community", "Child & Adolescent Mental Health", "Global Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics"],
+            "2025-06": ["Biological Foundations of Mental Health", "Psychology & Neuroscience of Addiction", "Mindfulness: Neuroscience & Application", "Research Skills: From Methods & Procedures to Analysis & Reporting"],
+            "2025-09": ["Techniques in Neuroscience", "Psychology & Neuroscience of Affective Disorders", "Neuroscience in Society", "Social, Genetic & Environmental Basis of Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics"],
+            "2025-10": ["Psychological Foundations of Mental Health", "Psychology & Neuroscience of Psychosis", "Neuroimaging in Mental Health", "Pharmacotherapies in Mental Health", "Research Skills: From Methods & Procedures to Analysis & Reporting"],
+            "2026-01": ["Mental Health in the Community", "Child & Adolescent Mental Health", "Global Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics"],
+            "2026-03": ["Biological Foundations of Mental Health", "Psychology & Neuroscience of Addiction", "Mindfulness: Neuroscience & Application", "Research Skills: From Methods & Procedures to Analysis & Reporting"]
         };
         
         const REQ = {
@@ -740,7 +731,6 @@
             
             // Generate initial view
             gen();
-            generateScenarios();
         }
         
         // Update chip selection styling
@@ -947,7 +937,16 @@
                             moduleItem.textContent = m;
                             moduleItem.title = m;
                             moduleItem.addEventListener('click', () => {
-                                taken.set(k, m);
+                                // Special handling for Synoptic Project (spans 2 periods)
+                                if (type === 'synoptic') {
+                                    taken.set(k, m);
+                                    const currentIndex = keys.indexOf(k);
+                                    if (currentIndex < keys.length - 1) {
+                                        taken.set(keys[currentIndex + 1], m);
+                                    }
+                                } else {
+                                    taken.set(k, m);
+                                }
                                 gen();
                             });
                             moduleList.appendChild(moduleItem);
@@ -1116,128 +1115,6 @@
                     }
                 }
             }
-            return [...taken2.keys()].sort().pop();
-        }
-        
-        // Generate graduation scenarios
-        function generateScenarios() {
-            const aw = document.getElementById('award').value || 'MSc';
-            const st = document.getElementById('start').value || '2023-09';
-            const rq = { ...REQ[aw] };
-            const cho = getOpts();
-            
-            if (rq.o > 0 && cho.length < 4) {
-                showAlert('Please select 4 option modules first', 'warning');
-                return;
-            }
-            
-            const scenarioGrid = document.getElementById('scenarioGrid');
-            
-            if (!scenarioGrid) return;
-            
-            // Calculate different scenarios
-            const optimal = calcBaseline(st, rq, cho);
-            const withOneBreak = calcWithBreaks(st, rq, cho, 1);
-            const withTwoBreaks = calcWithBreaks(st, rq, cho, 2);
-            const maxDuration = calcWithBreaks(st, rq, cho, 6); // Maximum 6 years
-            
-            scenarioGrid.innerHTML = `
-                <div class="scenario-card ${brks.size === 0 ? 'active' : ''}">
-                    <div class="scenario-title">Fastest Path</div>
-                    <div class="scenario-date">${optimal ? fmtD(optimal) : 'N/A'}</div>
-                    <div class="scenario-delay">0 breaks</div>
-                </div>
-                <div class="scenario-card ${brks.size === 1 ? 'active' : ''}">
-                    <div class="scenario-title">1 Break</div>
-                    <div class="scenario-date">${withOneBreak ? fmtD(withOneBreak) : 'N/A'}</div>
-                    <div class="scenario-delay">+2 months</div>
-                </div>
-                <div class="scenario-card ${brks.size === 2 ? 'active' : ''}">
-                    <div class="scenario-title">2 Breaks</div>
-                    <div class="scenario-date">${withTwoBreaks ? fmtD(withTwoBreaks) : 'N/A'}</div>
-                    <div class="scenario-delay">+4 months</div>
-                </div>
-                <div class="scenario-card">
-                    <div class="scenario-title">Maximum Duration</div>
-                    <div class="scenario-date">${maxDuration ? fmtD(maxDuration) : 'N/A'}</div>
-                    <div class="scenario-delay">6 years limit</div>
-                </div>
-            `;
-        }
-        
-        // Calculate graduation with specified number of breaks
-        function calcWithBreaks(st, rq, cho, breakCount) {
-            const taken2 = new Map();
-            let tkn = { f: 0, o: 0, r: 0, s: 0 };
-            const hs = addY(st, 6);
-            const itk = keys.filter(k => k >= st && k <= hs);
-            const remF = new Set(F);
-            const remO = new Set(cho.length >= 4 ? cho : O.slice(0, 4));
-            const remR = new Set(R);
-            
-            // Add breaks at optimal points
-            const breaks = new Set();
-            const moduleCounts = {};
-            
-            itk.forEach(period => {
-                const modules = SCH[period] || [];
-                const requiredModules = modules.filter(m => 
-                    F.includes(m) || (cho.includes(m) && O.includes(m)) || 
-                    R.includes(m) || S.includes(m)
-                );
-                moduleCounts[period] = requiredModules.length;
-            });
-            
-            const sortedPeriods = [...itk].sort((a, b) => moduleCounts[a] - moduleCounts[b]);
-            for (let i = 0; i < breakCount && i < sortedPeriods.length; i++) {
-                breaks.add(sortedPeriods[i]);
-            }
-            
-            for (const k of itk) {
-                if (tkn.f >= rq.f && tkn.o >= rq.o && tkn.r >= rq.r && tkn.s >= rq.s) break;
-                if (breaks.has(k)) continue;
-                
-                const mds = SCH[k] || [];
-                
-                if (tkn.f < rq.f) {
-                    const m = mds.find(x => remF.has(x));
-                    if (m) {
-                        taken2.set(k, m);
-                        remF.delete(m);
-                        tkn.f++;
-                        continue;
-                    }
-                }
-                if (tkn.f >= rq.f && tkn.o < rq.o) {
-                    const m = mds.find(x => remO.has(x));
-                    if (m) {
-                        taken2.set(k, m);
-                        remO.delete(m);
-                        tkn.o++;
-                        continue;
-                    }
-                }
-                if (tkn.f >= rq.f && tkn.o >= rq.o && tkn.r < rq.r) {
-                    const m = mds.find(x => remR.has(x));
-                    if (m) {
-                        taken2.set(k, m);
-                        remR.delete(m);
-                        tkn.r++;
-                        continue;
-                    }
-                }
-                if (tkn.f >= rq.f && tkn.o >= rq.o && tkn.r >= rq.r && tkn.s < rq.s) {
-                    const m = mds.find(x => S.includes(x));
-                    if (m) {
-                        taken2.set(k, m);
-                        const ni = itk.indexOf(k);
-                        if (ni >= 0 && ni < itk.length - 1) taken2.set(itk[ni + 1], m);
-                        tkn.s++;
-                        break;
-                    }
-                }
-            }
-            
             return [...taken2.keys()].sort().pop();
         }
         
@@ -1419,7 +1296,6 @@
         window.addBreaksToYear = addBreaksToYear;
         window.clearAllBreaks = clearAllBreaks;
         window.showOptimalPath = showOptimalPath;
-        window.generateScenarios = generateScenarios;
         
         // Initialize on load
         if (document.readyState === 'loading') {
