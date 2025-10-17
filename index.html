@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>KCL PNOMH Graduation Planner</title>
+<title>KCL PNOMH Graduation Planner - Enhanced</title>
 <style>
 :root{--r:#d50032;--ink:#111827;--mut:#6b7280;--bg:#fafafa;--line:#e5e7eb}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -72,13 +72,25 @@ button{cursor:pointer;font-weight:600;transition:all .2s}
 .mainGrid{display:grid;grid-template-columns:2fr 1fr;gap:1rem}
 @media(max-width:768px){.mainGrid{grid-template-columns:1fr}}
 .impact{margin-top:.5rem;padding:.5rem;background:#f9fafb;border-radius:6px;font-size:.75rem}
+.scenario{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:.5rem;margin:.5rem 0;font-size:.75rem}
+.scenario h4{font-size:.8rem;margin-bottom:.25rem}
+.scenarioGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-top:.5rem}
+.scenarioCard{background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:.5rem;text-align:center}
+.scenarioCard.active{background:#f0f9ff;border-color:#0ea5e9}
+.scenarioTitle{font-weight:600;font-size:.7rem}
+.scenarioDate{font-size:.8rem;font-weight:700;margin:.25rem 0}
+.scenarioDelay{font-size:.65rem;color:#6b7280}
+.comparison{display:flex;justify-content:space-between;margin-top:.5rem;font-size:.75rem}
+.comparisonItem{flex:1;text-align:center;padding:.25rem}
+.comparisonItem.optimal{background:#f0f9ff;border-radius:4px}
+.comparisonItem.actual{background:#fef2f2;border-radius:4px}
 </style>
 </head>
 <body>
 <header>
 <div class="container">
 <h1>King's College London — PNOMH Graduation Planner</h1>
-<div class="sub">Optimized layout: Foundation → Options → Research → Synoptic</div>
+<div class="sub">Enhanced with break impact analysis and graduation scenarios</div>
 </div>
 </header>
 <main class="container">
@@ -127,6 +139,11 @@ button{cursor:pointer;font-weight:600;transition:all .2s}
 <div class="sum" id="sum"></div>
 <div id="grad" class="grad" style="display:none"></div>
 <div id="impact" class="impact" style="display:none"></div>
+<div id="scenarios" class="scenario" style="display:none">
+<h4>Graduation Scenarios</h4>
+<div class="scenarioGrid" id="scenarioGrid"></div>
+</div>
+<div id="comparison" class="comparison" style="display:none"></div>
 </section>
 
 <section class="card">
@@ -137,16 +154,22 @@ button{cursor:pointer;font-weight:600;transition:all .2s}
 <button onclick="addBreaksToYear(2)" class="btn sec">Add breaks to Year 2</button>
 <button onclick="clearAllBreaks()" class="btn sec">Clear all breaks</button>
 <button onclick="showOptimalPath()" class="btn">Show optimal path</button>
+<button onclick="generateScenarios()" class="btn">Show all scenarios</button>
 </div>
 <div style="margin-top:.75rem">
 <h4 style="font-size:.85rem;margin-bottom:.25rem">Break Impact</h4>
 <div id="breakImpact" style="font-size:.75rem;color:var(--mut)">Select modules to see impact</div>
+</div>
+<div style="margin-top:.75rem">
+<h4 style="font-size:.85rem;margin-bottom:.25rem">Break Suggestions</h4>
+<div id="breakSuggestions" style="font-size:.75rem;color:var(--mut)">Optimal break periods will appear here</div>
 </div>
 </section>
 </div>
 </main>
 
 <script>
+// Module definitions and schedule data
 const F=['Biological Foundations of Mental Health','Techniques in Neuroscience','Psychological Foundations of Mental Health','Mental Health in the Community'];
 const O=['Mindfulness: Neuroscience & Application','Global Mental Health','Psychology & Neuroscience of Addiction','Child & Adolescent Mental Health','Social, Genetic & Environmental Basis of Mental Health','Neuroscience in Society','Psychology & Neuroscience of Affective Disorders','Psychology & Neuroscience of Psychosis','Neuroimaging in Mental Health','Pharmacotherapies in Mental Health'];
 const R=['Research Skills: From Reviewing & Critical Analysis to Research Ethics','Research Skills: From Methods & Procedures to Analysis & Reporting'];
@@ -159,713 +182,933 @@ const taken=new Map();
 
 let isInitialized = false;
 
+// Initialize the planner
 function init(){
-if (isInitialized) return;
-isInitialized = true;
+  if (isInitialized) return;
+  isInitialized = true;
 
-const startS=document.getElementById('start');
-if (!startS) return;
+  // Initialize start date dropdown
+  const startS=document.getElementById('start');
+  if (!startS) return;
 
-startS.innerHTML = '';
-keys.forEach(k=>{
-try {
-const[y,m]=k.split('-').map(Number);
-if (isNaN(y) || isNaN(m)) return;
-const d=new Date(y,m-1,1);
-if (isNaN(d.getTime())) return;
-const o=document.createElement('option');
-o.value=k;
-o.textContent=d.toLocaleString('en-GB',{month:'short',year:'numeric'});
-startS.appendChild(o);
-} catch (error) {
-console.error('Error processing date:', k, error);
+  startS.innerHTML = '';
+  keys.forEach(k=>{
+    try {
+      const[y,m]=k.split('-').map(Number);
+      if (isNaN(y) || isNaN(m)) return;
+      const d=new Date(y,m-1,1);
+      if (isNaN(d.getTime())) return;
+      const o=document.createElement('option');
+      o.value=k;
+      o.textContent=d.toLocaleString('en-GB',{month:'short',year:'numeric'});
+      startS.appendChild(o);
+    } catch (error) {
+      console.error('Error processing date:', k, error);
+    }
+  });
+
+  startS.value='2023-09';
+  startS.addEventListener('change',gen);
+  document.getElementById('award').addEventListener('change',gen);
+
+  // Initialize option checkboxes
+  const optsW=document.getElementById('opts');
+  if (!optsW) return;
+
+  optsW.innerHTML = '';
+  O.forEach(n=>{
+    try {
+      const id='o'+n.replace(/[^a-z0-9]/gi,'');
+      const l=document.createElement('label');
+      l.className='chip';
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = id;
+      checkbox.dataset.name = n;
+      checkbox.addEventListener('change', function() {
+        const checkedBoxes = document.querySelectorAll('#opts input:checked');
+        if (checkedBoxes.length > 4) {
+          this.checked = false;
+          showAlert('You can only select 4 option modules', 'warning');
+          return;
+        }
+
+        // If deselecting, remove any taken modules that are no longer valid
+        if (!this.checked) {
+          const deselectedModule = this.dataset.name;
+          const toRemove = [];
+          taken.forEach((module, period) => {
+            if (module === deselectedModule) {
+              toRemove.push(period);
+            }
+          });
+          toRemove.forEach(period => taken.delete(period));
+        }
+
+        updateChipSelection();
+        gen();
+      });
+      l.appendChild(checkbox);
+      l.appendChild(document.createTextNode(n));
+      optsW.appendChild(l);
+    } catch (error) {
+      console.error('Error creating option chip:', n, error);
+    }
+  });
+  
+  // Generate initial view
+  gen();
 }
-});
 
-startS.value='2023-09';
-startS.addEventListener('change',gen);
-document.getElementById('award').addEventListener('change',gen);
-
-const optsW=document.getElementById('opts');
-if (!optsW) return;
-
-optsW.innerHTML = '';
-O.forEach(n=>{
-try {
-const id='o'+n.replace(/[^a-z0-9]/gi,'');
-const l=document.createElement('label');
-l.className='chip';
-const checkbox = document.createElement('input');
-checkbox.type = 'checkbox';
-checkbox.id = id;
-checkbox.dataset.name = n;
-checkbox.addEventListener('change', function() {
-const checkedBoxes = document.querySelectorAll('#opts input:checked');
-if (checkedBoxes.length > 4) {
-this.checked = false;
-showAlert('You can only select 4 option modules', 'warning');
-return;
-}
-
-// If deselecting, remove any taken modules that are no longer valid
-if (!this.checked) {
-const deselectedModule = this.dataset.name;
-const toRemove = [];
-taken.forEach((module, period) => {
-if (module === deselectedModule) {
-toRemove.push(period);
-}
-});
-toRemove.forEach(period => taken.delete(period));
-}
-
-updateChipSelection();
-gen();
-});
-l.appendChild(checkbox);
-l.appendChild(document.createTextNode(n));
-optsW.appendChild(l);
-} catch (error) {
-console.error('Error creating option chip:', n, error);
-}
-});
-gen();
-}
-
+// Update chip selection styling
 function updateChipSelection() {
-try {
-const chips = document.querySelectorAll('#opts .chip');
-chips.forEach(chip => {
-const checkbox = chip.querySelector('input[type="checkbox"]');
-if (checkbox && checkbox.checked) {
-chip.classList.add('selected');
-} else {
-chip.classList.remove('selected');
-}
-});
-} catch (error) {
-console.error('Error updating chip selection:', error);
-}
+  try {
+    const chips = document.querySelectorAll('#opts .chip');
+    chips.forEach(chip => {
+      const checkbox = chip.querySelector('input[type="checkbox"]');
+      if (checkbox && checkbox.checked) {
+        chip.classList.add('selected');
+      } else {
+        chip.classList.remove('selected');
+      }
+    });
+  } catch (error) {
+    console.error('Error updating chip selection:', error);
+  }
 }
 
+// Get selected options
 function getOpts(){
-try {
-return [...document.querySelectorAll('#opts input:checked')].map(c=>c.dataset.name).slice(0,4);
-} catch (error) {
-return [];
-}
+  try {
+    return [...document.querySelectorAll('#opts input:checked')].map(c=>c.dataset.name).slice(0,4);
+  } catch (error) {
+    return [];
+  }
 }
 
+// Add years to a date key
 function addY(k,y){
-try {
-const[yr,m]=k.split('-').map(Number);
-if (isNaN(yr) || isNaN(m)) return k;
-return `${yr+y}-${String(m).padStart(2,'0')}`;
-} catch (error) {
-return k;
-}
+  try {
+    const[yr,m]=k.split('-').map(Number);
+    if (isNaN(yr) || isNaN(m)) return k;
+    return `${yr+y}-${String(m).padStart(2,'0')}`;
+  } catch (error) {
+    return k;
+  }
 }
 
+// Format date key to readable format
 function fmtD(k){
-try {
-const[y,m]=k.split('-').map(Number);
-if (isNaN(y) || isNaN(m)) return k;
-const date = new Date(y,m-1,1);
-if (isNaN(date.getTime())) return k;
-return date.toLocaleString('en-GB',{month:'short',year:'numeric'});
-} catch (error) {
-return k;
-}
+  try {
+    const[y,m]=k.split('-').map(Number);
+    if (isNaN(y) || isNaN(m)) return k;
+    const date = new Date(y,m-1,1);
+    if (isNaN(date.getTime())) return k;
+    return date.toLocaleString('en-GB',{month:'short',year:'numeric'});
+  } catch (error) {
+    return k;
+  }
 }
 
+// Get module type
 function getType(m){
-if(F.includes(m))return'f';
-if(O.includes(m))return'o';
-if(R.includes(m))return'r';
-if(S.includes(m))return's';
-return'u';
+  if(F.includes(m))return'f';
+  if(O.includes(m))return'o';
+  if(R.includes(m))return'r';
+  if(S.includes(m))return's';
+  return'u';
 }
 
+// Get count of taken modules by type
 function getTkn(){
-try {
-let t={f:0,o:0,r:0,s:0};
-taken.forEach(v=>{
-const ty=getType(v);
-if(ty==='f')t.f++;
-else if(ty==='o')t.o++;
-else if(ty==='r')t.r++;
-else if(ty==='s')t.s++;
-});
-return t;
-} catch (error) {
-return {f:0,o:0,r:0,s:0};
-}
+  try {
+    let t={f:0,o:0,r:0,s:0};
+    taken.forEach(v=>{
+      const ty=getType(v);
+      if(ty==='f')t.f++;
+      else if(ty==='o')t.o++;
+      else if(ty==='r')t.r++;
+      else if(ty==='s')t.s++;
+    });
+    return t;
+  } catch (error) {
+    return {f:0,o:0,r:0,s:0};
+  }
 }
 
+// Generate the main view
 function gen(){
-try {
-const aw=document.getElementById('award')?.value || 'MSc';
-const st=document.getElementById('start')?.value || '2023-09';
-const rq={...REQ[aw]};
-const cho=getOpts();
-const tkn=getTkn();
-const wb=document.getElementById('wbox');
+  try {
+    const aw=document.getElementById('award')?.value || 'MSc';
+    const st=document.getElementById('start')?.value || '2023-09';
+    const rq={...REQ[aw]};
+    const cho=getOpts();
+    const tkn=getTkn();
+    const wb=document.getElementById('wbox');
 
-if(wb) {
-if(rq.o>0&&cho.length<4){
-wb.textContent=`Please select 4 option modules (required for ${aw})`;
-wb.style.display='block';
-} else {
-wb.style.display='none';
-}
+    if(wb) {
+      if(rq.o>0&&cho.length<4){
+        wb.textContent=`Please select 4 option modules (required for ${aw})`;
+        wb.style.display='block';
+      } else {
+        wb.style.display='none';
+      }
+    }
+
+    const hs=addY(st,6);
+    const itk=keys.filter(k=>k>=st&&k<=hs);
+    render(itk,st,rq,tkn,cho);
+    vis(itk,tkn,rq,st);
+    updateBreakImpact();
+    suggestOptimalBreaks(st, rq, cho);
+  } catch (error) {
+    console.error('Error in gen:', error);
+  }
 }
 
-const hs=addY(st,6);
-const itk=keys.filter(k=>k>=st&&k<=hs);
-render(itk,st,rq,tkn,cho);
-vis(itk,tkn,rq,st);
-updateBreakImpact();
-} catch (error) {
-console.error('Error in gen:', error);
-}
-}
-
+// Render the timeline
 function render(itk,st,rq,tkn,cho){
-try {
-const el=document.getElementById('tl');
-if (!el) return;
+  try {
+    const el=document.getElementById('tl');
+    if (!el) return;
 
-el.innerHTML='';
-const pi=document.getElementById('phaseInfo');
-if (pi) {
-if(tkn.f<rq.f){
-pi.innerHTML='<div class="phase">📘 Phase 1: Foundation Modules (Complete all 4 first)</div>';
-} else if(tkn.f>=rq.f&&tkn.o<rq.o){
-pi.innerHTML='<div class="phase complete">✅ Phase 1 Complete</div><div class="phase">📕 Phase 2: Option Modules (Choose 4 from selected options)</div>';
-} else if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r<rq.r){
-pi.innerHTML='<div class="phase complete">✅ Phases 1 & 2 Complete</div><div class="phase">📗 Phase 3: Research Skills (Prerequisites: 4 foundations + 4 options)</div>';
-} else if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s<rq.s){
-pi.innerHTML='<div class="phase complete">✅ Phases 1-3 Complete</div><div class="phase">📓 Phase 4: Synoptic Project (Prerequisites: All previous phases)</div>';
-} else {
-pi.innerHTML='<div class="phase complete">✅ All Phases Complete!</div>';
-}
+    el.innerHTML='';
+    const pi=document.getElementById('phaseInfo');
+    if (pi) {
+      if(tkn.f<rq.f){
+        pi.innerHTML='<div class="phase">📘 Phase 1: Foundation Modules (Complete all 4 first)</div>';
+      } else if(tkn.f>=rq.f&&tkn.o<rq.o){
+        pi.innerHTML='<div class="phase complete">✅ Phase 1 Complete</div><div class="phase">📕 Phase 2: Option Modules (Choose 4 from selected options)</div>';
+      } else if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r<rq.r){
+        pi.innerHTML='<div class="phase complete">✅ Phases 1 & 2 Complete</div><div class="phase">📗 Phase 3: Research Skills (Prerequisites: 4 foundations + 4 options)</div>';
+      } else if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s<rq.s){
+        pi.innerHTML='<div class="phase complete">✅ Phases 1-3 Complete</div><div class="phase">📓 Phase 4: Synoptic Project (Prerequisites: All previous phases)</div>';
+      } else {
+        pi.innerHTML='<div class="phase complete">✅ All Phases Complete!</div>';
+      }
+    }
+
+    itk.forEach(k=>{
+      const term=document.createElement('div');
+      term.className='term';
+      const ttl=fmtD(k);
+      const tkMod=taken.get(k);
+      const isBreak=brks.has(k);
+
+      const hdr=document.createElement('div');
+      hdr.className='termHd';
+      hdr.innerHTML=`<div class="termTtl">${ttl}</div>`;
+
+      const ctrl=document.createElement('div');
+      ctrl.className='termCtrl';
+
+      if(isBreak){
+        const removeBtn=document.createElement('button');
+        removeBtn.className='termBtn break';
+        removeBtn.textContent='📅 Break';
+        removeBtn.addEventListener('click',()=>{brks.delete(k);gen();});
+        ctrl.appendChild(removeBtn);
+      } else if(tkMod){
+        const removeBtn=document.createElement('button');
+        removeBtn.className='termBtn taken';
+        removeBtn.textContent='✓ Taken';
+        removeBtn.addEventListener('click',()=>{taken.delete(k);gen();});
+        ctrl.appendChild(removeBtn);
+
+        const breakBtn=document.createElement('button');
+        breakBtn.className='termBtn';
+        breakBtn.textContent='Take Break';
+        breakBtn.addEventListener('click',()=>{brks.add(k);taken.delete(k);gen();});
+        ctrl.appendChild(breakBtn);
+      } else {
+        const breakBtn=document.createElement('button');
+        breakBtn.className='termBtn';
+        breakBtn.textContent='Set Break';
+        breakBtn.addEventListener('click',()=>{brks.add(k);gen();});
+        ctrl.appendChild(breakBtn);
+      }
+
+      hdr.appendChild(ctrl);
+      term.appendChild(hdr);
+
+      if(!isBreak && !tkMod){
+        const mds=SCH[k]||[];
+        if(tkn.f<rq.f){
+          const avail=mds.filter(m=>F.includes(m)&&![...taken.values()].includes(m));
+          avail.forEach(m=>{
+            const d=document.createElement('div');
+            d.className='mod';
+            d.innerHTML=`<span>🟦</span><span>${m}</span>`;
+            d.addEventListener('click', function() {
+              taken.set(k,m);
+              gen();
+            });
+            term.appendChild(d);
+          });
+          if(avail.length===0){
+            const d=document.createElement('div');
+            d.className='mod locked';
+            d.innerHTML='<span>🔒</span><span>No eligible foundation modules</span>';
+            term.appendChild(d);
+          }
+        } else if(tkn.f>=rq.f&&tkn.o<rq.o){
+          const avail=mds.filter(m=>cho.includes(m)&&![...taken.values()].includes(m));
+          const grid=document.createElement('div');
+          grid.className='modGrid';
+          avail.forEach(m=>{
+            const d=document.createElement('div');
+            d.className='mod';
+            d.innerHTML=`<span>🟥</span><span>${m}</span>`;
+            d.addEventListener('click', function() {
+              taken.set(k,m);
+              gen();
+            });
+            grid.appendChild(d);
+          });
+          if(avail.length===0){
+            const d=document.createElement('div');
+            d.className='mod locked';
+            d.innerHTML='<span>🔒</span><span>No eligible options available</span>';
+            grid.appendChild(d);
+          }
+          term.appendChild(grid);
+        } else if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r<rq.r){
+          const avail=mds.filter(m=>R.includes(m)&&![...taken.values()].includes(m));
+          avail.forEach(m=>{
+            const d=document.createElement('div');
+            d.className='mod';
+            d.innerHTML=`<span>🟪</span><span>${m}</span>`;
+            d.addEventListener('click', function() {
+              taken.set(k,m);
+              gen();
+            });
+            term.appendChild(d);
+          });
+          if(avail.length===0){
+            const d=document.createElement('div');
+            d.className='mod locked';
+            d.innerHTML='<span>🔒</span><span>Complete 4 foundations + 4 options first</span>';
+            term.appendChild(d);
+          }
+        } else if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s<rq.s){
+          const avail=mds.filter(m=>S.includes(m));
+          if(avail.length>0){
+            const d=document.createElement('div');
+            d.className='mod';
+            d.innerHTML='<span>⬛</span><span>Independent Synoptic Project (spans 2 periods)</span>';
+            d.addEventListener('click', function() {
+              taken.set(k,S[0]);
+              const ni=keys.indexOf(k);
+              if(ni>=0&&ni<keys.length-1)taken.set(keys[ni+1],S[0]);
+              gen();
+            });
+            term.appendChild(d);
+          } else {
+            const d=document.createElement('div');
+            d.className='mod locked';
+            d.innerHTML='<span>🔒</span><span>Complete research modules first</span>';
+            term.appendChild(d);
+          }
+        } else {
+          const d=document.createElement('div');
+          d.className='mod locked';
+          d.innerHTML='<span>✅</span><span>All requirements complete</span>';
+          term.appendChild(d);
+        }
+      } else if(tkMod){
+        const d=document.createElement('div');
+        d.className='mod taken';
+        const ic={'f':'🟦','o':'🟥','r':'🟪','s':'⬛'};
+        const ty=getType(tkMod);
+        d.innerHTML=`<span>${ic[ty] || '⬜'}</span><span><strong>${tkMod}</strong></span>`;
+        term.appendChild(d);
+      }
+
+      el.appendChild(term);
+    });
+
+    const se=document.getElementById('sum');
+    if (se) {
+      se.innerHTML=`<strong>Progress:</strong> <span class="kbd">Foundation ${tkn.f}/${rq.f}</span> <span class="kbd">Options ${tkn.o}/${rq.o}</span> <span class="kbd">Research ${tkn.r}/${rq.r}</span> <span class="kbd">Synoptic ${tkn.s}/${rq.s}</span>`;
+    }
+
+    const ge=document.getElementById('grad');
+    if (ge) {
+      const lastK=[...taken.keys()].sort().pop();
+      if(lastK&&tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s>=rq.s){
+        ge.style.display='block';
+        ge.innerHTML=`🎓 <strong>Estimated Graduation:</strong> <span class="ok">${fmtD(lastK)}</span>`;
+      } else {
+        ge.style.display='none';
+      }
+    }
+  } catch (error) {
+    console.error('Error in render:', error);
+  }
 }
 
-itk.forEach(k=>{
-const term=document.createElement('div');
-term.className='term';
-const ttl=fmtD(k);
-const tkMod=taken.get(k);
-const isBreak=brks.has(k);
-
-const hdr=document.createElement('div');
-hdr.className='termHd';
-hdr.innerHTML=`<div class="termTtl">${ttl}</div>`;
-
-const ctrl=document.createElement('div');
-ctrl.className='termCtrl';
-
-if(isBreak){
-const removeBtn=document.createElement('button');
-removeBtn.className='termBtn break';
-removeBtn.textContent='📅 Break';
-removeBtn.addEventListener('click',()=>{brks.delete(k);gen();});
-ctrl.appendChild(removeBtn);
-} else if(tkMod){
-const removeBtn=document.createElement('button');
-removeBtn.className='termBtn taken';
-removeBtn.textContent='✓ Taken';
-removeBtn.addEventListener('click',()=>{taken.delete(k);gen();});
-ctrl.appendChild(removeBtn);
-
-const breakBtn=document.createElement('button');
-breakBtn.className='termBtn';
-breakBtn.textContent='Take Break';
-breakBtn.addEventListener('click',()=>{brks.add(k);taken.delete(k);gen();});
-ctrl.appendChild(breakBtn);
-} else {
-const breakBtn=document.createElement('button');
-breakBtn.className='termBtn';
-breakBtn.textContent='Set Break';
-breakBtn.addEventListener('click',()=>{brks.add(k);gen();});
-ctrl.appendChild(breakBtn);
-}
-
-hdr.appendChild(ctrl);
-term.appendChild(hdr);
-
-if(!isBreak && !tkMod){
-const mds=SCH[k]||[];
-if(tkn.f<rq.f){
-const avail=mds.filter(m=>F.includes(m)&&![...taken.values()].includes(m));
-avail.forEach(m=>{
-const d=document.createElement('div');
-d.className='mod';
-d.innerHTML=`<span>🟦</span><span>${m}</span>`;
-d.addEventListener('click', function() {
-taken.set(k,m);
-gen();
-});
-term.appendChild(d);
-});
-if(avail.length===0){
-const d=document.createElement('div');
-d.className='mod locked';
-d.innerHTML='<span>🔒</span><span>No eligible foundation modules</span>';
-term.appendChild(d);
-}
-} else if(tkn.f>=rq.f&&tkn.o<rq.o){
-const avail=mds.filter(m=>cho.includes(m)&&![...taken.values()].includes(m));
-const grid=document.createElement('div');
-grid.className='modGrid';
-avail.forEach(m=>{
-const d=document.createElement('div');
-d.className='mod';
-d.innerHTML=`<span>🟥</span><span>${m}</span>`;
-d.addEventListener('click', function() {
-taken.set(k,m);
-gen();
-});
-grid.appendChild(d);
-});
-if(avail.length===0){
-const d=document.createElement('div');
-d.className='mod locked';
-d.innerHTML='<span>🔒</span><span>No eligible options available</span>';
-grid.appendChild(d);
-}
-term.appendChild(grid);
-} else if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r<rq.r){
-const avail=mds.filter(m=>R.includes(m)&&![...taken.values()].includes(m));
-avail.forEach(m=>{
-const d=document.createElement('div');
-d.className='mod';
-d.innerHTML=`<span>🟪</span><span>${m}</span>`;
-d.addEventListener('click', function() {
-taken.set(k,m);
-gen();
-});
-term.appendChild(d);
-});
-if(avail.length===0){
-const d=document.createElement('div');
-d.className='mod locked';
-d.innerHTML='<span>🔒</span><span>Complete 4 foundations + 4 options first</span>';
-term.appendChild(d);
-}
-} else if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s<rq.s){
-const avail=mds.filter(m=>S.includes(m));
-if(avail.length>0){
-const d=document.createElement('div');
-d.className='mod';
-d.innerHTML='<span>⬛</span><span>Independent Synoptic Project (spans 2 periods)</span>';
-d.addEventListener('click', function() {
-taken.set(k,S[0]);
-const ni=keys.indexOf(k);
-if(ni>=0&&ni<keys.length-1)taken.set(keys[ni+1],S[0]);
-gen();
-});
-term.appendChild(d);
-} else {
-const d=document.createElement('div');
-d.className='mod locked';
-d.innerHTML='<span>🔒</span><span>Complete research modules first</span>';
-term.appendChild(d);
-}
-} else {
-const d=document.createElement('div');
-d.className='mod locked';
-d.innerHTML='<span>✅</span><span>All requirements complete</span>';
-term.appendChild(d);
-}
-} else if(tkMod){
-const d=document.createElement('div');
-d.className='mod taken';
-const ic={'f':'🟦','o':'🟥','r':'🟪','s':'⬛'};
-const ty=getType(tkMod);
-d.innerHTML=`<span>${ic[ty] || '⬜'}</span><span><strong>${tkMod}</strong></span>`;
-term.appendChild(d);
-}
-
-el.appendChild(term);
-});
-
-const se=document.getElementById('sum');
-if (se) {
-se.innerHTML=`<strong>Progress:</strong> <span class="kbd">Foundation ${tkn.f}/${rq.f}</span> <span class="kbd">Options ${tkn.o}/${rq.o}</span> <span class="kbd">Research ${tkn.r}/${rq.r}</span> <span class="kbd">Synoptic ${tkn.s}/${rq.s}</span>`;
-}
-
-const ge=document.getElementById('grad');
-if (ge) {
-const lastK=[...taken.keys()].sort().pop();
-if(lastK&&tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s>=rq.s){
-ge.style.display='block';
-ge.innerHTML=`🎓 <strong>Estimated Graduation:</strong> <span class="ok">${fmtD(lastK)}</span>`;
-} else {
-ge.style.display='none';
-}
-}
-} catch (error) {
-console.error('Error in render:', error);
-}
-}
-
+// Update visualization
 function vis(itk,tkn,rq,st){
-try {
-const lastK=[...taken.keys()].sort().pop();
+  try {
+    const lastK=[...taken.keys()].sort().pop();
 
-const vDur = document.getElementById('vDur');
-if (vDur) {
-if(lastK){
-const brkCount=brks.size;
-const totalPeriods=keys.filter(k=>k>=st&&k<=lastK).length;
-const studyPeriods=Math.max(0, totalPeriods-brkCount);
-const durMonths=studyPeriods*2;
-vDur.textContent=durMonths;
-} else {
-vDur.textContent='—';
-}
+    const vDur = document.getElementById('vDur');
+    if (vDur) {
+      if(lastK){
+        const brkCount=brks.size;
+        const totalPeriods=keys.filter(k=>k>=st&&k<=lastK).length;
+        const studyPeriods=Math.max(0, totalPeriods-brkCount);
+        const durMonths=studyPeriods*2;
+        vDur.textContent=durMonths;
+      } else {
+        vDur.textContent='—';
+      }
+    }
+
+    const vBrk = document.getElementById('vBrk');
+    if (vBrk) {
+      vBrk.textContent=brks.size;
+    }
+
+    const tot=rq.f+rq.o+rq.r+rq.s;
+    const cur=tkn.f+tkn.o+tkn.r+tkn.s;
+    const pct=tot>0?Math.round((cur/tot)*100):0;
+
+    const vPct = document.getElementById('vPct');
+    if (vPct) {
+      vPct.textContent=pct+'%';
+    }
+
+    const progF=document.getElementById('progFill');
+    if (progF) {
+      progF.style.width=pct+'%';
+      progF.textContent=pct+'%';
+    }
+
+    const vGrad = document.getElementById('vGrad');
+    if (vGrad) {
+      if(lastK){
+        const fd=fmtD(lastK).split(' ');
+        if (fd.length >= 2) {
+          vGrad.innerHTML=fd[0]+'<br>'+fd[1];
+        } else {
+          vGrad.textContent=fmtD(lastK);
+        }
+      } else {
+        vGrad.textContent='—';
+      }
+    }
+
+    const imp=document.getElementById('impact');
+    if (imp && taken.size>0){
+      const baseline=calcBaseline(st,rq,getOpts());
+      if(baseline&&lastK){
+        const bPeriods=keys.filter(k=>k>=st&&k<=baseline).length;
+        const cPeriods=keys.filter(k=>k>=st&&k<=lastK).length;
+        const bMonths=bPeriods*2;
+        const cMonths=Math.max(0, (cPeriods-brks.size)*2);
+        const diff=cMonths-bMonths;
+        const diffTxt=diff===0?'No delay':(diff>0?`+${diff} months delay`:`${Math.abs(diff)} months faster`);
+        const cl=diff===0?'ok':(diff>0?'warn':'ok');
+        imp.innerHTML=`<strong>Impact:</strong> Baseline: <strong>${fmtD(baseline)}</strong> (${bMonths} months) · Your plan: <strong>${fmtD(lastK)}</strong> (${cMonths} months) · <span class="${cl}">${diffTxt}</span>`;
+        imp.style.display='block';
+        
+        // Show comparison
+        const comp = document.getElementById('comparison');
+        if (comp) {
+          comp.innerHTML = `
+            <div class="comparisonItem optimal">
+              <div>Optimal Path</div>
+              <div><strong>${fmtD(baseline)}</strong></div>
+              <div>${bMonths} months</div>
+            </div>
+            <div class="comparisonItem actual">
+              <div>Your Path</div>
+              <div><strong>${fmtD(lastK)}</strong></div>
+              <div>${cMonths} months</div>
+            </div>
+          `;
+          comp.style.display = 'flex';
+        }
+      } else {
+        imp.style.display='none';
+        document.getElementById('comparison').style.display = 'none';
+      }
+    } else if (imp) {
+      imp.style.display='none';
+      document.getElementById('comparison').style.display = 'none';
+    }
+  } catch (error) {
+    console.error('Error in vis:', error);
+  }
 }
 
-const vBrk = document.getElementById('vBrk');
-if (vBrk) {
-vBrk.textContent=brks.size;
-}
-
-const tot=rq.f+rq.o+rq.r+rq.s;
-const cur=tkn.f+tkn.o+tkn.r+tkn.s;
-const pct=tot>0?Math.round((cur/tot)*100):0;
-
-const vPct = document.getElementById('vPct');
-if (vPct) {
-vPct.textContent=pct+'%';
-}
-
-const progF=document.getElementById('progFill');
-if (progF) {
-progF.style.width=pct+'%';
-progF.textContent=pct+'%';
-}
-
-const vGrad = document.getElementById('vGrad');
-if (vGrad) {
-if(lastK){
-const fd=fmtD(lastK).split(' ');
-if (fd.length >= 2) {
-vGrad.innerHTML=fd[0]+'<br>'+fd[1];
-} else {
-vGrad.textContent=fmtD(lastK);
-}
-} else {
-vGrad.textContent='—';
-}
-}
-
-const imp=document.getElementById('impact');
-if (imp && taken.size>0){
-const baseline=calcBaseline(st,rq,getOpts());
-if(baseline&&lastK){
-const bPeriods=keys.filter(k=>k>=st&&k<=baseline).length;
-const cPeriods=keys.filter(k=>k>=st&&k<=lastK).length;
-const bMonths=bPeriods*2;
-const cMonths=Math.max(0, (cPeriods-brks.size)*2);
-const diff=cMonths-bMonths;
-const diffTxt=diff===0?'No delay':(diff>0?`+${diff} months delay`:`${Math.abs(diff)} months faster`);
-const cl=diff===0?'ok':(diff>0?'warn':'ok');
-imp.innerHTML=`<strong>Impact:</strong> Baseline: <strong>${fmtD(baseline)}</strong> (${bMonths} months) · Your plan: <strong>${fmtD(lastK)}</strong> (${cMonths} months) · <span class="${cl}">${diffTxt}</span>`;
-imp.style.display='block';
-} else {
-imp.style.display='none';
-}
-} else if (imp) {
-imp.style.display='none';
-}
-} catch (error) {
-console.error('Error in vis:', error);
-}
-}
-
+// Calculate baseline graduation date
 function calcBaseline(st,rq,cho){
-try {
-const taken2=new Map();
-let tkn={f:0,o:0,r:0,s:0};
-const hs=addY(st,6);
-const itk=keys.filter(k=>k>=st&&k<=hs);
-const remF=new Set(F);
-const remO=new Set(cho.length>=4?cho:O.slice(0,4));
-const remR=new Set(R);
+  try {
+    const taken2=new Map();
+    let tkn={f:0,o:0,r:0,s:0};
+    const hs=addY(st,6);
+    const itk=keys.filter(k=>k>=st&&k<=hs);
+    const remF=new Set(F);
+    const remO=new Set(cho.length>=4?cho:O.slice(0,4));
+    const remR=new Set(R);
 
-for(const k of itk){
-if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s>=rq.s)break;
-const mds=SCH[k]||[];
+    for(const k of itk){
+      if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s>=rq.s)break;
+      const mds=SCH[k]||[];
 
-if(tkn.f<rq.f){
-const m=mds.find(x=>remF.has(x));
-if(m){
-taken2.set(k,m);
-remF.delete(m);
-tkn.f++;
-continue;
-}
-}
-if(tkn.f>=rq.f&&tkn.o<rq.o){
-const m=mds.find(x=>remO.has(x));
-if(m){
-taken2.set(k,m);
-remO.delete(m);
-tkn.o++;
-continue;
-}
-}
-if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r<rq.r){
-const m=mds.find(x=>remR.has(x));
-if(m){
-taken2.set(k,m);
-remR.delete(m);
-tkn.r++;
-continue;
-}
-}
-if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s<rq.s){
-const m=mds.find(x=>S.includes(x));
-if(m){
-taken2.set(k,m);
-const ni=itk.indexOf(k);
-if(ni>=0&&ni<itk.length-1)taken2.set(itk[ni+1],m);
-tkn.s++;
-break;
-}
-}
-}
-return [...taken2.keys()].sort().pop();
-} catch (error) {
-console.error('Error in calcBaseline:', error);
-return null;
-}
+      if(tkn.f<rq.f){
+        const m=mds.find(x=>remF.has(x));
+        if(m){
+          taken2.set(k,m);
+          remF.delete(m);
+          tkn.f++;
+          continue;
+        }
+      }
+      if(tkn.f>=rq.f&&tkn.o<rq.o){
+        const m=mds.find(x=>remO.has(x));
+        if(m){
+          taken2.set(k,m);
+          remO.delete(m);
+          tkn.o++;
+          continue;
+        }
+      }
+      if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r<rq.r){
+        const m=mds.find(x=>remR.has(x));
+        if(m){
+          taken2.set(k,m);
+          remR.delete(m);
+          tkn.r++;
+          continue;
+        }
+      }
+      if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s<rq.s){
+        const m=mds.find(x=>S.includes(x));
+        if(m){
+          taken2.set(k,m);
+          const ni=itk.indexOf(k);
+          if(ni>=0&&ni<itk.length-1)taken2.set(itk[ni+1],m);
+          tkn.s++;
+          break;
+        }
+      }
+    }
+    return [...taken2.keys()].sort().pop();
+  } catch (error) {
+    console.error('Error in calcBaseline:', error);
+    return null;
+  }
 }
 
+// Update break impact display
 function updateBreakImpact(){
-try {
-const aw=document.getElementById('award')?.value || 'MSc';
-const st=document.getElementById('start')?.value || '2023-09';
-const rq={...REQ[aw]};
-const cho=getOpts();
-const baseline=calcBaseline(st,rq,cho);
-const lastK=[...taken.keys()].sort().pop();
-const el=document.getElementById('breakImpact');
+  try {
+    const aw=document.getElementById('award')?.value || 'MSc';
+    const st=document.getElementById('start')?.value || '2023-09';
+    const rq={...REQ[aw]};
+    const cho=getOpts();
+    const baseline=calcBaseline(st,rq,cho);
+    const lastK=[...taken.keys()].sort().pop();
+    const el=document.getElementById('breakImpact');
 
-if(!el) return;
+    if(!el) return;
 
-if(brks.size===0){
-el.textContent='No breaks selected';
-} else if(baseline&&lastK){
-const bPeriods=keys.filter(k=>k>=st&&k<=baseline).length;
-const cPeriods=keys.filter(k=>k>=st&&k<=lastK).length;
-const delay=(cPeriods-bPeriods)*2;
-el.innerHTML=`${brks.size} break(s) = <span class="${delay>0?'warn':'ok'}">${delay>0?'+':''}${delay} months</span>`;
-} else {
-el.textContent=`${brks.size} break(s) selected`;
-}
-} catch (error) {
-console.error('Error updating break impact:', error);
-}
+    if(brks.size===0){
+      el.textContent='No breaks selected';
+    } else if(baseline&&lastK){
+      const bPeriods=keys.filter(k=>k>=st&&k<=baseline).length;
+      const cPeriods=keys.filter(k=>k>=st&&k<=lastK).length;
+      const delay=(cPeriods-bPeriods)*2;
+      el.innerHTML=`${brks.size} break(s) = <span class="${delay>0?'warn':'ok'}">${delay>0?'+':''}${delay} months</span>`;
+    } else {
+      el.textContent=`${brks.size} break(s) selected`;
+    }
+  } catch (error) {
+    console.error('Error updating break impact:', error);
+  }
 }
 
+// Suggest optimal break periods
+function suggestOptimalBreaks(st, rq, cho) {
+  try {
+    const el = document.getElementById('breakSuggestions');
+    if (!el) return;
+    
+    const baseline = calcBaseline(st, rq, cho);
+    if (!baseline) {
+      el.textContent = 'Complete setup to see break suggestions';
+      return;
+    }
+    
+    // Find periods with fewer required modules
+    const hs = addY(st, 6);
+    const periods = keys.filter(k => k >= st && k <= hs);
+    const moduleCounts = {};
+    
+    periods.forEach(period => {
+      const modules = SCH[period] || [];
+      const requiredModules = modules.filter(m => 
+        F.includes(m) || (cho.includes(m) && O.includes(m)) || 
+        R.includes(m) || S.includes(m)
+      );
+      moduleCounts[period] = requiredModules.length;
+    });
+    
+    // Find periods with the fewest required modules
+    const sortedPeriods = [...periods].sort((a, b) => moduleCounts[a] - moduleCounts[b]);
+    const suggestions = sortedPeriods.slice(0, 3);
+    
+    if (suggestions.length > 0) {
+      el.innerHTML = `Optimal break periods: ${suggestions.map(p => fmtD(p)).join(', ')}`;
+    } else {
+      el.textContent = 'No optimal break periods found';
+    }
+  } catch (error) {
+    console.error('Error suggesting optimal breaks:', error);
+  }
+}
+
+// Generate graduation scenarios
+function generateScenarios() {
+  try {
+    const aw = document.getElementById('award')?.value || 'MSc';
+    const st = document.getElementById('start')?.value || '2023-09';
+    const rq = {...REQ[aw]};
+    const cho = getOpts();
+    
+    if (rq.o > 0 && cho.length < 4) {
+      showAlert('Please select 4 option modules first', 'warning');
+      return;
+    }
+    
+    const scenariosEl = document.getElementById('scenarios');
+    const scenarioGrid = document.getElementById('scenarioGrid');
+    
+    if (!scenariosEl || !scenarioGrid) return;
+    
+    // Calculate different scenarios
+    const optimal = calcBaseline(st, rq, cho);
+    const withOneBreak = calcWithBreaks(st, rq, cho, 1);
+    const withTwoBreaks = calcWithBreaks(st, rq, cho, 2);
+    const maxDuration = calcWithBreaks(st, rq, cho, 6); // Maximum 6 years
+    
+    scenarioGrid.innerHTML = `
+      <div class="scenarioCard ${brks.size === 0 ? 'active' : ''}">
+        <div class="scenarioTitle">Fastest</div>
+        <div class="scenarioDate">${optimal ? fmtD(optimal) : 'N/A'}</div>
+        <div class="scenarioDelay">0 breaks</div>
+      </div>
+      <div class="scenarioCard ${brks.size === 1 ? 'active' : ''}">
+        <div class="scenarioTitle">1 Break</div>
+        <div class="scenarioDate">${withOneBreak ? fmtD(withOneBreak) : 'N/A'}</div>
+        <div class="scenarioDelay">+2 months</div>
+      </div>
+      <div class="scenarioCard ${brks.size === 2 ? 'active' : ''}">
+        <div class="scenarioTitle">2 Breaks</div>
+        <div class="scenarioDate">${withTwoBreaks ? fmtD(withTwoBreaks) : 'N/A'}</div>
+        <div class="scenarioDelay">+4 months</div>
+      </div>
+      <div class="scenarioCard">
+        <div class="scenarioTitle">Maximum</div>
+        <div class="scenarioDate">${maxDuration ? fmtD(maxDuration) : 'N/A'}</div>
+        <div class="scenarioDelay">6 years limit</div>
+      </div>
+    `;
+    
+    scenariosEl.style.display = 'block';
+  } catch (error) {
+    console.error('Error generating scenarios:', error);
+  }
+}
+
+// Calculate graduation with specified number of breaks
+function calcWithBreaks(st, rq, cho, breakCount) {
+  try {
+    const taken2 = new Map();
+    let tkn = {f:0, o:0, r:0, s:0};
+    const hs = addY(st, 6);
+    const itk = keys.filter(k => k >= st && k <= hs);
+    const remF = new Set(F);
+    const remO = new Set(cho.length >= 4 ? cho : O.slice(0, 4));
+    const remR = new Set(R);
+    
+    // Add breaks at optimal points
+    const breaks = new Set();
+    const moduleCounts = {};
+    
+    itk.forEach(period => {
+      const modules = SCH[period] || [];
+      const requiredModules = modules.filter(m => 
+        F.includes(m) || (cho.includes(m) && O.includes(m)) || 
+        R.includes(m) || S.includes(m)
+      );
+      moduleCounts[period] = requiredModules.length;
+    });
+    
+    const sortedPeriods = [...itk].sort((a, b) => moduleCounts[a] - moduleCounts[b]);
+    for (let i = 0; i < breakCount && i < sortedPeriods.length; i++) {
+      breaks.add(sortedPeriods[i]);
+    }
+    
+    for (const k of itk) {
+      if (tkn.f >= rq.f && tkn.o >= rq.o && tkn.r >= rq.r && tkn.s >= rq.s) break;
+      if (breaks.has(k)) continue;
+      
+      const mds = SCH[k] || [];
+      
+      if (tkn.f < rq.f) {
+        const m = mds.find(x => remF.has(x));
+        if (m) {
+          taken2.set(k, m);
+          remF.delete(m);
+          tkn.f++;
+          continue;
+        }
+      }
+      if (tkn.f >= rq.f && tkn.o < rq.o) {
+        const m = mds.find(x => remO.has(x));
+        if (m) {
+          taken2.set(k, m);
+          remO.delete(m);
+          tkn.o++;
+          continue;
+        }
+      }
+      if (tkn.f >= rq.f && tkn.o >= rq.o && tkn.r < rq.r) {
+        const m = mds.find(x => remR.has(x));
+        if (m) {
+          taken2.set(k, m);
+          remR.delete(m);
+          tkn.r++;
+          continue;
+        }
+      }
+      if (tkn.f >= rq.f && tkn.o >= rq.o && tkn.r >= rq.r && tkn.s < rq.s) {
+        const m = mds.find(x => S.includes(x));
+        if (m) {
+          taken2.set(k, m);
+          const ni = itk.indexOf(k);
+          if (ni >= 0 && ni < itk.length - 1) taken2.set(itk[ni + 1], m);
+          tkn.s++;
+          break;
+        }
+      }
+    }
+    
+    return [...taken2.keys()].sort().pop();
+  } catch (error) {
+    console.error('Error calculating with breaks:', error);
+    return null;
+  }
+}
+
+// Quick fill function
 function quickFill(){
-try {
-const aw=document.getElementById('award')?.value || 'MSc';
-const st=document.getElementById('start')?.value || '2023-09';
-const rq={...REQ[aw]};
-const tkn=getTkn();
-const cho=getOpts();
+  try {
+    const aw=document.getElementById('award')?.value || 'MSc';
+    const st=document.getElementById('start')?.value || '2023-09';
+    const rq={...REQ[aw]};
+    const tkn=getTkn();
+    const cho=getOpts();
 
-if(rq.o>0&&cho.length<4){
-showAlert('Please select 4 option modules first','warning');
-return;
-}
-if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s>=rq.s){
-showAlert('Your plan is already complete!','success');
-return;
+    if(rq.o>0&&cho.length<4){
+      showAlert('Please select 4 option modules first','warning');
+      return;
+    }
+    if(tkn.f>=rq.f&&tkn.o>=rq.o&&tkn.r>=rq.r&&tkn.s>=rq.s){
+      showAlert('Your plan is already complete!','success');
+      return;
+    }
+
+    const beforeCount=taken.size;
+    const hs=addY(st,6);
+    const itk=keys.filter(k=>k>=st&&k<=hs);
+    const remF=new Set(F.filter(m=>![...taken.values()].includes(m)));
+    const remO=new Set((cho.length>=4?cho:O.slice(0,4)).filter(m=>![...taken.values()].includes(m)));
+    const remR=new Set(R.filter(m=>![...taken.values()].includes(m)));
+    let curTkn={...tkn};
+
+    for(const k of itk){
+      if(curTkn.f>=rq.f&&curTkn.o>=rq.o&&curTkn.r>=rq.r&&curTkn.s>=rq.s)break;
+      if(taken.has(k)||brks.has(k))continue;
+      const mds=SCH[k]||[];
+
+      if(curTkn.f<rq.f){
+        const m=mds.find(x=>remF.has(x));
+        if(m){
+          taken.set(k,m);
+          remF.delete(m);
+          curTkn.f++;
+          continue;
+        }
+      }
+      if(curTkn.f>=rq.f&&curTkn.o<rq.o){
+        const m=mds.find(x=>remO.has(x));
+        if(m){
+          taken.set(k,m);
+          remO.delete(m);
+          curTkn.o++;
+          continue;
+        }
+      }
+      if(curTkn.f>=rq.f&&curTkn.o>=rq.o&&curTkn.r<rq.r){
+        const m=mds.find(x=>remR.has(x));
+        if(m){
+          taken.set(k,m);
+          remR.delete(m);
+          curTkn.r++;
+          continue;
+        }
+      }
+      if(curTkn.f>=rq.f&&curTkn.o>=rq.o&&curTkn.r>=rq.r&&curTkn.s<rq.s){
+        const m=mds.find(x=>S.includes(x));
+        if(m){
+          taken.set(k,m);
+          const ni=itk.indexOf(k);
+          if(ni>=0&&ni<itk.length-1)taken.set(itk[ni+1],m);
+          curTkn.s++;
+          break;
+        }
+      }
+    }
+
+    const afterCount=taken.size;
+    const added=afterCount-beforeCount;
+    gen();
+
+    if(added>0){
+      showAlert(`Added ${added} module${added>1?'s':''} to your plan!`,'success');
+    } else {
+      showAlert('No suitable modules found to add','warning');
+    }
+  } catch (error) {
+    console.error('Error in quickFill:', error);
+    showAlert('Error occurred during quick fill', 'warning');
+  }
 }
 
-const beforeCount=taken.size;
-const hs=addY(st,6);
-const itk=keys.filter(k=>k>=st&&k<=hs);
-const remF=new Set(F.filter(m=>![...taken.values()].includes(m)));
-const remO=new Set((cho.length>=4?cho:O.slice(0,4)).filter(m=>![...taken.values()].includes(m)));
-const remR=new Set(R.filter(m=>![...taken.values()].includes(m)));
-let curTkn={...tkn};
-
-for(const k of itk){
-if(curTkn.f>=rq.f&&curTkn.o>=rq.o&&curTkn.r>=rq.r&&curTkn.s>=rq.s)break;
-if(taken.has(k)||brks.has(k))continue;
-const mds=SCH[k]||[];
-
-if(curTkn.f<rq.f){
-const m=mds.find(x=>remF.has(x));
-if(m){
-taken.set(k,m);
-remF.delete(m);
-curTkn.f++;
-continue;
-}
-}
-if(curTkn.f>=rq.f&&curTkn.o<rq.o){
-const m=mds.find(x=>remO.has(x));
-if(m){
-taken.set(k,m);
-remO.delete(m);
-curTkn.o++;
-continue;
-}
-}
-if(curTkn.f>=rq.f&&curTkn.o>=rq.o&&curTkn.r<rq.r){
-const m=mds.find(x=>remR.has(x));
-if(m){
-taken.set(k,m);
-remR.delete(m);
-curTkn.r++;
-continue;
-}
-}
-if(curTkn.f>=rq.f&&curTkn.o>=rq.o&&curTkn.r>=rq.r&&curTkn.s<rq.s){
-const m=mds.find(x=>S.includes(x));
-if(m){
-taken.set(k,m);
-const ni=itk.indexOf(k);
-if(ni>=0&&ni<itk.length-1)taken.set(itk[ni+1],m);
-curTkn.s++;
-break;
-}
-}
-}
-
-const afterCount=taken.size;
-const added=afterCount-beforeCount;
-gen();
-
-if(added>0){
-showAlert(`Added ${added} module${added>1?'s':''} to your plan!`,'success');
-} else {
-showAlert('No suitable modules found to add','warning');
-}
-} catch (error) {
-console.error('Error in quickFill:', error);
-showAlert('Error occurred during quick fill', 'warning');
-}
-}
-
+// Add breaks to a specific year
 function addBreaksToYear(year){
-try {
-const st=document.getElementById('start')?.value || '2023-09';
-const startYear=parseInt(st.split('-')[0]);
-const targetYear=startYear+year-1;
+  try {
+    const st=document.getElementById('start')?.value || '2023-09';
+    const startYear=parseInt(st.split('-')[0]);
+    const targetYear=startYear+year-1;
 
-let added=0;
-keys.forEach(k=>{
-const keyYear=parseInt(k.split('-')[0]);
-if(keyYear===targetYear&&!taken.has(k)&&!brks.has(k)){
-brks.add(k);
-added++;
-}
-});
+    let added=0;
+    keys.forEach(k=>{
+      const keyYear=parseInt(k.split('-')[0]);
+      if(keyYear===targetYear&&!taken.has(k)&&!brks.has(k)){
+        brks.add(k);
+        added++;
+      }
+    });
 
-gen();
-if(added>0){
-showAlert(`Added ${added} breaks to Year ${year}`,'success');
-} else {
-showAlert(`No available periods in Year ${year} for breaks`,'warning');
-}
-} catch (error) {
-console.error('Error adding breaks:', error);
-}
+    gen();
+    if(added>0){
+      showAlert(`Added ${added} breaks to Year ${year}`,'success');
+    } else {
+      showAlert(`No available periods in Year ${year} for breaks`,'warning');
+    }
+  } catch (error) {
+    console.error('Error adding breaks:', error);
+  }
 }
 
+// Clear all breaks
 function clearAllBreaks(){
-try {
-const count=brks.size;
-brks.clear();
-gen();
-if(count>0){
-showAlert(`Cleared ${count} breaks`,'success');
-} else {
-showAlert('No breaks to clear','warning');
-}
-} catch (error) {
-console.error('Error clearing breaks:', error);
-}
+  try {
+    const count=brks.size;
+    brks.clear();
+    gen();
+    if(count>0){
+      showAlert(`Cleared ${count} breaks`,'success');
+    } else {
+      showAlert('No breaks to clear','warning');
+    }
+  } catch (error) {
+    console.error('Error clearing breaks:', error);
+  }
 }
 
+// Show optimal path
 function showOptimalPath(){
-try {
-taken.clear();
-brks.clear();
-quickFill();
-} catch (error) {
-console.error('Error showing optimal path:', error);
-}
+  try {
+    taken.clear();
+    brks.clear();
+    quickFill();
+  } catch (error) {
+    console.error('Error showing optimal path:', error);
+  }
 }
 
+// Reset plan
 function resetPlan(){
-try {
-if(confirm('Reset everything? This cannot be undone.')){
-taken.clear();
-brks.clear();
-const checkboxes = document.querySelectorAll('#opts input');
-checkboxes.forEach(i=>i.checked=false);
-updateChipSelection();
-gen();
-showAlert('Plan reset successfully', 'success');
-}
-} catch (error) {
-console.error('Error in resetPlan:', error);
-showAlert('Error occurred during reset', 'warning');
-}
+  try {
+    if(confirm('Reset everything? This cannot be undone.')){
+      taken.clear();
+      brks.clear();
+      const checkboxes = document.querySelectorAll('#opts input');
+      checkboxes.forEach(i=>i.checked=false);
+      updateChipSelection();
+      gen();
+      showAlert('Plan reset successfully', 'success');
+    }
+  } catch (error) {
+    console.error('Error in resetPlan:', error);
+    showAlert('Error occurred during reset', 'warning');
+  }
 }
 
+// Show alert
 function showAlert(msg,type='success'){
-try {
-const existingAlerts = document.querySelectorAll('.alert');
-existingAlerts.forEach(alert => alert.remove());
+  try {
+    const existingAlerts = document.querySelectorAll('.alert');
+    existingAlerts.forEach(alert => alert.remove());
 
-const al=document.createElement('div');
-al.className=`alert ${type}`;
+    const al=document.createElement('div');
+    al.className=`alert ${type}`;
 
-const closeBtn = document.createElement('span');
-closeBtn.className = 'closeAlert';
-closeBtn.textContent = '×';
-closeBtn.addEventListener('click', function() {
-al.remove();
-});
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'closeAlert';
+    closeBtn.textContent = '×';
+    closeBtn.addEventListener('click', function() {
+      al.remove();
+    });
 
-const msgDiv = document.createElement('div');
-msgDiv.style.paddingRight = '1.5rem';
-msgDiv.textContent = msg;
+    const msgDiv = document.createElement('div');
+    msgDiv.style.paddingRight = '1.5rem';
+    msgDiv.textContent = msg;
 
-al.appendChild(closeBtn);
-al.appendChild(msgDiv);
-document.body.appendChild(al);
+    al.appendChild(closeBtn);
+    al.appendChild(msgDiv);
+    document.body.appendChild(al);
 
-setTimeout(()=>{
-if (al.parentNode) {
-al.remove();
+    setTimeout(()=>{
+      if (al.parentNode) {
+        al.remove();
+      }
+    }, 3000);
+  } catch (error) {
+    console.error('Error showing alert:', error);
+  }
 }
-}, 3000);
-} catch (error) {
-console.error('Error showing alert:', error);
-}
-}
 
+// Expose functions to global scope
 window.quickFill = quickFill;
 window.resetPlan = resetPlan;
 window.addBreaksToYear = addBreaksToYear;
 window.clearAllBreaks = clearAllBreaks;
 window.showOptimalPath = showOptimalPath;
+window.generateScenarios = generateScenarios;
 
+// Initialize on load
 if (document.readyState === 'loading') {
-document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', init);
 } else {
-init();
+  init();
 }
 </script>
 </body>
