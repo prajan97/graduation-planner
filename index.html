@@ -3,7 +3,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>KCL PNOMH Graduation Planner — Excellence Edition</title>
+<title>KCL PNOMH Graduation Planner — Professional Edition</title>
+
+<!-- Inter font (professional, legible) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <!-- Tailwind via CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -12,72 +17,90 @@
     darkMode: 'class',
     theme: {
       extend: {
-        colors: { kcl: { red: '#d50032' }, warm: { bg: '#faf7f5' } },
-        boxShadow: { soft: '0 6px 24px rgba(0,0,0,.08)' }
+        fontFamily: { inter: ['Inter','system-ui','-apple-system','Segoe UI','Roboto','Helvetica','Arial','sans-serif'] },
+        colors: { kcl: { red: '#e21f4d' } },
+        boxShadow: {
+          glass: '0 8px 28px rgba(0,0,0,.08)',
+          inner: 'inset 0 1px 0 rgba(255,255,255,.6)'
+        }
       }
     }
   }
 </script>
 
 <style>
-  /* Subtle app styling (kept minimal for single-file use) */
-  :root { --warm-bg: #faf7f5; }
-  .card { background:#fff; border:1px solid #e5e7eb; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,.04); }
-  .card.dark { background:#0b1220; border-color:#1f2937; box-shadow:0 2px 8px rgba(0,0,0,.3); }
-  .chip { border:1px solid #e5e7eb; border-radius:9999px; padding:.5rem .9rem; font-size:.9rem; cursor:pointer; user-select:none; transition:all .15s ease; background:#f8fafc; }
-  .chip:hover { background:#f1f5f9; }
-  .chip.on { background:#fde2e7; border-color:#f3b7c1; color:#7a1b2b; }
-  .kbd { border:1px solid #e5e7eb; background:#f8fafc; border-radius:6px; padding:.25rem .5rem; font-family:ui-monospace, Menlo, Consolas, monospace; font-size:.88rem; }
-  .toast { animation: toastIn .18s ease; }
-  @keyframes toastIn { from { transform: translateY(-6px); opacity:0 } to { transform:translateY(0); opacity:1 } }
-  .term-card { transition:border-color .15s ease, background .15s ease; }
-  .term-card:hover { border-color:#94a3b8; }
-  .grad-pulse { animation: pulse 1.2s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:.95} 50%{opacity:.65} }
+  :root { --warm-a:#faf9f8; --warm-b:#f3f2f1; }
+  body{ font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
 
-  /* Dark mode tweaks */
-  .dark .card { background:#0b1220; border-color:#1f2937; }
-  .dark .chip { background:#0f172a; border-color:#1f2937; color:#e5e7eb; }
-  .dark .chip:hover { background:#111827; }
-  .dark .chip.on { background:#312e81; border-color:#4338ca; color:#c7d2fe; }
-  .dark .kbd { background:#0f172a; border-color:#1f2937; color:#e5e7eb; }
-  .dark .border-slate-200 { border-color:#263043 !important; }
-  .dark .bg-slate-50 { background:#0b1220 !important; }
-  .dark .bg-white { background:#0b1220 !important; }
+  /* Background: subtle warm gradient */
+  .app-bg{ background: linear-gradient(135deg, var(--warm-a), var(--warm-b)); }
+
+  /* Glass card */
+  .card{ border:1px solid rgba(0,0,0,.07); background:rgba(255,255,255,.72); backdrop-filter: blur(12px); border-radius:14px; box-shadow: var(--tw-shadow), var(--tw-shadow-colored); }
+  .dark .card{ background:rgba(12,16,24,.72); border-color: rgba(255,255,255,.12); }
+
+  /* Section headings & micro-type */
+  h3{ font-size:15px; font-weight:700; letter-spacing:.01em; }
+  .muted{ color:#5b6370 }
+  .dark .muted{ color:#9aa4b2 }
+
+  /* Chips (smaller, refined) */
+  .chip{ font-size:13px; padding:.38rem .68rem; border-radius:10px; background:rgba(245,246,247,.9); border:1px solid rgba(0,0,0,.08); transition: all .15s ease; }
+  .chip:hover{ background:rgba(240,241,242,.95) }
+  .chip.on{ background:#fbeaec; border-color:#f1bac7; color:#a31435; font-weight:600 }
+
+  /* KBD tags */
+  .kbd{ border:1px solid rgba(0,0,0,.08); background:rgba(248,249,250,.9); border-radius:6px; padding:.2rem .46rem; font-family: ui-monospace, Menlo, Consolas, monospace; font-size:13px }
+
+  /* Term cards */
+  .term-card{ transition:border-color .15s ease, background .15s ease; }
+  .term-card:hover{ border-color:#bfc6cf }
+
+  /* Toast */
+  .toast{ animation: toastIn .18s ease }
+  @keyframes toastIn { from{ transform:translateY(-6px); opacity:0 } to{ transform:translateY(0); opacity:1 } }
+
+  /* Print summary (hidden screen-only, visible in print dialog) */
+  @media print{
+    body{ background:#fff !important }
+    header, .no-print{ display:none !important }
+    #printSummary{ display:block !important }
+  }
+  #printSummary{ display:none; }
 </style>
 </head>
 
-<body class="bg-[var(--warm-bg)] dark:bg-[#070b14] text-slate-900 dark:text-slate-100 min-h-full flex flex-col text-[15px] leading-6">
+<body class="app-bg dark:bg-[#0a0f18] text-slate-900 dark:text-slate-100 min-h-full flex flex-col text-[15px] leading-[1.6]">
 
-<!-- Header (scrolls away naturally) -->
-<header class="bg-white/80 dark:bg-[#0b1220]/80 backdrop-blur border-b border-slate-200 dark:border-[#263043]">
+<!-- Header -->
+<header class="border-b border-black/10 dark:border-white/10 bg-white/70 dark:bg-[#0b1220]/70 backdrop-blur">
   <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
     <div class="flex items-center gap-3">
-      <!-- Simple red square KCL logo (inline SVG) -->
+      <!-- Simple red square KCL logo -->
       <svg width="28" height="28" viewBox="0 0 28 28" class="flex-none" aria-hidden="true">
         <rect width="28" height="28" rx="6" fill="#d50032"/>
-        <text x="50%" y="55%" text-anchor="middle" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="14" font-weight="700" fill="#ffffff">KCL</text>
+        <text x="50%" y="55%" text-anchor="middle" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="12" font-weight="700" fill="#ffffff">KCL</text>
       </svg>
       <div>
         <h1 class="text-[18px] font-bold">King's College London — PNOMH Graduation Planner</h1>
-        <p class="opacity-80 text-[13px] -mt-0.5">One module at a time · Foundations → Options → Research → Synoptic</p>
+        <p class="muted text-[13px] -mt-0.5">One module at a time · Foundations → Options → Research → Synoptic</p>
       </div>
     </div>
     <div class="flex items-center gap-2">
-      <button id="darkToggle" class="px-3 py-2 rounded-md bg-slate-900/80 text-white text-[13px] font-semibold hover:opacity-90 dark:bg-white/10">🌙 Dark</button>
+      <button id="darkToggle" class="px-3 py-2 rounded-md border border-black/10 dark:border-white/10 text-[13px] font-semibold hover:bg-black/5 dark:hover:bg-white/10">Dark mode</button>
     </div>
   </div>
 </header>
 
-<!-- Main: two columns, Study Plan focus on the left -->
+<!-- Main layout: Left (Study Plan + Setup), Right (Options + Analytics) -->
 <main class="max-w-6xl mx-auto px-4 py-5 grid md:grid-cols-3 gap-4 w-full">
 
-  <!-- LEFT COLUMN: Study Plan (top), then Setup -->
+  <!-- LEFT COLUMN -->
   <section class="md:col-span-2 space-y-4">
-    <!-- STUDY PLAN (Top Priority) -->
-    <div class="card p-0 overflow-hidden">
-      <div class="px-4 pt-3 pb-2 border-b bg-white/70 dark:bg-[#0b1220]/70 backdrop-blur">
-        <h3 class="text-[16px] font-semibold">Study Plan</h3>
+    <!-- STUDY PLAN -->
+    <div class="card p-0 overflow-hidden shadow-glass">
+      <div class="px-4 pt-3 pb-2 border-b border-black/10 dark:border-white/10 bg-white/60 dark:bg-[#0b1220]/60 backdrop-blur">
+        <h3>Study Plan</h3>
       </div>
 
       <div id="timeline" class="grid gap-2 max-h-[600px] overflow-y-auto p-4 pt-3"></div>
@@ -91,20 +114,20 @@
           <span class="kbd">Synoptic <span id="ps">0</span>/<span id="rs">1</span></span>
         </div>
 
-        <div class="mt-3 h-3 w-full bg-slate-200 rounded-full overflow-hidden">
+        <div class="mt-3 h-3 w-full rounded-full overflow-hidden border border-black/10 dark:border-white/10 bg-white/60 dark:bg-white/5">
           <div id="progFill" class="h-3 bg-kcl-red text-white text-[11px] leading-3 flex items-center justify-center transition-all" style="width:0%">0%</div>
         </div>
 
-        <div id="gradBox" class="hidden mt-3 p-3 rounded border-2 border-emerald-300 bg-emerald-50 dark:bg-[#0a1f17] dark:border-emerald-900 font-semibold text-[14px] flex items-center gap-2">
-          🎓 <strong>Estimated Graduation:</strong> <span id="gradTxt" class="text-emerald-700 dark:text-emerald-300 grad-pulse"></span>
+        <div id="gradBox" class="hidden mt-3 p-3 rounded border-2 border-emerald-300 bg-emerald-50/80 dark:bg-[#0a1f17] dark:border-emerald-900 font-semibold text-[14px] flex items-center gap-2">
+          <span class="font-semibold">Estimated Graduation:</span> <span id="gradTxt" class="text-emerald-700 dark:text-emerald-300"></span>
         </div>
 
-        <div id="impactBox" class="hidden mt-3 p-3 rounded border bg-slate-50 dark:bg-[#0f172a] dark:border-[#263043] text-[14px]">
+        <div id="impactBox" class="hidden mt-3 p-3 rounded border border-black/10 dark:border-white/10 bg-white/60 dark:bg-white/5 text-[14px]">
           <strong>Impact:</strong>
           Baseline <span id="impBase" class="font-semibold"></span>
           → Your plan <span id="impPlan" class="font-semibold"></span>
           <span id="impDelta" class="ml-2 font-semibold"></span>
-          <canvas id="impactChart" width="640" height="120" class="mt-3 w-full rounded-md bg-white dark:bg-[#0b1220] border border-slate-200 dark:border-[#263043]"></canvas>
+          <canvas id="impactChart" width="640" height="120" class="mt-3 w-full rounded-md border border-black/10 dark:border-white/10 bg-white/70 dark:bg-[#0b1220]/70"></canvas>
         </div>
       </div>
     </div>
@@ -112,26 +135,30 @@
     <!-- SETUP (compact) -->
     <div class="card p-3">
       <div class="flex items-start justify-between">
-        <h3 class="text-[16px] font-semibold">Setup</h3>
+        <h3>Setup</h3>
         <div class="flex items-center gap-2">
           <button id="quickFillBtn" class="px-3 py-2 rounded-md bg-kcl-red text-white text-[13px] font-semibold hover:opacity-90">Quick Fill</button>
-          <button id="downloadBtn" class="px-3 py-2 rounded-md border border-slate-200 dark:border-[#263043] text-[13px] font-semibold hover:bg-slate-50 dark:hover:bg-[#0f172a]">Download</button>
-          <button id="resetBtn" class="px-3 py-2 rounded-md border border-slate-200 dark:border-[#263043] text-[13px] hover:bg-slate-50 dark:hover:bg-[#0f172a]">Reset</button>
+          <button id="downloadBtn" class="px-3 py-2 rounded-md border border-black/10 dark:border-white/10 text-[13px] font-semibold hover:bg-black/5 dark:hover:bg-white/10">Download</button>
+          <label class="px-3 py-2 rounded-md border border-black/10 dark:border-white/10 text-[13px] font-semibold hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer">
+            Import<input id="importInput" type="file" accept="application/json" class="hidden">
+          </label>
+          <button id="printBtn" class="px-3 py-2 rounded-md border border-black/10 dark:border-white/10 text-[13px] font-semibold hover:bg-black/5 dark:hover:bg-white/10">Print summary</button>
+          <button id="resetBtn" class="px-3 py-2 rounded-md border border-black/10 dark:border-white/10 text-[13px] hover:bg-black/5 dark:hover:bg-white/10">Reset</button>
         </div>
       </div>
 
       <div class="grid grid-cols-2 gap-3 mt-3">
         <div>
-          <label class="block text-[12px] text-slate-600 dark:text-slate-400 mb-1">Award</label>
-          <select id="award" class="w-full border rounded px-2 py-2 text-[14px] bg-white dark:bg-[#0f172a] border-slate-200 dark:border-[#263043]">
+          <label class="block text-[12px] muted mb-1">Award</label>
+          <select id="award" class="w-full border rounded px-2 py-2 text-[14px] bg-white/80 dark:bg-[#0f172a]/70 border-black/10 dark:border-white/10">
             <option value="PGCert">PG Cert (60c)</option>
             <option value="PGDip">PG Dip (120c)</option>
             <option value="MSc" selected>MSc (180c)</option>
           </select>
         </div>
         <div>
-          <label class="block text-[12px] text-slate-600 dark:text-slate-400 mb-1">Start</label>
-          <select id="start" class="w-full border rounded px-2 py-2 text-[14px] bg-white dark:bg-[#0f172a] border-slate-200 dark:border-[#263043]"></select>
+          <label class="block text-[12px] muted mb-1">Start</label>
+          <select id="start" class="w-full border rounded px-2 py-2 text-[14px] bg-white/80 dark:bg-[#0f172a]/70 border-black/10 dark:border-white/10"></select>
         </div>
       </div>
 
@@ -139,23 +166,23 @@
     </div>
   </section>
 
-  <!-- RIGHT COLUMN: Options (top), Analytics (below) -->
+  <!-- RIGHT COLUMN -->
   <aside class="space-y-4">
-    <!-- OPTIONS (top-right) -->
+    <!-- OPTIONS (smaller text) -->
     <div class="card p-4">
       <div class="flex items-center justify-between mb-2">
-        <h3 class="text-[16px] font-semibold">Choose 4 Options</h3>
-        <span class="text-[12px] text-slate-600 dark:text-slate-400"><span id="optCount">0</span>/4</span>
+        <h3>Choose 4 Options</h3>
+        <span class="text-[12px] muted"><span id="optCount">0</span>/4</span>
       </div>
       <div id="opts" class="flex flex-wrap gap-2"></div>
-      <div id="warnBox" class="hidden mt-3 text-[14px] text-amber-800 bg-amber-50 dark:bg-[#3a2b06] dark:text-amber-200 border border-amber-200 dark:border-amber-800 rounded p-2">
+      <div id="warnBox" class="hidden mt-3 text-[13px] text-amber-800 bg-amber-50/90 dark:bg-[#3a2b06] dark:text-amber-200 border border-amber-200 dark:border-amber-800 rounded p-2">
         Please select 4 option modules.
       </div>
     </div>
 
     <!-- ANALYTICS (compact) -->
     <div class="card p-4">
-      <h3 class="text-[16px] font-semibold mb-3">Analytics</h3>
+      <h3 class="mb-3">Analytics</h3>
       <div class="grid grid-cols-2 gap-2">
         <div class="rounded-lg text-center text-white p-3" style="background:linear-gradient(135deg,#667eea,#764ba2)">
           <div class="text-[12px] opacity-90">Duration</div>
@@ -176,20 +203,49 @@
         </div>
       </div>
 
-      <div class="my-3 h-3 w-full bg-slate-200 rounded-full overflow-hidden">
+      <div class="my-3 h-3 w-full rounded-full overflow-hidden border border-black/10 dark:border-white/10 bg-white/60 dark:bg-white/10">
         <div id="progFillClone" class="h-3 bg-kcl-red text-white text-[11px] leading-3 flex items-center justify-center transition-all" style="width:0%">0%</div>
       </div>
 
       <div>
         <h4 class="text-[14px] font-semibold mb-2">Break Impact</h4>
-        <div id="breakImpact" class="text-[13px] text-slate-600 dark:text-slate-400">Select modules to see impact</div>
+        <div id="breakImpact" class="text-[13px] muted">Select modules to see impact</div>
       </div>
     </div>
   </aside>
 </main>
 
+<!-- PRINT SUMMARY (hidden until print) -->
+<section id="printSummary" class="max-w-6xl mx-auto px-6 py-8">
+  <div class="flex items-center gap-3 mb-4">
+    <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+      <rect width="28" height="28" rx="6" fill="#d50032"/>
+      <text x="50%" y="55%" text-anchor="middle" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="12" font-weight="700" fill="#ffffff">KCL</text>
+    </svg>
+    <div>
+      <div class="text-xl font-bold">PNOMH Graduation Plan — Summary</div>
+      <div id="printMeta" class="text-sm text-slate-600"></div>
+    </div>
+  </div>
+
+  <h2 class="text-lg font-semibold mt-4 mb-2">Plan Overview</h2>
+  <div id="printOverview" class="text-sm"></div>
+
+  <h2 class="text-lg font-semibold mt-6 mb-2">Timeline</h2>
+  <table class="w-full text-sm border-collapse">
+    <thead>
+      <tr>
+        <th class="text-left border-b py-2">Term</th>
+        <th class="text-left border-b py-2">Module / Break</th>
+        <th class="text-left border-b py-2">Stage</th>
+      </tr>
+    </thead>
+    <tbody id="printTable"></tbody>
+  </table>
+</section>
+
 <!-- Toast container -->
-<div id="toast" class="fixed top-4 right-4 space-y-2 z-50"></div>
+<div id="toast" class="fixed top-4 right-4 space-y-2 z-50 no-print"></div>
 
 <script>
 /* =========================
@@ -217,10 +273,10 @@ const req = () => ({...REQ[state.award]});
 let genTimer; const regen = () => { clearTimeout(genTimer); genTimer = setTimeout(gen, 60); };
 
 // persistence
-function save(){ const payload = {...state, breaks:[...state.breaks], taken:[...state.taken]}; localStorage.setItem('planner.kcl.v4', JSON.stringify(payload)); }
+function save(){ const payload = {...state, breaks:[...state.breaks], taken:[...state.taken]}; localStorage.setItem('planner.kcl.pro.v1', JSON.stringify(payload)); }
 function load(){
   try {
-    const raw = localStorage.getItem('planner.kcl.v4'); if(!raw) return;
+    const raw = localStorage.getItem('planner.kcl.pro.v1'); if(!raw) return;
     const obj = JSON.parse(raw);
     state.award = obj.award ?? state.award;
     state.start = obj.start ?? state.start;
@@ -232,8 +288,10 @@ function load(){
 }
 function toast(msg, kind='info'){
   const box=$("#toast");
-  const n=el('div',`toast card px-3 py-2 text-sm border-2 ${kind==='ok'?'border-emerald-300 bg-emerald-50 dark:bg-[#0a1f17] dark:border-emerald-900':kind==='warn'?'border-amber-300 bg-amber-50 dark:bg-[#3a2b06] dark:border-amber-900':'border-sky-300 bg-sky-50 dark:bg-[#0b1d2b] dark:border-sky-900'}`);
-  n.textContent=msg; box.appendChild(n); setTimeout(()=>n.remove(), 2200);
+  const tone = kind==='ok' ? 'border-emerald-300 bg-emerald-50/95 dark:bg-[#0a1f17] dark:border-emerald-900'
+              : kind==='warn'? 'border-amber-300 bg-amber-50/95 dark:bg-[#3a2b06] dark:border-amber-900'
+              : 'border-sky-300 bg-sky-50/95 dark:bg-[#0b1d2b] dark:border-sky-900';
+  const n=el('div',`toast card px-3 py-2 text-sm border-2 ${tone}`); n.textContent=msg; box.appendChild(n); setTimeout(()=>n.remove(), 2200);
 }
 
 /* =========================
@@ -244,11 +302,11 @@ function init(){
 
   // Dark toggle
   if(state.dark) document.documentElement.classList.add('dark');
-  $("#darkToggle").textContent = state.dark ? '☀️ Light' : '🌙 Dark';
+  $("#darkToggle").textContent = state.dark ? 'Light mode' : 'Dark mode';
   $("#darkToggle").addEventListener('click', () => {
     state.dark = !state.dark;
     document.documentElement.classList.toggle('dark', state.dark);
-    $("#darkToggle").textContent = state.dark ? '☀️ Light' : '🌙 Dark';
+    $("#darkToggle").textContent = state.dark ? 'Light mode' : 'Dark mode';
     save();
   });
 
@@ -262,7 +320,7 @@ function init(){
   $("#award").value = state.award;
   $("#award").addEventListener('change', e => { state.award = e.target.value; regen(); save(); });
 
-  // Options chips
+  // Options chips (smaller)
   const optsW=$("#opts"); optsW.innerHTML='';
   O.forEach(n=>{
     const b=el('button','chip'); b.dataset.name=n; b.textContent=n;
@@ -280,6 +338,8 @@ function init(){
   $("#quickFillBtn").addEventListener('click', quickFill);
   $("#resetBtn").addEventListener('click', resetPlan);
   $("#downloadBtn").addEventListener('click', downloadPlan);
+  $("#importInput").addEventListener('change', importPlan);
+  $("#printBtn").addEventListener('click', printSummary);
 
   gen();
 }
@@ -306,12 +366,12 @@ function renderPhase(){
   const tkn = countTaken();
   const box=$("#phaseInfo");
   let txt='', cls='';
-  if(tkn.f<r.f){ txt='📘 Phase 1: Foundation Modules (complete all 4 first)'; cls='bg-rose-50/60 dark:bg-[#2b0b18] border-rose-200 dark:border-rose-900'; }
-  else if(tkn.o<r.o){ txt='📕 Phase 2: Options (choose 4 from your selection)'; cls='bg-rose-50/60 dark:bg-[#2b0b18] border-rose-200 dark:border-rose-900'; }
-  else if(tkn.r<r.r){ txt='📗 Phase 3: Research Skills (after foundations + options)'; cls='bg-rose-50/60 dark:bg-[#0b1d2b] border-sky-200 dark:border-sky-900'; }
-  else if(tkn.s<r.s){ txt='📓 Phase 4: Synoptic Project'; cls='bg-rose-50/60 dark:bg-[#0b1d2b] border-sky-200 dark:border-sky-900'; }
-  else { txt='✅ All Phases Complete!'; cls='bg-emerald-50 dark:bg-[#0f2a1f] border-emerald-200 dark:border-emerald-900'; }
-  box.className = `mt-3 card p-3 text-[14px] font-semibold border ${cls}`;
+  if(tkn.f<r.f){ txt='Phase 1: Foundation Modules (complete all 4 first)'; cls='bg-rose-50/70 dark:bg-[#2b0b18]/60 border border-rose-200/70 dark:border-rose-900/50'; }
+  else if(tkn.o<r.o){ txt='Phase 2: Options (choose 4 from your selection)'; cls='bg-rose-50/70 dark:bg-[#2b0b18]/60 border border-rose-200/70 dark:border-rose-900/50'; }
+  else if(tkn.r<r.r){ txt='Phase 3: Research Skills (after foundations + options)'; cls='bg-sky-50/70 dark:bg-[#0b1d2b]/60 border border-sky-200/70 dark:border-sky-900/50'; }
+  else if(tkn.s<r.s){ txt='Phase 4: Synoptic Project'; cls='bg-sky-50/70 dark:bg-[#0b1d2b]/60 border border-sky-200/70 dark:border-sky-900/50'; }
+  else { txt='All Phases Complete!'; cls='bg-emerald-50/80 dark:bg-[#0f2a1f]/60 border border-emerald-200/70 dark:border-emerald-900/50'; }
+  box.className = `mt-3 rounded-md p-3 text-[14px] font-semibold ${cls}`;
   box.textContent = txt;
 }
 function yearFromKey(k){ return k.split('-')[0]; }
@@ -330,24 +390,24 @@ function renderTimeline(){
 
     const isBreak = state.breaks.has(k);
     const tkMod = state.taken.get(k);
-    const card = el('div','term-card border border-slate-200 dark:border-[#263043] rounded-lg p-3 bg-white dark:bg-[#0b1220]');
+    const card = el('div','term-card border border-black/10 dark:border-white/10 rounded-lg p-3 bg-white/70 dark:bg-[#0b1220]/70');
 
     // header
     const hdr=el('div','flex items-center justify-between mb-1');
     const ttl=el('div','text-[14px] font-semibold', fmtD(k));
     const ctrl=el('div','flex gap-1');
     if(isBreak){
-      const b=el('button','text-[12px] border rounded px-2 py-0.5','📅 Break');
+      const b=el('button','text-[12px] border border-black/10 dark:border-white/10 rounded px-2 py-0.5','Break');
       b.addEventListener('click',()=>{ state.breaks.delete(k); regen(); });
       ctrl.appendChild(b);
     } else if (tkMod){
-      const t=el('button','text-[12px] border rounded px-2 py-0.5 bg-emerald-50 dark:bg-[#0a1f17] border-emerald-200 dark:border-emerald-900','✓ Taken');
+      const t=el('button','text-[12px] border border-black/10 dark:border-white/10 rounded px-2 py-0.5 bg-emerald-50/80 dark:bg-[#0a1f17]','Taken');
       t.addEventListener('click',()=>{ state.taken.delete(k); regen(); });
-      const b=el('button','text-[12px] border rounded px-2 py-0.5','Take Break');
+      const b=el('button','text-[12px] border border-black/10 dark:border-white/10 rounded px-2 py-0.5','Set Break');
       b.addEventListener('click',()=>{ state.breaks.add(k); state.taken.delete(k); regen(); });
       ctrl.appendChild(t); ctrl.appendChild(b);
     } else {
-      const b=el('button','text-[12px] border rounded px-2 py-0.5','Set Break');
+      const b=el('button','text-[12px] border border-black/10 dark:border-white/10 rounded px-2 py-0.5','Set Break');
       b.addEventListener('click',()=>{ state.breaks.add(k); regen(); });
       ctrl.appendChild(b);
     }
@@ -376,7 +436,7 @@ function renderTimeline(){
       }
       card.appendChild(block);
     } else if (tkMod){
-      card.appendChild(el('div','mt-1 text-[13px] font-semibold rounded border px-2 py-1 bg-emerald-50 dark:bg-[#0a1f17] border-emerald-200 dark:border-emerald-900', tkMod));
+      card.appendChild(el('div','mt-1 text-[13px] font-semibold rounded border border-emerald-200/70 dark:border-emerald-900/50 px-2 py-1 bg-emerald-50/80 dark:bg-[#0a1f17]', tkMod));
     }
     tl.appendChild(card);
   });
@@ -395,11 +455,11 @@ function renderChoices(container, k, list, stage){
               : stage==='o' ? 'No eligible options available'
               : stage==='r' ? 'Complete 4 foundations + 4 options first'
               : 'Complete research modules first';
-    container.appendChild(el('div','text-[13px] text-slate-600 dark:text-slate-400','🔒 '+msg));
+    container.appendChild(el('div','text-[13px] text-slate-600 dark:text-slate-400', msg));
     return;
   }
   list.forEach(m=>{
-    const btn=el('button','w-full text-left text-[13px] border rounded px-2 py-1 bg-slate-50 dark:bg-[#0f172a] border-slate-200 dark:border-[#263043] hover:bg-slate-100 dark:hover:bg-[#111827]');
+    const btn=el('button','w-full text-left text-[13px] border border-black/10 dark:border-white/10 rounded px-2 py-1 bg-white/70 dark:bg-[#0f172a]/70 hover:bg-white/90 dark:hover:bg-[#111827]/70');
     btn.textContent=m;
     btn.addEventListener('click',()=>{
       state.taken.set(k,m);
@@ -527,7 +587,7 @@ function quickFill(){
 
   const added = state.taken.size - before;
   regen();
-  if(added>0) toast(`Added ${added} module${added>1?'s':''} to your plan!`,'ok');
+  if(added>0) toast(`Added ${added} module${added>1?'s':''} to your plan`,'ok');
   else toast('No suitable modules found to add','warn');
 }
 function resetPlan(){
@@ -542,6 +602,72 @@ function downloadPlan(){
   const blob = new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='graduation_plan.json'; a.click(); URL.revokeObjectURL(a.href);
 }
+function importPlan(evt){
+  const file = evt.target.files && evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const obj = JSON.parse(e.target.result);
+      if(!obj || typeof obj!=='object') throw new Error('Invalid file');
+      state.award = obj.award ?? state.award;
+      state.start = obj.start ?? state.start;
+      state.options = Array.isArray(obj.options) ? obj.options : [];
+      state.breaks = new Set(Array.isArray(obj.breaks)?obj.breaks:[]);
+      state.taken  = new Map(Array.isArray(obj.taken)?obj.taken:[]);
+      $("#award").value=state.award; $("#start").value=state.start;
+      document.querySelectorAll('#opts .chip').forEach(c=>{ const n=c.textContent.trim(); c.classList.toggle('on', state.options.includes(n)); });
+      $("#optCount").textContent = state.options.length;
+      regen(); toast('Plan imported successfully','ok');
+    } catch{
+      toast('Could not import this file','warn');
+    } finally {
+      evt.target.value = '';
+    }
+  };
+  reader.readAsText(file);
+}
+function printSummary(){
+  // Fill print meta
+  const meta = `Award: ${state.award} · Start: ${fmtD(state.start)} · Generated: ${new Date().toLocaleString('en-GB')}`;
+  $("#printMeta").textContent = meta;
+
+  // Overview
+  const r=req(); const tkn=countTaken();
+  const lastK=[...state.taken.keys()].sort().pop();
+  const grad = lastK ? fmtD(lastK) : '—';
+  $("#printOverview").innerHTML = `
+    <div><span class="font-semibold">Foundations:</span> ${tkn.f}/${r.f}</div>
+    <div><span class="font-semibold">Options:</span> ${tkn.o}/${r.o} — ${state.options.join(', ')||'No selections'}</div>
+    <div><span class="font-semibold">Research:</span> ${tkn.r}/${r.r}</div>
+    <div><span class="font-semibold">Synoptic:</span> ${tkn.s}/${r.s}</div>
+    <div class="mt-1"><span class="font-semibold">Estimated Graduation:</span> ${grad}</div>
+  `;
+
+  // Timeline table
+  const tbody = $("#printTable");
+  tbody.innerHTML = '';
+  const horizonStop = addY(state.start,6);
+  const span = keys.filter(k => k >= state.start && k <= horizonStop);
+  span.forEach(k=>{
+    const tr=document.createElement('tr');
+    const term=fmtD(k);
+    const mod= state.breaks.has(k) ? 'Break' : (state.taken.get(k) || '—');
+    const ty = state.breaks.has(k) ? '—' : stageLabel(getType(mod));
+    tr.innerHTML = `
+      <td class="py-1 border-b">${term}</td>
+      <td class="py-1 border-b">${mod}</td>
+      <td class="py-1 border-b">${ty}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Open print dialog
+  window.print();
+}
+function stageLabel(t){
+  return t==='f'?'Foundation': t==='o'?'Option': t==='r'?'Research': t==='s'?'Synoptic':'';
+}
 
 /* =========================
    Chart (vanilla)
@@ -551,16 +677,16 @@ function drawImpactChart(id, {baselinePeriods, currentPeriods, breaks}){
   ctx.clearRect(0,0,w,h);
 
   const pad=30; const maxX = Math.max(baselinePeriods, currentPeriods)||1; const maxY = maxX;
-  ctx.strokeStyle = '#94a3b8'; ctx.globalAlpha = .5; ctx.beginPath(); ctx.moveTo(pad,h-pad); ctx.lineTo(w-pad,h-pad); ctx.moveTo(pad,h-pad); ctx.lineTo(pad,pad); ctx.stroke(); ctx.globalAlpha = 1;
+  ctx.strokeStyle = '#9aa4b2'; ctx.globalAlpha = .55; ctx.beginPath(); ctx.moveTo(pad,h-pad); ctx.lineTo(w-pad,h-pad); ctx.moveTo(pad,h-pad); ctx.lineTo(pad,pad); ctx.stroke(); ctx.globalAlpha = 1;
   const x = v => pad + (w-2*pad) * (v/maxX); const y = v => (h-pad) - (h-2*pad) * (v/maxY);
 
-  ctx.strokeStyle = '#0ea5e9'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x(0), y(0)); ctx.lineTo(x(baselinePeriods), y(baselinePeriods)); ctx.stroke();
+  ctx.strokeStyle = '#3aa6e9'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x(0), y(0)); ctx.lineTo(x(baselinePeriods), y(baselinePeriods)); ctx.stroke();
   ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x(0), y(0)); ctx.lineTo(x(currentPeriods), y(currentPeriods)); ctx.stroke();
 
   if(breaks>0){ ctx.fillStyle = '#f59e0b'; for(let i=1;i<=breaks;i++){ const bx=x(currentPeriods*(i/(breaks+1))); const by=y(currentPeriods*(i/(breaks+1))); ctx.beginPath(); ctx.arc(bx,by,3,0,Math.PI*2); ctx.fill(); } }
 
-  ctx.fillStyle = '#94a3b8'; ctx.font = '10px system-ui, sans-serif'; ctx.fillText('Terms', w/2-14, h-8); ctx.save(); ctx.translate(12,h/2+20); ctx.rotate(-Math.PI/2); ctx.fillText('Cumulative terms',0,0); ctx.restore();
-  ctx.fillStyle='#0ea5e9'; ctx.fillText('Baseline', w-90, 20); ctx.fillStyle='#06b6d4'; ctx.fillText('Your plan', w-90, 34); ctx.fillStyle='#f59e0b'; ctx.fillText('Breaks', w-90, 48);
+  ctx.fillStyle = '#9aa4b2'; ctx.font = '10px Inter, system-ui, sans-serif'; ctx.fillText('Terms', w/2-14, h-8); ctx.save(); ctx.translate(12,h/2+20); ctx.rotate(-Math.PI/2); ctx.fillText('Cumulative terms',0,0); ctx.restore();
+  ctx.fillStyle='#3aa6e9'; ctx.fillText('Baseline', w-90, 20); ctx.fillStyle='#06b6d4'; ctx.fillText('Your plan', w-90, 34); ctx.fillStyle='#f59e0b'; ctx.fillText('Breaks', w-90, 48);
 }
 
 /* =========================
