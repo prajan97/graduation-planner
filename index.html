@@ -1,715 +1,1823 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>KCL PNOMH Graduation Planner — Modern Institutional</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KCL PNOMH Graduation Planner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Light Theme Colors */
+            --primary: #d50032;
+            --primary-light: #ff5a5f;
+            --primary-dark: #9b0026;
+            --secondary: #0055a4;
+            --secondary-light: #4d8bc8;
+            --secondary-dark: #003a75;
+            --accent: #ffab00;
+            --accent-light: #ffdd4b;
+            --accent-dark: #c67c00;
+            
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --bg-card: #ffffff;
+            
+            --text-primary: #212529;
+            --text-secondary: #495057;
+            --text-muted: #6c757d;
+            
+            --border: #dee2e6;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+            
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+            
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --font-size-base: 16px;
+        }
 
-<!-- Inter (professional, legible) -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        [data-theme="dark"] {
+            /* Dark Theme Colors */
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-tertiary: #2d2d2d;
+            --bg-card: #252525;
+            
+            --text-primary: #f8f9fa;
+            --text-secondary: #e9ecef;
+            --text-muted: #adb5bd;
+            
+            --border: #444;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
 
-<!-- Tailwind via CDN -->
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    darkMode: 'class',
-    theme: {
-      extend: {
-        fontFamily: { inter: ['Inter','system-ui','-apple-system','Segoe UI','Roboto','Helvetica','Arial','sans-serif'] },
-        colors: { kcl: { red: '#c8102e' } },
-        boxShadow: {
-          subtle: '0 2px 10px rgba(16, 24, 40, .06)',
-          card: '0 6px 20px rgba(16, 24, 40, .07)'
-        },
-        borderRadius: { xl: '12px' }
-      }
-    }
-  }
-</script>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<style>
-  :root {
-    --bg-a: #fcfcfd; /* clean porcelain */
-    --bg-b: #f5f7fa; /* cool light grey */
-  }
-  body{ font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
-  .app-bg{ background: radial-gradient(1400px 600px at 10% -10%, #ffffff 0%, transparent 50%), linear-gradient(135deg, var(--bg-a), var(--bg-b)); }
-  .card{ background:#fff; border:1px solid rgba(16,24,40,.08); border-radius:12px; box-shadow: var(--tw-shadow), var(--tw-shadow-colored); }
-  .dark .card{ background:#0c1320; border-color: rgba(255,255,255,.12); }
-  .kbd{ border:1px solid rgba(16,24,40,.1); background:#f7f8fa; border-radius:6px; padding:.18rem .45rem; font-family: ui-monospace, Menlo, Consolas, monospace; font-size:13px }
-  .muted{ color:#5b6574 } .dark .muted{ color:#aab3c2 }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: var(--font-size-base);
+            transition: var(--transition);
+        }
 
-  /* Refined pill toggle */
-  #darkToggle{
-    border-radius:9999px; border:1px solid rgba(16,24,40,.12);
-    padding:.45rem 1rem; font-size:13px; font-weight:600; color:#1f2937;
-    background: linear-gradient(180deg, #ffffff, #f3f4f6);
-    transition: all .2s ease; box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
-  }
-  #darkToggle:hover{ transform: translateY(-1px); background: linear-gradient(180deg, #ffffff, #eceef1); }
-  .dark #darkToggle{
-    color:#e5e7eb; border-color:#334155; background: linear-gradient(180deg, #1f2937, #0f172a);
-  }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
 
-  /* Option chips: compact + premium */
-  .chip{
-    font-size:13px; padding:.36rem .64rem; border-radius:10px;
-    background:#f3f5f8; border:1px solid rgba(16,24,40,.08);
-    transition: transform .12s ease, background .12s ease, box-shadow .12s ease;
-  }
-  .chip:hover{ background:#eef1f5; transform: translateY(-1px); box-shadow:0 4px 12px rgba(16,24,40,.06) }
-  .chip.on{ background:#fdf0f2; border-color:#e6b5bf; color:#8f0f26; font-weight:600 }
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
 
-  /* Timeline term card hover */
-  .term-card{ transition:border-color .15s ease, box-shadow .15s ease, background .15s ease; }
-  .term-card:hover{ border-color:#cfd6df; box-shadow:0 10px 22px rgba(16, 24, 40, .08) }
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
+            opacity: 0.1;
+        }
 
-  /* Print summary visibility */
-  @media print{
-    body{ background:#fff !important }
-    header, .no-print{ display:none !important }
-    #printSummary{ display:block !important }
-  }
-  #printSummary{ display:none; }
-</style>
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .logo .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(15deg);
+        }
+
+        /* Main Content Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 24px;
+            margin: 30px 0;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.75rem;
+            margin-bottom: 24px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(213, 0, 50, 0.15);
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.9rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(213, 0, 50, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--secondary-light);
+            box-shadow: 0 4px 12px rgba(0, 85, 164, 0.3);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-accent {
+            background-color: var(--accent);
+            color: #212529;
+        }
+
+        .btn-accent:hover {
+            background-color: var(--accent-light);
+            box-shadow: 0 4px 12px rgba(255, 171, 0, 0.3);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 1.5rem;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+        }
+
+        /* Module Tags */
+        .module-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .module-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background-color: var(--bg-secondary);
+            border-radius: 30px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .module-tag:hover {
+            background-color: var(--bg-tertiary);
+            transform: translateY(-2px);
+        }
+
+        .module-tag.selected {
+            background-color: rgba(213, 0, 50, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+            border-color: var(--primary);
+        }
+
+        .module-tag input {
+            margin: 0;
+        }
+
+        /* Analytics Cards */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .analytics-card {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            border-left: 4px solid var(--primary);
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .analytics-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 10px 0;
+            color: var(--primary);
+        }
+
+        .analytics-label {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin: 25px 0;
+        }
+
+        .progress-bar {
+            height: 14px;
+            background-color: var(--bg-tertiary);
+            border-radius: 7px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 7px;
+            transition: width 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Timeline Styles */
+        .timeline {
+            margin-top: 20px;
+            max-height: 700px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            background: var(--bg-secondary);
+        }
+
+        .timeline-period {
+            margin-bottom: 18px;
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .timeline-period:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .period-header {
+            background: var(--bg-tertiary);
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .period-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .period-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .period-modules {
+            padding: 12px 18px;
+            background: var(--bg-card);
+        }
+
+        .compact-module-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .compact-module-item {
+            padding: 10px 12px;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-sm);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 4px solid var(--info);
+            position: relative;
+        }
+
+        .compact-module-item:hover {
+            background: var(--bg-tertiary);
+            transform: translateY(-2px);
+        }
+
+        .compact-module-item.option {
+            border-left-color: var(--primary);
+        }
+
+        .compact-module-item.research {
+            border-left-color: var(--warning);
+        }
+
+        .compact-module-item.synoptic {
+            border-left-color: var(--success);
+        }
+
+        .compact-module-item.taken {
+            background: rgba(40, 167, 69, 0.1);
+            font-weight: 600;
+        }
+
+        .compact-module-item.break {
+            background: rgba(255, 193, 7, 0.1);
+            border-left-color: var(--warning);
+        }
+
+        .compact-module-item.locked {
+            background: rgba(220, 53, 69, 0.1);
+            border-left-color: var(--danger);
+            cursor: not-allowed;
+        }
+
+        .small-btn {
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            border-radius: 6px;
+        }
+
+        /* Phase Indicator - Sidebar Style */
+        .phase-indicator {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 0;
+        }
+
+        .phase {
+            padding: 20px 15px;
+            text-align: center;
+            border-radius: var(--border-radius);
+            background: var(--bg-card);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .phase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--border);
+        }
+
+        .phase.active {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(213, 0, 50, 0.3);
+        }
+
+        .phase.active::before {
+            background: var(--primary-light);
+        }
+
+        .phase.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        .phase.completed::before {
+            background: var(--success);
+        }
+
+        .phase-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .phase-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        /* Impact Section */
+        .impact-section {
+            margin-top: 20px;
+            padding: 18px;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent);
+        }
+
+        .impact-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .impact-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Alert Styles */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 18px 22px;
+            background: var(--bg-card);
+            border-left: 4px solid var(--success);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-hover);
+            z-index: 1000;
+            max-width: 350px;
+            animation: slideIn 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert.warning {
+            border-left-color: var(--warning);
+        }
+
+        .alert.error {
+            border-left-color: var(--danger);
+        }
+
+        .alert.info {
+            border-left-color: var(--info);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .close-alert {
+            cursor: pointer;
+            font-weight: 700;
+            opacity: 0.7;
+            transition: var(--transition);
+            margin-left: auto;
+        }
+
+        .close-alert:hover {
+            opacity: 1;
+        }
+
+        /* Compact Analytics */
+        .compact-analytics {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .compact-analytics-card {
+            padding: 18px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            border-top: 4px solid var(--secondary);
+        }
+
+        .compact-analytics-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .compact-analytics-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 8px 0;
+            color: var(--secondary);
+        }
+
+        .compact-analytics-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Notification Badge */
+        .notification-badge {
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+
+        /* Module Info Popup */
+        .module-info-popup {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            padding: 12px;
+            box-shadow: var(--shadow-hover);
+            z-index: 100;
+            width: 280px;
+            font-size: 0.85rem;
+            display: none;
+            color: var(--text-primary);
+        }
+
+        .compact-module-item:hover .module-info-popup {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Export Options */
+        .export-options {
+            display: flex;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .export-options .btn {
+            flex: 1;
+        }
+
+        /* Conflict Warning */
+        .conflict-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid var(--warning);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 0.95rem;
+            border-left: 4px solid var(--warning);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            height: 220px;
+            margin: 18px 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        /* Focus states for accessibility */
+        button:focus, input:focus, select:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+    </style>
 </head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div>
+                        <h1>KCL PNOMH Graduation Planner</h1>
+                        <div class="subtitle">Plan your part-time Psychology & Neuroscience of Mental Health degree</div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-outline" onclick="savePlan()">
+                        <i class="fas fa-save"></i> Save Plan
+                    </button>
+                    <button class="btn btn-outline" onclick="loadPlan()">
+                        <i class="fas fa-folder-open"></i> Load Plan
+                    </button>
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
 
-<body class="app-bg dark:bg-[#070b14] text-slate-900 dark:text-slate-100 min-h-full flex flex-col text-[15px] leading-[1.65]">
+    <div class="container">
+        <div class="main-content">
+            <!-- Left Column: Study Timeline -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            Study Timeline
+                        </div>
+                        <div>
+                            <span id="notificationCount" class="notification-badge" style="display: none;">0</span>
+                            <button class="btn btn-outline small-btn" onclick="showNotifications()">
+                                <i class="fas fa-bell"></i> Notifications
+                            </button>
+                        </div>
+                    </div>
+                    <div id="phaseInfo"></div>
+                    <div id="conflictWarning" class="conflict-warning" style="display: none;"></div>
+                    <div id="tl" class="timeline"></div>
+                </div>
 
-<!-- Header -->
-<header class="border-b border-slate-200/70 dark:border-white/10 bg-white/80 dark:bg-[#0b1220]/80 backdrop-blur">
-  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-    <div class="flex items-center gap-3">
-      <!-- Simple red square KCL logo -->
-      <svg width="28" height="28" viewBox="0 0 28 28" class="flex-none" aria-hidden="true">
-        <rect width="28" height="28" rx="6" fill="#c8102e"/>
-        <text x="50%" y="56%" text-anchor="middle" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="12" font-weight="700" fill="#ffffff">KCL</text>
-      </svg>
-      <div>
-        <h1 class="text-[18px] font-bold tracking-wide">King's College London — PNOMH Graduation Planner</h1>
-        <p class="muted text-[13px] -mt-0.5">One module at a time · Foundations → Options → Research → Synoptic</p>
-      </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-cog"></i>
+                            Program Setup
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="award">Select Award</label>
+                        <select class="form-control" id="award">
+                            <option value="PGCert">PG Cert (60 credits)</option>
+                            <option value="PGDip">PG Dip (120 credits)</option>
+                            <option value="MSc" selected>MSc (180 credits)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="start">Start Date</label>
+                        <select class="form-control" id="start"></select>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn" onclick="quickFill()">
+                            <i class="fas fa-bolt"></i> Quick Fill
+                        </button>
+                        <button class="btn btn-outline" onclick="resetPlan()">
+                            <i class="fas fa-redo"></i> Reset Plan
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Phase Indicator, Optional Modules & Progress -->
+            <div>
+                <!-- Phase Indicator - Now in sidebar -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-road"></i>
+                            Study Phases
+                        </div>
+                    </div>
+                    <div class="phase-indicator">
+                        <div class="phase completed">
+                            <div class="phase-title">Foundation</div>
+                            <div class="phase-subtitle">4 Modules</div>
+                        </div>
+                        <div class="phase active">
+                            <div class="phase-title">Options</div>
+                            <div class="phase-subtitle">Choose 4</div>
+                        </div>
+                        <div class="phase">
+                            <div class="phase-title">Research</div>
+                            <div class="phase-subtitle">2 Modules</div>
+                        </div>
+                        <div class="phase">
+                            <div class="phase-title">Synoptic</div>
+                            <div class="phase-subtitle">1 Project (4 months)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-tasks"></i>
+                            Select Option Modules
+                        </div>
+                        <div class="card-subtitle">Choose 4 of 10 available</div>
+                    </div>
+                    <div class="module-tags" id="opts"></div>
+                    <div id="wbox" class="alert warning" style="display: none; position: static; margin-top: 15px;"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-graduation-cap"></i>
+                            Graduation Plan
+                        </div>
+                    </div>
+                    <div class="compact-analytics">
+                        <div class="compact-analytics-card">
+                            <div class="compact-analytics-label">Estimated Graduation</div>
+                            <div class="compact-analytics-value" id="vGrad">—</div>
+                            <div class="compact-analytics-label">with current plan</div>
+                        </div>
+                        <div class="compact-analytics-card">
+                            <div class="compact-analytics-label">Study Duration</div>
+                            <div class="compact-analytics-value" id="vDur">—</div>
+                            <div class="compact-analytics-label">months</div>
+                        </div>
+                        <div class="compact-analytics-card">
+                            <div class="compact-analytics-label">Progress</div>
+                            <div class="compact-analytics-value" id="vPct">0%</div>
+                            <div class="compact-analytics-label">completed</div>
+                        </div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progFill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span>Start</span>
+                            <span id="progText">0% Complete</span>
+                            <span>Graduation</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Export Options -->
+                    <div class="export-options">
+                        <button class="btn btn-outline" onclick="exportToPDF()">
+                            <i class="fas fa-file-pdf"></i> Export PDF
+                        </button>
+                        <button class="btn btn-outline" onclick="exportToCalendar()">
+                            <i class="fas fa-calendar-plus"></i> Export Calendar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="flex items-center gap-2">
-      <button id="darkToggle">Dark mode</button>
-    </div>
-  </div>
-</header>
 
-<!-- Main: Left (Study Plan + Setup), Right (Options + Analytics) -->
-<main class="max-w-6xl mx-auto px-4 py-5 grid md:grid-cols-3 gap-4 w-full">
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        // Check for saved theme or prefered scheme
+        const currentTheme = localStorage.getItem('theme') || 
+                           (prefersDarkScheme.matches ? 'dark' : 'light');
+        
+        // Set the theme
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        
+        // Update button icon
+        updateThemeIcon(currentTheme);
+        
+        // Toggle theme function
+        themeToggle.addEventListener('click', function() {
+            let theme = document.documentElement.getAttribute('data-theme');
+            let newTheme = theme === 'light' ? 'dark' : 'light';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            const icon = themeToggle.querySelector('i');
+            if (theme === 'dark') {
+                icon.className = 'fas fa-sun';
+            } else {
+                icon.className = 'fas fa-moon';
+            }
+        }
 
-  <!-- LEFT COLUMN -->
-  <section class="md:col-span-2 space-y-4">
-    <!-- STUDY PLAN -->
-    <div class="card p-0 shadow-card overflow-hidden">
-      <div class="px-4 pt-3 pb-2 border-b border-slate-200/70 dark:border-white/10 bg-white/70 dark:bg-[#0b1220]/70 backdrop-blur">
-        <h3 class="font-semibold tracking-wide">Study Plan</h3>
-      </div>
+        // Enhanced module definitions with additional information
+        const MODULES = {
+            foundation: [
+                { name: 'Biological Foundations of Mental Health', credits: 15, description: 'Core biological principles underlying mental health disorders' },
+                { name: 'Techniques in Neuroscience', credits: 15, description: 'Methodologies and techniques used in neuroscience research' },
+                { name: 'Psychological Foundations of Mental Health', credits: 15, description: 'Psychological theories and models of mental health' },
+                { name: 'Mental Health in the Community', credits: 15, description: 'Community-based approaches to mental health care' }
+            ],
+            options: [
+                { name: 'Mindfulness: Neuroscience & Application', credits: 15, description: 'Neuroscientific basis and practical applications of mindfulness' },
+                { name: 'Global Mental Health', credits: 15, description: 'Mental health challenges and solutions in global context' },
+                { name: 'Psychology & Neuroscience of Addiction', credits: 15, description: 'Biological and psychological aspects of addictive behaviors' },
+                { name: 'Child & Adolescent Mental Health', credits: 15, description: 'Developmental perspectives on mental health in young people' },
+                { name: 'Social, Genetic & Environmental Basis of Mental Health', credits: 15, description: 'Interplay between social, genetic and environmental factors' },
+                { name: 'Neuroscience in Society', credits: 15, description: 'Ethical and societal implications of neuroscience research' },
+                { name: 'Psychology & Neuroscience of Affective Disorders', credits: 15, description: 'Mood disorders from psychological and neuroscientific perspectives' },
+                { name: 'Psychology & Neuroscience of Psychosis', credits: 15, description: 'Understanding psychotic disorders through multiple lenses' },
+                { name: 'Neuroimaging in Mental Health', credits: 15, description: 'Application of neuroimaging techniques in mental health research' },
+                { name: 'Pharmacotherapies in Mental Health', credits: 15, description: 'Pharmacological treatments for mental health conditions' }
+            ],
+            research: [
+                { name: 'Research Skills: From Reviewing & Critical Analysis to Research Ethics', credits: 15, description: 'Fundamental research skills and ethical considerations' },
+                { name: 'Research Skills: From Methods & Procedures to Analysis & Reporting', credits: 15, description: 'Advanced research methodologies and analytical techniques' }
+            ],
+            synoptic: [
+                { name: 'Independent Synoptic Project', credits: 60, description: 'Comprehensive research project integrating knowledge from all modules' }
+            ]
+        };
 
-      <div id="timeline" class="grid gap-2 max-h-[580px] overflow-y-auto p-4 pt-3"></div>
+        // Extract module names for compatibility
+        const F = MODULES.foundation.map(m => m.name);
+        const O = MODULES.options.map(m => m.name);
+        const R = MODULES.research.map(m => m.name);
+        const S = MODULES.synoptic.map(m => m.name);
 
-      <div class="px-4 pb-4 -mt-1">
-        <div class="text-[14px] flex flex-wrap gap-2 items-center">
-          <strong>Progress:</strong>
-          <span class="kbd">Foundation <span id="pf">0</span>/<span id="rf">4</span></span>
-          <span class="kbd">Options <span id="po">0</span>/<span id="ro">4</span></span>
-          <span class="kbd">Research <span id="pr">0</span>/<span id="rr">2</span></span>
-          <span class="kbd">Synoptic <span id="ps">0</span>/<span id="rs">1</span></span>
-        </div>
+        // Extended schedule data - Synoptic project available in all periods
+        const SCH = {
+            "2023-01": ["Techniques in Neuroscience", "Psychology & Neuroscience of Affective Disorders", "Neuroscience in Society", "Social, Genetic & Environmental Basis of Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics", "Independent Synoptic Project"],
+            "2023-03": ["Psychological Foundations of Mental Health", "Psychology & Neuroscience of Psychosis", "Neuroimaging in Mental Health", "Pharmacotherapies in Mental Health", "Research Skills: From Methods & Procedures to Analysis & Reporting", "Independent Synoptic Project"],
+            "2023-05": ["Mental Health in the Community", "Child & Adolescent Mental Health", "Global Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics", "Independent Synoptic Project"],
+            "2023-06": ["Biological Foundations of Mental Health", "Psychology & Neuroscience of Addiction", "Mindfulness: Neuroscience & Application", "Research Skills: From Methods & Procedures to Analysis & Reporting", "Independent Synoptic Project"],
+            "2023-09": ["Techniques in Neuroscience", "Psychology & Neuroscience of Affective Disorders", "Neuroscience in Society", "Social, Genetic & Environmental Basis of Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics", "Independent Synoptic Project"],
+            "2023-10": ["Psychological Foundations of Mental Health", "Psychology & Neuroscience of Psychosis", "Neuroimaging in Mental Health", "Pharmacotherapies in Mental Health", "Research Skills: From Methods & Procedures to Analysis & Reporting", "Independent Synoptic Project"],
+            "2024-01": ["Mental Health in the Community", "Child & Adolescent Mental Health", "Global Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics", "Independent Synoptic Project"],
+            "2024-03": ["Biological Foundations of Mental Health", "Psychology & Neuroscience of Addiction", "Mindfulness: Neuroscience & Application", "Research Skills: From Methods & Procedures to Analysis & Reporting", "Independent Synoptic Project"],
+            "2024-05": ["Techniques in Neuroscience", "Psychology & Neuroscience of Affective Disorders", "Neuroscience in Society", "Social, Genetic & Environmental Basis of Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics", "Independent Synoptic Project"],
+            "2024-06": ["Psychological Foundations of Mental Health", "Psychology & Neuroscience of Psychosis", "Neuroimaging in Mental Health", "Pharmacotherapies in Mental Health", "Research Skills: From Methods & Procedures to Analysis & Reporting", "Independent Synoptic Project"],
+            "2024-09": ["Mental Health in the Community", "Child & Adolescent Mental Health", "Global Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics", "Independent Synoptic Project"],
+            "2024-10": ["Biological Foundations of Mental Health", "Psychology & Neuroscience of Addiction", "Mindfulness: Neuroscience & Application", "Research Skills: From Methods & Procedures to Analysis & Reporting", "Independent Synoptic Project"],
+            "2025-01": ["Techniques in Neuroscience", "Psychology & Neuroscience of Affective Disorders", "Neuroscience in Society", "Social, Genetic & Environmental Basis of Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics", "Independent Synoptic Project"],
+            "2025-03": ["Psychological Foundations of Mental Health", "Psychology & Neuroscience of Psychosis", "Neuroimaging in Mental Health", "Pharmacotherapies in Mental Health", "Research Skills: From Methods & Procedures to Analysis & Reporting", "Independent Synoptic Project"],
+            "2025-05": ["Mental Health in the Community", "Child & Adolescent Mental Health", "Global Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics", "Independent Synoptic Project"],
+            "2025-06": ["Biological Foundations of Mental Health", "Psychology & Neuroscience of Addiction", "Mindfulness: Neuroscience & Application", "Research Skills: From Methods & Procedures to Analysis & Reporting", "Independent Synoptic Project"],
+            "2025-09": ["Techniques in Neuroscience", "Psychology & Neuroscience of Affective Disorders", "Neuroscience in Society", "Social, Genetic & Environmental Basis of Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics", "Independent Synoptic Project"],
+            "2025-10": ["Psychological Foundations of Mental Health", "Psychology & Neuroscience of Psychosis", "Neuroimaging in Mental Health", "Pharmacotherapies in Mental Health", "Research Skills: From Methods & Procedures to Analysis & Reporting", "Independent Synoptic Project"],
+            "2026-01": ["Mental Health in the Community", "Child & Adolescent Mental Health", "Global Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics", "Independent Synoptic Project"],
+            "2026-03": ["Biological Foundations of Mental Health", "Psychology & Neuroscience of Addiction", "Mindfulness: Neuroscience & Application", "Research Skills: From Methods & Procedures to Analysis & Reporting", "Independent Synoptic Project"]
+        };
+        
+        const REQ = {
+            PGCert: { f: 4, o: 0, r: 0, s: 0 },
+            PGDip: { f: 4, o: 4, r: 0, s: 0 },
+            MSc: { f: 4, o: 4, r: 2, s: 1 }
+        };
+        
+        const keys = Object.keys(SCH).sort();
+        const brks = new Set();
+        const taken = new Map();
+        
+        let isInitialized = false;
+        
+        // Initialize the planner
+        function init() {
+            if (isInitialized) return;
+            isInitialized = true;
+        
+            // Initialize start date dropdown
+            const startS = document.getElementById('start');
+            if (!startS) return;
+        
+            startS.innerHTML = '';
+            keys.forEach(k => {
+                const [y, m] = k.split('-').map(Number);
+                const d = new Date(y, m - 1, 1);
+                const o = document.createElement('option');
+                o.value = k;
+                o.textContent = d.toLocaleString('en-GB', { month: 'short', year: 'numeric' });
+                startS.appendChild(o);
+            });
+        
+            startS.value = '2023-09';
+            startS.addEventListener('change', gen);
+            document.getElementById('award').addEventListener('change', gen);
+        
+            // Initialize option checkboxes with enhanced info
+            const optsW = document.getElementById('opts');
+            if (!optsW) return;
+        
+            optsW.innerHTML = '';
+            MODULES.options.forEach(module => {
+                const id = 'o' + module.name.replace(/[^a-z0-9]/gi, '');
+                const l = document.createElement('label');
+                l.className = 'module-tag';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = id;
+                checkbox.dataset.name = module.name;
+                checkbox.addEventListener('change', function() {
+                    const checkedBoxes = document.querySelectorAll('#opts input:checked');
+                    if (checkedBoxes.length > 4) {
+                        this.checked = false;
+                        showAlert('You can only select 4 option modules', 'warning');
+                        return;
+                    }
+        
+                    // If deselecting, remove any taken modules that are no longer valid
+                    if (!this.checked) {
+                        const deselectedModule = this.dataset.name;
+                        const toRemove = [];
+                        taken.forEach((module, period) => {
+                            if (module === deselectedModule) {
+                                toRemove.push(period);
+                            }
+                        });
+                        toRemove.forEach(period => taken.delete(period));
+                    }
+        
+                    updateChipSelection();
+                    gen();
+                });
+                l.appendChild(checkbox);
+                
+                const textSpan = document.createElement('span');
+                textSpan.textContent = module.name;
+                l.appendChild(textSpan);
+                
+                // Add info popup
+                const infoPopup = document.createElement('div');
+                infoPopup.className = 'module-info-popup';
+                infoPopup.innerHTML = `
+                    <strong>${module.name}</strong><br>
+                    <em>${module.credits} credits</em><br>
+                    ${module.description}
+                `;
+                l.appendChild(infoPopup);
+                
+                optsW.appendChild(l);
+            });
+            
+            // Try to load saved plan
+            const saved = localStorage.getItem('kclGraduationPlan');
+            if (saved) {
+                if (confirm('A saved plan was found. Would you like to load it?')) {
+                    loadPlan();
+                }
+            } else {
+                // Generate initial view
+                gen();
+            }
+        }
+        
+        // Update chip selection styling
+        function updateChipSelection() {
+            const chips = document.querySelectorAll('#opts .module-tag');
+            chips.forEach(chip => {
+                const checkbox = chip.querySelector('input[type="checkbox"]');
+                if (checkbox && checkbox.checked) {
+                    chip.classList.add('selected');
+                } else {
+                    chip.classList.remove('selected');
+                }
+            });
+        }
+        
+        // Get selected options
+        function getOpts() {
+            return [...document.querySelectorAll('#opts input:checked')].map(c => c.dataset.name).slice(0, 4);
+        }
+        
+        // Add years to a date key
+        function addY(k, y) {
+            const [yr, m] = k.split('-').map(Number);
+            return `${yr + y}-${String(m).padStart(2, '0')}`;
+        }
+        
+        // Format date key to readable format
+        function fmtD(k) {
+            const [y, m] = k.split('-').map(Number);
+            const date = new Date(y, m - 1, 1);
+            return date.toLocaleString('en-GB', { month: 'short', year: 'numeric' });
+        }
+        
+        // Get module type
+        function getType(m) {
+            if (F.includes(m)) return 'foundation';
+            if (O.includes(m)) return 'option';
+            if (R.includes(m)) return 'research';
+            if (S.includes(m)) return 'synoptic';
+            return 'unknown';
+        }
+        
+        // Get count of taken modules by type
+        function getTkn() {
+            let t = { f: 0, o: 0, r: 0, s: 0 };
+            taken.forEach(v => {
+                const ty = getType(v);
+                if (ty === 'foundation') t.f++;
+                else if (ty === 'option') t.o++;
+                else if (ty === 'research') t.r++;
+                else if (ty === 'synoptic') t.s++;
+            });
+            return t;
+        }
+        
+        // Calculate actual completed modules (not just count)
+        function getActualCompletion() {
+            const completedFoundations = F.filter(f => [...taken.values()].includes(f)).length;
+            const cho = getOpts();
+            const completedOptions = cho.filter(o => [...taken.values()].includes(o)).length;
+            const completedResearch = R.filter(r => [...taken.values()].includes(r)).length;
+            const completedSynoptic = S.filter(s => [...taken.values()].includes(s)).length;
+            
+            return {
+                foundations: completedFoundations,
+                options: completedOptions,
+                research: completedResearch,
+                synoptic: completedSynoptic
+            };
+        }
+        
+        // Update phase indicator
+        function updatePhaseIndicator(actualCompletion, rq) {
+            const phases = document.querySelectorAll('.phase');
+            phases[0].className = actualCompletion.foundations >= rq.f ? 'phase completed' : 'phase active';
+            phases[1].className = actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o ? 'phase completed' : 
+                             actualCompletion.foundations >= rq.f ? 'phase active' : 'phase';
+            phases[2].className = actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r ? 'phase completed' : 
+                             actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o ? 'phase active' : 'phase';
+            phases[3].className = actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r && actualCompletion.synoptic >= rq.s ? 'phase completed' : 
+                             actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r ? 'phase active' : 'phase';
+        }
+        
+        // Generate the main view
+        function gen() {
+            const aw = document.getElementById('award').value || 'MSc';
+            const st = document.getElementById('start').value || '2023-09';
+            const rq = { ...REQ[aw] };
+            const cho = getOpts();
+            const tkn = getTkn();
+            const actualCompletion = getActualCompletion();
+            const wb = document.getElementById('wbox');
+        
+            if (wb) {
+                if (rq.o > 0 && cho.length < 4) {
+                    wb.textContent = `Please select 4 option modules (required for ${aw})`;
+                    wb.style.display = 'block';
+                } else {
+                    wb.style.display = 'none';
+                }
+            }
+        
+            const hs = addY(st, 6);
+            const itk = keys.filter(k => k >= st && k <= hs);
+            render(itk, st, rq, tkn, cho, actualCompletion);
+            vis(itk, tkn, rq, st, actualCompletion);
+            
+            // Update conflict warnings
+            updateConflictWarnings();
+            
+            // Update notifications
+            checkNotifications();
+        }
+        
+        // Update conflict warnings
+        function updateConflictWarnings() {
+            const conflicts = detectConflicts();
+            const warningEl = document.getElementById('conflictWarning');
+            
+            if (conflicts.length > 0) {
+                warningEl.innerHTML = `
+                    <strong>Planning Conflicts Detected:</strong>
+                    <ul>
+                        ${conflicts.map(c => `<li>${c}</li>`).join('')}
+                    </ul>
+                `;
+                warningEl.style.display = 'block';
+            } else {
+                warningEl.style.display = 'none';
+            }
+        }
+        
+        // Render the timeline
+        function render(itk, st, rq, tkn, cho, actualCompletion) {
+            const el = document.getElementById('tl');
+            if (!el) return;
 
-        <div class="mt-3 h-3 w-full rounded-full overflow-hidden border border-slate-200/70 dark:border-white/10 bg-white/70 dark:bg-white/5">
-          <div id="progFill" class="h-3 bg-kcl-red text-white text-[11px] leading-3 flex items-center justify-center transition-all" style="width:0%">0%</div>
-        </div>
+            el.innerHTML = '';
+            
+            // Update phase indicator
+            updatePhaseIndicator(actualCompletion, rq);
+            
+            const pi = document.getElementById('phaseInfo');
+            if (pi) {
+                if (actualCompletion.foundations < rq.f) {
+                    pi.innerHTML = `<div style="font-size: 0.95rem; color: var(--info); margin-bottom: 10px;">
+                        <strong>Current Phase:</strong> Complete ${rq.f - actualCompletion.foundations} more foundation modules
+                    </div>`;
+                } else if (actualCompletion.foundations >= rq.f && actualCompletion.options < rq.o) {
+                    pi.innerHTML = `<div style="font-size: 0.95rem; color: var(--primary); margin-bottom: 10px;">
+                        <strong>Current Phase:</strong> Complete ${rq.o - actualCompletion.options} more option modules
+                    </div>`;
+                } else if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research < rq.r) {
+                    pi.innerHTML = `<div style="font-size: 0.95rem; color: var(--warning); margin-bottom: 10px;">
+                        <strong>Current Phase:</strong> Complete ${rq.r - actualCompletion.research} more research modules
+                    </div>`;
+                } else if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r && actualCompletion.synoptic < rq.s) {
+                    pi.innerHTML = `<div style="font-size: 0.95rem; color: var(--success); margin-bottom: 10px;">
+                        <strong>Current Phase:</strong> Complete the Synoptic Project (spans 4 months)
+                    </div>`;
+                } else {
+                    pi.innerHTML = `<div style="font-size: 0.95rem; color: var(--success); margin-bottom: 10px;">
+                        <strong>All requirements complete!</strong>
+                    </div>`;
+                }
+            }
 
-        <div id="gradBox" class="hidden mt-3 p-3 rounded border-2 border-emerald-300 bg-emerald-50/80 dark:bg-[#0a1f17] dark:border-emerald-900 font-semibold text-[14px]">
-          Estimated Graduation: <span id="gradTxt" class="ml-1 text-emerald-700 dark:text-emerald-300"></span>
-        </div>
+            itk.forEach(k => {
+                const period = document.createElement('div');
+                period.className = 'timeline-period';
+                
+                const tkMod = taken.get(k);
+                const isBreak = brks.has(k);
+                
+                const header = document.createElement('div');
+                header.className = 'period-header';
+                
+                const title = document.createElement('div');
+                title.className = 'period-title';
+                title.textContent = fmtD(k);
+                header.appendChild(title);
+                
+                const actions = document.createElement('div');
+                actions.className = 'period-actions';
+                
+                if (isBreak) {
+                    actions.innerHTML = `<button class="btn btn-outline small-btn" onclick="brks.delete('${k}'); gen();">Remove Break</button>`;
+                } else if (tkMod) {
+                    actions.innerHTML = `
+                        <button class="btn btn-outline small-btn" onclick="taken.delete('${k}'); gen();">Remove</button>
+                        <button class="btn btn-outline small-btn" onclick="brks.add('${k}'); taken.delete('${k}'); gen();">Break</button>
+                    `;
+                } else {
+                    actions.innerHTML = `<button class="btn btn-outline small-btn" onclick="brks.add('${k}'); gen();">Set Break</button>`;
+                }
+                
+                header.appendChild(actions);
+                period.appendChild(header);
+                
+                const modules = document.createElement('div');
+                modules.className = 'period-modules';
+                
+                if (!isBreak && !tkMod) {
+                    const mds = SCH[k] || [];
+                    let availableModules = [];
+                    
+                    // STRICT PREREQUISITE CHECKING
+                    if (actualCompletion.foundations < rq.f) {
+                        availableModules = mds.filter(m => F.includes(m) && ![...taken.values()].includes(m));
+                    } else if (actualCompletion.foundations >= rq.f && actualCompletion.options < rq.o) {
+                        availableModules = mds.filter(m => cho.includes(m) && ![...taken.values()].includes(m));
+                    } else if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research < rq.r) {
+                        availableModules = mds.filter(m => R.includes(m) && ![...taken.values()].includes(m));
+                    } else if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r && actualCompletion.synoptic < rq.s) {
+                        availableModules = mds.filter(m => S.includes(m));
+                    }
+                    
+                    if (availableModules.length > 0) {
+                        const moduleList = document.createElement('div');
+                        moduleList.className = 'compact-module-list';
+                        
+                        availableModules.forEach(m => {
+                            const moduleItem = document.createElement('div');
+                            const type = getType(m);
+                            moduleItem.className = `compact-module-item ${type}`;
+                            moduleItem.textContent = m;
+                            moduleItem.title = m;
+                            
+                            // Add enhanced module info
+                            let moduleData;
+                            if (type === 'foundation') moduleData = MODULES.foundation.find(mod => mod.name === m);
+                            else if (type === 'option') moduleData = MODULES.options.find(mod => mod.name === m);
+                            else if (type === 'research') moduleData = MODULES.research.find(mod => mod.name === m);
+                            else if (type === 'synoptic') moduleData = MODULES.synoptic.find(mod => mod.name === m);
+                            
+                            if (moduleData) {
+                                const infoPopup = document.createElement('div');
+                                infoPopup.className = 'module-info-popup';
+                                infoPopup.innerHTML = `
+                                    <strong>${moduleData.name}</strong><br>
+                                    <em>${moduleData.credits} credits</em><br>
+                                    ${moduleData.description}
+                                `;
+                                moduleItem.appendChild(infoPopup);
+                            }
+                            
+                            moduleItem.addEventListener('click', () => {
+                                // Special handling for Synoptic Project (spans 2 periods = 4 months)
+                                if (type === 'synoptic') {
+                                    taken.set(k, m);
+                                    const currentIndex = keys.indexOf(k);
+                                    // Add the next period for synoptic project
+                                    if (currentIndex < keys.length - 1) {
+                                        taken.set(keys[currentIndex + 1], m);
+                                    }
+                                    // Add one more period if available (total 4 months)
+                                    if (currentIndex < keys.length - 2) {
+                                        taken.set(keys[currentIndex + 2], m);
+                                    }
+                                } else {
+                                    taken.set(k, m);
+                                }
+                                gen();
+                            });
+                            moduleList.appendChild(moduleItem);
+                        });
+                        
+                        modules.appendChild(moduleList);
+                    } else {
+                        let message = 'No available modules';
+                        if (actualCompletion.foundations < rq.f) {
+                            message = `Complete ${rq.f - actualCompletion.foundations} more foundation modules first`;
+                        } else if (actualCompletion.foundations >= rq.f && actualCompletion.options < rq.o) {
+                            message = `Complete ${rq.o - actualCompletion.options} more option modules first`;
+                        }
+                        
+                        modules.innerHTML = `<div style="font-size: 0.9rem; color: var(--text-muted); text-align: center; padding: 10px;">${message}</div>`;
+                    }
+                } else if (tkMod) {
+                    const moduleItem = document.createElement('div');
+                    const type = getType(tkMod);
+                    moduleItem.className = `compact-module-item ${type} taken`;
+                    moduleItem.textContent = tkMod;
+                    moduleItem.title = tkMod;
+                    modules.appendChild(moduleItem);
+                } else if (isBreak) {
+                    modules.innerHTML = `<div style="font-size: 0.9rem; color: var(--warning); text-align: center; padding: 10px;">Study Break Period</div>`;
+                }
+                
+                period.appendChild(modules);
+                el.appendChild(period);
+            });
+        }
+        
+        // Update visualization
+        function vis(itk, tkn, rq, st, actualCompletion) {
+            const lastK = [...taken.keys()].sort().pop();
+        
+            const vDur = document.getElementById('vDur');
+            if (vDur) {
+                if (lastK) {
+                    const brkCount = brks.size;
+                    const totalPeriods = keys.filter(k => k >= st && k <= lastK).length;
+                    const studyPeriods = Math.max(0, totalPeriods - brkCount);
+                    const durMonths = studyPeriods * 2;
+                    vDur.textContent = durMonths;
+                } else {
+                    vDur.textContent = '—';
+                }
+            }
+        
+            const tot = rq.f + rq.o + rq.r + rq.s;
+            const cur = actualCompletion.foundations + actualCompletion.options + actualCompletion.research + actualCompletion.synoptic;
+            const pct = tot > 0 ? Math.round((cur / tot) * 100) : 0;
+        
+            const vPct = document.getElementById('vPct');
+            if (vPct) {
+                vPct.textContent = pct + '%';
+            }
+        
+            const progF = document.getElementById('progFill');
+            const progText = document.getElementById('progText');
+            if (progF && progText) {
+                progF.style.width = pct + '%';
+                progText.textContent = pct + '% Complete';
+            }
+        
+            const vGrad = document.getElementById('vGrad');
+            if (vGrad) {
+                if (lastK) {
+                    // For synoptic project, graduation is 2 months after the last period
+                    const [y, m] = lastK.split('-').map(Number);
+                    let gradMonth = m + 2;
+                    let gradYear = y;
+                    if (gradMonth > 12) {
+                        gradMonth -= 12;
+                        gradYear += 1;
+                    }
+                    vGrad.textContent = new Date(gradYear, gradMonth - 1, 1).toLocaleString('en-GB', { month: 'short', year: 'numeric' });
+                } else {
+                    vGrad.textContent = '—';
+                }
+            }
+        }
+        
+        // Quick fill function
+        function quickFill() {
+            const aw = document.getElementById('award').value || 'MSc';
+            const st = document.getElementById('start').value || '2023-09';
+            const rq = { ...REQ[aw] };
+            const tkn = getTkn();
+            const cho = getOpts();
+        
+            if (rq.o > 0 && cho.length < 4) {
+                showAlert('Please select 4 option modules first', 'warning');
+                return;
+            }
+            
+            const actualCompletion = getActualCompletion();
+            if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r && actualCompletion.synoptic >= rq.s) {
+                showAlert('Your plan is already complete!', 'success');
+                return;
+            }
+        
+            const beforeCount = taken.size;
+            const hs = addY(st, 6);
+            const itk = keys.filter(k => k >= st && k <= hs);
+            const remF = new Set(F.filter(m => ![...taken.values()].includes(m)));
+            const remO = new Set((cho.length >= 4 ? cho : O.slice(0, 4)).filter(m => ![...taken.values()].includes(m)));
+            const remR = new Set(R.filter(m => ![...taken.values()].includes(m)));
+            
+            let curFoundations = actualCompletion.foundations;
+            let curOptions = actualCompletion.options;
+            let curResearch = actualCompletion.research;
+            let curSynoptic = actualCompletion.synoptic;
+        
+            for (const k of itk) {
+                if (curFoundations >= rq.f && curOptions >= rq.o && curResearch >= rq.r && curSynoptic >= rq.s) break;
+                if (taken.has(k) || brks.has(k)) continue;
+                const mds = SCH[k] || [];
+        
+                // STRICT PREREQUISITE ENFORCEMENT
+                if (curFoundations < rq.f) {
+                    const m = mds.find(x => remF.has(x));
+                    if (m) {
+                        taken.set(k, m);
+                        remF.delete(m);
+                        curFoundations++;
+                        continue;
+                    }
+                }
+                if (curFoundations >= rq.f && curOptions < rq.o) {
+                    const m = mds.find(x => remO.has(x));
+                    if (m) {
+                        taken.set(k, m);
+                        remO.delete(m);
+                        curOptions++;
+                        continue;
+                    }
+                }
+                if (curFoundations >= rq.f && curOptions >= rq.o && curResearch < rq.r) {
+                    const m = mds.find(x => remR.has(x));
+                    if (m) {
+                        taken.set(k, m);
+                        remR.delete(m);
+                        curResearch++;
+                        continue;
+                    }
+                }
+                if (curFoundations >= rq.f && curOptions >= rq.o && curResearch >= rq.r && curSynoptic < rq.s) {
+                    const m = mds.find(x => S.includes(x));
+                    if (m) {
+                        taken.set(k, m);
+                        const ni = itk.indexOf(k);
+                        // Add next two periods for synoptic project (4 months total)
+                        if (ni >= 0 && ni < itk.length - 1) taken.set(itk[ni + 1], m);
+                        if (ni >= 0 && ni < itk.length - 2) taken.set(itk[ni + 2], m);
+                        curSynoptic++;
+                        break;
+                    }
+                }
+            }
+        
+            const afterCount = taken.size;
+            const added = afterCount - beforeCount;
+            gen();
+        
+            if (added > 0) {
+                showAlert(`Added ${added} module${added > 1 ? 's' : ''} to your plan!`, 'success');
+            } else {
+                showAlert('No suitable modules found to add', 'warning');
+            }
+        }
+        
+        // Reset plan
+        function resetPlan() {
+            if (confirm('Reset everything? This cannot be undone.')) {
+                taken.clear();
+                brks.clear();
+                const checkboxes = document.querySelectorAll('#opts input');
+                checkboxes.forEach(i => i.checked = false);
+                updateChipSelection();
+                gen();
+                showAlert('Plan reset successfully', 'success');
+            }
+        }
+        
+        // Show alert
+        function showAlert(msg, type = 'success') {
+            const existingAlerts = document.querySelectorAll('.alert');
+            existingAlerts.forEach(alert => alert.remove());
+        
+            const al = document.createElement('div');
+            al.className = `alert ${type}`;
+        
+            const closeBtn = document.createElement('span');
+            closeBtn.className = 'close-alert';
+            closeBtn.textContent = '×';
+            closeBtn.addEventListener('click', function() {
+                al.remove();
+            });
+        
+            const msgDiv = document.createElement('div');
+            msgDiv.style.paddingRight = '1.5rem';
+            msgDiv.textContent = msg;
+        
+            al.appendChild(closeBtn);
+            al.appendChild(msgDiv);
+            document.body.appendChild(al);
+        
+            setTimeout(() => {
+                if (al.parentNode) {
+                    al.remove();
+                }
+            }, 4000);
+        }
 
-        <div id="impactBox" class="hidden mt-3 p-3 rounded border border-slate-200/70 dark:border-white/10 bg-white/70 dark:bg-white/5 text-[14px]">
-          <strong>Impact:</strong>
-          Baseline <span id="impBase" class="font-semibold"></span>
-          → Your plan <span id="impPlan" class="font-semibold"></span>
-          <span id="impDelta" class="ml-2 font-semibold"></span>
-          <canvas id="impactChart" width="640" height="120" class="mt-3 w-full rounded-md border border-slate-200/70 dark:border-white/10 bg-white/80 dark:bg-[#0b1220]/70"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- SETUP -->
-    <div class="card p-3">
-      <div class="flex items-start justify-between">
-        <h3 class="font-semibold tracking-wide">Setup</h3>
-        <div class="flex items-center gap-2">
-          <button id="quickFillBtn" class="px-3 py-2 rounded-md bg-kcl-red text-white text-[13px] font-semibold hover:opacity-90">Quick Fill</button>
-          <button id="downloadBtn" class="px-3 py-2 rounded-md border border-slate-200/70 dark:border-white/10 text-[13px] font-semibold hover:bg-slate-50 dark:hover:bg-white/10">Download</button>
-          <label class="px-3 py-2 rounded-md border border-slate-200/70 dark:border-white/10 text-[13px] font-semibold hover:bg-slate-50 dark:hover:bg-white/10 cursor-pointer">
-            Import<input id="importInput" type="file" accept="application/json" class="hidden">
-          </label>
-          <button id="printBtn" class="px-3 py-2 rounded-md border border-slate-200/70 dark:border-white/10 text-[13px] font-semibold hover:bg-slate-50 dark:hover:bg-white/10">Print summary</button>
-          <button id="resetBtn" class="px-3 py-2 rounded-md border border-slate-200/70 dark:border-white/10 text-[13px] hover:bg-slate-50 dark:hover:bg-white/10">Reset</button>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-3 mt-3">
-        <div>
-          <label class="block text-[12px] muted mb-1">Award</label>
-          <select id="award" class="w-full border rounded px-2 py-2 text-[14px] bg-white dark:bg-[#0f172a] border-slate-200/70 dark:border-white/10">
-            <option value="PGCert">PG Cert (60c)</option>
-            <option value="PGDip">PG Dip (120c)</option>
-            <option value="MSc" selected>MSc (180c)</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-[12px] muted mb-1">Start</label>
-          <select id="start" class="w-full border rounded px-2 py-2 text-[14px] bg-white dark:bg-[#0f172a] border-slate-200/70 dark:border-white/10"></select>
-        </div>
-      </div>
-
-      <div id="phaseInfo" class="mt-3 rounded-md p-3 text-[14px] font-semibold bg-slate-50/80 dark:bg-[#0f172a]/60 border border-slate-200/70 dark:border-white/10"></div>
-    </div>
-  </section>
-
-  <!-- RIGHT COLUMN -->
-  <aside class="space-y-4">
-    <!-- OPTIONS (compact, spaced, shorter width) -->
-    <div class="card p-4">
-      <div class="flex items-center justify-between mb-2">
-        <h3 class="font-semibold tracking-wide">Choose 4 Options</h3>
-        <span class="text-[12px] text-slate-600 dark:text-slate-300"><span id="optCount">0</span>/4</span>
-      </div>
-      <div id="opts" class="grid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: .5rem; max-width: 540px"></div>
-      <div id="warnBox" class="hidden mt-3 text-[13px] text-amber-800 bg-amber-50/90 dark:bg-[#3a2b06] dark:text-amber-200 border border-amber-200 dark:border-amber-800 rounded p-2">
-        Please select 4 option modules.
-      </div>
-    </div>
-
-    <!-- ANALYTICS (compact) -->
-    <div class="card p-4">
-      <h3 class="mb-3 font-semibold tracking-wide">Analytics</h3>
-      <div class="grid grid-cols-2 gap-2">
-        <div class="rounded-lg text-center text-white p-3" style="background:linear-gradient(135deg,#5b8def,#7a6bf2)">
-          <div class="text-[12px] opacity-90">Duration</div>
-          <div id="vDur" class="text-[20px] font-bold">—</div>
-          <div class="text-[12px] opacity-90">months</div>
-        </div>
-        <div class="rounded-lg text-center text-white p-3" style="background:linear-gradient(135deg,#f093fb,#ef5a8f)">
-          <div class="text-[12px] opacity-90">Breaks</div>
-          <div id="vBrk" class="text-[20px] font-bold">0</div>
-        </div>
-        <div class="rounded-lg text-center text-white p-3" style="background:linear-gradient(135deg,#34b3f1,#20e3b2)">
-          <div class="text-[12px] opacity-90">Progress</div>
-          <div id="vPct" class="text-[20px] font-bold">0%</div>
-        </div>
-        <div class="rounded-lg text-center text-white p-3" style="background:linear-gradient(135deg,#43e97b,#38f9d7)">
-          <div class="text-[12px] opacity-90">Graduation</div>
-          <div id="vGrad" class="text-[20px] font-bold">—</div>
-        </div>
-      </div>
-
-      <div class="my-3 h-3 w-full rounded-full overflow-hidden border border-slate-200/70 dark:border-white/10 bg-white/70 dark:bg-white/10">
-        <div id="progFillClone" class="h-3 bg-kcl-red text-white text-[11px] leading-3 flex items-center justify-center transition-all" style="width:0%">0%</div>
-      </div>
-
-      <div>
-        <h4 class="text-[14px] font-semibold mb-2">Break Impact</h4>
-        <div id="breakImpact" class="text-[13px] text-slate-600 dark:text-slate-300">Select modules to see impact</div>
-      </div>
-    </div>
-  </aside>
-</main>
-
-<!-- PRINT SUMMARY (hidden until print) -->
-<section id="printSummary" class="max-w-6xl mx-auto px-6 py-8">
-  <div class="flex items-center gap-3 mb-4">
-    <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
-      <rect width="28" height="28" rx="6" fill="#c8102e"/>
-      <text x="50%" y="56%" text-anchor="middle" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="12" font-weight="700" fill="#ffffff">KCL</text>
-    </svg>
-    <div>
-      <div class="text-xl font-bold">PNOMH Graduation Plan — Summary</div>
-      <div id="printMeta" class="text-sm text-slate-600"></div>
-    </div>
-  </div>
-
-  <h2 class="text-lg font-semibold mt-4 mb-2">Plan Overview</h2>
-  <div id="printOverview" class="text-sm"></div>
-
-  <h2 class="text-lg font-semibold mt-6 mb-2">Timeline</h2>
-  <table class="w-full text-sm border-collapse">
-    <thead>
-      <tr>
-        <th class="text-left border-b py-2">Term</th>
-        <th class="text-left border-b py-2">Module / Break</th>
-        <th class="text-left border-b py-2">Stage</th>
-      </tr>
-    </thead>
-    <tbody id="printTable"></tbody>
-  </table>
-</section>
-
-<!-- Toast container -->
-<div id="toast" class="fixed top-4 right-4 space-y-2 z-50 no-print"></div>
-
-<script>
-/* =========================
-   Data
-   ========================= */
-const F=['Biological Foundations of Mental Health','Techniques in Neuroscience','Psychological Foundations of Mental Health','Mental Health in the Community'];
-const O=['Mindfulness: Neuroscience & Application','Global Mental Health','Psychology & Neuroscience of Addiction','Child & Adolescent Mental Health','Social, Genetic & Environmental Basis of Mental Health','Neuroscience in Society','Psychology & Neuroscience of Affective Disorders','Psychology & Neuroscience of Psychosis','Neuroimaging in Mental Health','Pharmacotherapies in Mental Health'];
-const R=['Research Skills: From Reviewing & Critical Analysis to Research Ethics','Research Skills: From Methods & Procedures to Analysis & Reporting'];
-const S=['Independent Synoptic Project'];
-const REQ={PGCert:{f:4,o:0,r:0,s:0},PGDip:{f:4,o:4,r:0,s:0},MSc:{f:4,o:4,r:2,s:1}};
-const SCH={"2023-01":["Techniques in Neuroscience","Psychology & Neuroscience of Affective Disorders","Neuroscience in Society","Social, Genetic & Environmental Basis of Mental Health","Research Skills: From Reviewing & Critical Analysis to Research Ethics"],"2023-03":["Psychological Foundations of Mental Health","Psychology & Neuroscience of Psychosis","Neuroimaging in Mental Health","Pharmacotherapies in Mental Health","Research Skills: From Methods & Procedures to Analysis & Reporting","Independent Synoptic Project"],"2023-05":["Mental Health in the Community","Child & Adolescent Mental Health","Global Mental Health","Research Skills: From Reviewing & Critical Analysis to Research Ethics","Independent Synoptic Project"],"2023-06":["Biological Foundations of Mental Health","Psychology & Neuroscience of Addiction","Mindfulness: Neuroscience & Application","Research Skills: From Methods & Procedures to Analysis & Reporting","Independent Synoptic Project"],"2023-09":["Techniques in Neuroscience","Psychology & Neuroscience of Affective Disorders","Neuroscience in Society","Social, Genetic & Environmental Basis of Mental Health","Research Skills: From Reviewing & Critical Analysis to Research Ethics","Independent Synoptic Project"],"2023-10":["Psychological Foundations of Mental Health","Psychology & Neuroscience of Psychosis","Neuroimaging in Mental Health","Pharmacotherapies in Mental Health","Research Skills: From Methods & Procedures to Analysis & Reporting","Independent Synoptic Project"],"2024-01":["Mental Health in the Community","Child & Adolescent Mental Health","Global Mental Health","Research Skills: From Reviewing & Critical Analysis to Research Ethics","Independent Synoptic Project"],"2024-03":["Biological Foundations of Mental Health","Psychology & Neuroscience of Addiction","Mindfulness: Neuroscience & Application","Research Skills: From Methods & Procedures to Analysis & Reporting","Independent Synoptic Project"],"2024-05":["Techniques in Neuroscience","Psychology & Neuroscience of Affective Disorders","Neuroscience in Society","Social, Genetic & Environmental Basis of Mental Health","Research Skills: From Reviewing & Critical Analysis to Research Ethics","Independent Synoptic Project"],"2024-06":["Psychological Foundations of Mental Health","Psychology & Neuroscience of Psychosis","Neuroimaging in Mental Health","Pharmacotherapies in Mental Health","Research Skills: From Methods & Procedures to Analysis & Reporting","Independent Synoptic Project"],"2024-09":["Mental Health in the Community","Child & Adolescent Mental Health","Global Mental Health","Research Skills: From Reviewing & Critical Analysis to Research Ethics","Independent Synoptic Project"],"2024-10":["Biological Foundations of Mental Health","Psychology & Neuroscience of Addiction","Mindfulness: Neuroscience & Application","Research Skills: From Methods & Procedures to Analysis & Reporting","Independent Synoptic Project"],"2025-01":["Techniques in Neuroscience","Psychology & Neuroscience of Affective Disorders","Neuroscience in Society","Social, Genetic & Environmental Basis of Mental Health","Research Skills: From Reviewing & Critical Analysis to Research Ethics","Independent Synoptic Project"],"2025-03":["Psychological Foundations of Mental Health","Psychology & Neuroscience of Psychosis","Neuroimaging in Mental Health","Pharmacotherapies in Mental Health","Research Skills: From Methods & Procedures to Analysis & Reporting","Independent Synoptic Project"],"2025-05":["Mental Health in the Community","Child & Adolescent Mental Health","Global Mental Health","Research Skills: From Reviewing & Critical Analysis to Research Ethics","Independent Synoptic Project"],"2025-06":["Biological Foundations of Mental Health","Psychology & Neuroscience of Addiction","Mindfulness: Neuroscience & Application","Research Skills: From Methods & Procedures to Analysis & Reporting","Independent Synoptic Project"],"2025-09":["Techniques in Neuroscience","Psychology & Neuroscience of Affective Disorders","Neuroscience in Society","Social, Genetic & Environmental Basis of Mental Health","Research Skills: From Reviewing & Critical Analysis to Research Ethics","Independent Synoptic Project"],"2025-10":["Psychological Foundations of Mental Health","Psychology & Neuroscience of Psychosis","Neuroimaging in Mental Health","Pharmacotherapies in Mental Health","Research Skills: From Methods & Procedures to Analysis & Reporting","Independent Synoptic Project"],"2026-01":["Mental Health in the Community","Child & Adolescent Mental Health","Global Mental Health","Research Skills: From Reviewing & Critical Analysis to Research Ethics","Independent Synoptic Project"],"2026-03":["Biological Foundations of Mental Health","Psychology & Neuroscience of Addiction","Mindfulness: Neuroscience & Application","Research Skills: From Methods & Procedures to Analysis & Reporting","Independent Synoptic Project"],"2026-05":["Techniques in Neuroscience","Psychology & Neuroscience of Affective Disorders","Neuroscience in Society","Social, Genetic & Environmental Basis of Mental Health","Research Skills: From Reviewing & Critical Analysis to Research Ethics","Independent Synoptic Project"],"2026-06":["Psychological Foundations of Mental Health","Psychology & Neuroscience of Psychosis","Neuroimaging in Mental Health","Pharmacotherapies in Mental Health","Research Skills: From Methods & Procedures to Analysis & Reporting","Independent Synoptic Project"],"2026-09":["Mental Health in the Community","Child & Adolescent Mental Health","Global Mental Health","Research Skills: From Reviewing & Critical Analysis to Research Ethics","Independent Synoptic Project"],"2026-10":["Biological Foundations of Mental Health","Psychology & Neuroscience of Addiction","Mindfulness: Neuroscience & Application","Research Skills: From Methods & Procedures to Analysis & Reporting","Independent Synoptic Project"],"2027-01":["Techniques in Neuroscience","Psychology & Neuroscience of Affective Disorders","Neuroscience in Society","Social, Genetic & Environmental Basis of Mental Health","Research Skills: From Reviewing & Critical Analysis to Research Ethics","Independent Synoptic Project"],"2027-03":["Psychological Foundations of Mental Health","Psychology & Neuroscience of Psychosis","Neuroimaging in Mental Health","Pharmacotherapies in Mental Health","Research Skills: From Methods & Procedures to Analysis & Reporting","Independent Synoptic Project"],"2027-05":["Mental Health in the Community","Child & Adolescent Mental Health","Global Mental Health","Research Skills: From Reviewing & Critical Analysis to Research Ethics","Independent Synoptic Project"],"2027-06":["Biological Foundations of Mental Health","Psychology & Neuroscience of Addiction","Mindfulness: Neuroscience & Application","Research Skills: From Methods & Procedures to Analysis & Reporting","Independent Synoptic Project"],"2027-09":["Techniques in Neuroscience","Psychology & Neuroscience of Affective Disorders","Neuroscience in Society","Social, Genetic & Environmental Basis of Mental Health","Research Skills: From Reviewing & Critical Analysis to Research Ethics","Independent Synoptic Project"],"2027-10":["Psychological Foundations of Mental Health","Psychology & Neuroscience of Psychosis","Neuroimaging in Mental Health","Pharmacotherapies in Mental Health","Research Skills: From Methods & Procedures to Analysis & Reporting","Independent Synoptic Project"]};
-const keys=Object.keys(SCH).sort();
-
-/* =========================
-   State & helpers
-   ========================= */
-const state = { award:'MSc', start:'2023-09', options:[], breaks:new Set(), taken:new Map(), dark:false };
-const $ = s => document.querySelector(s);
-const el = (t,c='',h='') => { const d=document.createElement(t); if(c) d.className=c; if(h) d.innerHTML=h; return d; };
-const addY=(k,y)=>{ const [yr,m]=k.split('-').map(Number); return `${yr+y}-${String(m).padStart(2,'0')}`; }
-const fmtD=(k)=>{ const [y,m]=k.split('-').map(Number); return new Date(y,m-1,1).toLocaleString('en-GB',{month:'short',year:'numeric'}); }
-const getType=(m)=> F.includes(m)?'f': O.includes(m)?'o': R.includes(m)?'r': S.includes(m)?'s':'u';
-const countTaken = () => { const c = { f:0,o:0,r:0,s:0 }; state.taken.forEach(v => c[getType(v)]++); return c; };
-const req = () => ({...REQ[state.award]});
-let genTimer; const regen = () => { clearTimeout(genTimer); genTimer = setTimeout(gen, 60); };
-
-// persistence
-function save(){ const payload = {...state, breaks:[...state.breaks], taken:[...state.taken]}; localStorage.setItem('planner.kcl.modern.v1', JSON.stringify(payload)); }
-function load(){
-  try {
-    const raw = localStorage.getItem('planner.kcl.modern.v1'); if(!raw) return;
-    const obj = JSON.parse(raw);
-    state.award = obj.award ?? state.award;
-    state.start = obj.start ?? state.start;
-    state.options = obj.options ?? [];
-    state.breaks = new Set(obj.breaks ?? []);
-    state.taken = new Map(obj.taken ?? []);
-    state.dark = !!obj.dark;
-  } catch {}
-}
-function toast(msg, kind='info'){
-  const box=$("#toast");
-  const tone = kind==='ok' ? 'border-emerald-300 bg-emerald-50/95 dark:bg-[#0a1f17] dark:border-emerald-900'
-              : kind==='warn'? 'border-amber-300 bg-amber-50/95 dark:bg-[#3a2b06] dark:border-amber-900'
-              : 'border-sky-300 bg-sky-50/95 dark:bg-[#0b1d2b] dark:border-sky-900';
-  const n=el('div',`card px-3 py-2 text-sm border-2 ${tone}`); n.style.boxShadow='0 8px 20px rgba(16, 24, 40, .08)'; n.textContent=msg; box.appendChild(n); setTimeout(()=>n.remove(), 2200);
-}
-
-/* =========================
-   Init
-   ========================= */
-function init(){
-  load();
-
-  // Dark toggle
-  if(state.dark) document.documentElement.classList.add('dark');
-  $("#darkToggle").textContent = state.dark ? 'Light mode' : 'Dark mode';
-  $("#darkToggle").addEventListener('click', () => {
-    state.dark = !state.dark;
-    document.documentElement.classList.toggle('dark', state.dark);
-    $("#darkToggle").textContent = state.dark ? 'Light mode' : 'Dark mode';
-    save();
-  });
-
-  // Start select
-  const startS=$("#start");
-  keys.forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=fmtD(k); startS.appendChild(o); });
-  startS.value = state.start;
-  startS.addEventListener('change', e => { state.start = e.target.value; regen(); save(); });
-
-  // Award
-  $("#award").value = state.award;
-  $("#award").addEventListener('change', e => { state.award = e.target.value; regen(); save(); });
-
-  // Options chips grid
-  const optsW=$("#opts"); optsW.innerHTML='';
-  O.forEach(n=>{
-    const b=el('button','chip'); b.dataset.name=n; b.textContent=n;
-    if(state.options.includes(n)) b.classList.add('on');
-    b.addEventListener('click',()=>{
-      const on=b.classList.contains('on'); let selected = new Set(state.options);
-      if(on){ selected.delete(n); } else { if(selected.size>=4){ toast('You can only select 4 options','warn'); return; } selected.add(n); }
-      state.options = [...selected]; $("#optCount").textContent = state.options.length; b.classList.toggle('on'); regen(); save();
-    });
-    optsW.appendChild(b);
-  });
-  $("#optCount").textContent = state.options.length;
-
-  // Buttons
-  $("#quickFillBtn").addEventListener('click', quickFill);
-  $("#resetBtn").addEventListener('click', resetPlan);
-  $("#downloadBtn").addEventListener('click', downloadPlan);
-  $("#importInput").addEventListener('change', importPlan);
-  $("#printBtn").addEventListener('click', printSummary);
-
-  gen();
-}
-
-/* =========================
-   Render
-   ========================= */
-function gen(){
-  const r = req();
-  const warnBox=$("#warnBox");
-  if(r.o>0 && state.options.length<4) warnBox.classList.remove('hidden'); else warnBox.classList.add('hidden');
-
-  renderPhase();
-  renderTimeline();
-  renderAnalytics();
-  renderImpact();
-  updateBreakImpact();
-  save();
-}
-function renderPhase(){
-  const r = req();
-  const tkn = countTaken();
-  const box=$("#phaseInfo");
-  let txt='', cls='';
-  if(tkn.f<r.f){ txt='Phase 1: Foundation Modules (complete all 4 first)'; cls='bg-blue-50/80 dark:bg-[#0c1b2a]/60 border border-blue-100/70 dark:border-blue-900/40'; }
-  else if(tkn.o<r.o){ txt='Phase 2: Options (choose 4 from your selection)'; cls='bg-blue-50/80 dark:bg-[#0c1b2a]/60 border border-blue-100/70 dark:border-blue-900/40'; }
-  else if(tkn.r<r.r){ txt='Phase 3: Research Skills'; cls='bg-teal-50/80 dark:bg-[#0a1f1c]/60 border border-teal-100/70 dark:border-teal-900/40'; }
-  else if(tkn.s<r.s){ txt='Phase 4: Synoptic Project'; cls='bg-teal-50/80 dark:bg-[#0a1f1c]/60 border border-teal-100/70 dark:border-teal-900/40'; }
-  else { txt='All Phases Complete!'; cls='bg-emerald-50/80 dark:bg-[#0f2a1f]/60 border border-emerald-200/70 dark:border-emerald-900/40'; }
-  box.className = `mt-3 rounded-md p-3 text-[14px] font-semibold ${cls}`;
-  box.textContent = txt;
-}
-const yearFromKey = k => k.split('-')[0];
-function renderTimeline(){
-  const tl=$("#timeline"); tl.innerHTML = '';
-  const horizonStop = addY(state.start, 6);
-  const span = keys.filter(k => k >= state.start && k <= horizonStop);
-
-  let currentYear = '';
-  span.forEach(k=>{
-    const y = yearFromKey(k);
-    if(y !== currentYear){
-      currentYear = y;
-      tl.appendChild(el('div','mt-2 mb-1 text-[13px] font-bold text-slate-700 dark:text-slate-300', y));
-    }
-
-    const isBreak = state.breaks.has(k);
-    const tkMod = state.taken.get(k);
-    const card = el('div','term-card border border-slate-200/70 dark:border-white/10 rounded-xl p-3 bg-white/80 dark:bg-[#0b1220]/70');
-
-    // header
-    const hdr=el('div','flex items-center justify-between mb-1');
-    const ttl=el('div','text-[14px] font-semibold', fmtD(k));
-    const ctrl=el('div','flex gap-1');
-    if(isBreak){
-      const b=el('button','text-[12px] border border-slate-200/70 dark:border-white/10 rounded px-2 py-0.5','Break');
-      b.addEventListener('click',()=>{ state.breaks.delete(k); regen(); });
-      ctrl.appendChild(b);
-    } else if (tkMod){
-      const t=el('button','text-[12px] border border-emerald-200/70 dark:border-emerald-900/40 rounded px-2 py-0.5 bg-emerald-50/80 dark:bg-[#0a1f17]','Taken');
-      t.addEventListener('click',()=>{ state.taken.delete(k); regen(); });
-      const b=el('button','text-[12px] border border-slate-200/70 dark:border-white/10 rounded px-2 py-0.5','Set Break');
-      b.addEventListener('click',()=>{ state.breaks.add(k); state.taken.delete(k); regen(); });
-      ctrl.appendChild(t); ctrl.appendChild(b);
-    } else {
-      const b=el('button','text-[12px] border border-slate-200/70 dark:border-white/10 rounded px-2 py-0.5','Set Break');
-      b.addEventListener('click',()=>{ state.breaks.add(k); regen(); });
-      ctrl.appendChild(b);
-    }
-    hdr.appendChild(ttl); hdr.appendChild(ctrl);
-    card.appendChild(hdr);
-
-    if(!isBreak && !tkMod){
-      const mds = SCH[k] || [];
-      const block=el('div','space-y-1');
-      const r = req(); const tkn = countTaken();
-
-      if(tkn.f<r.f){
-        const avail=mds.filter(m=>F.includes(m) && ![...state.taken.values()].includes(m));
-        renderChoices(block,k,avail,'f');
-      } else if(tkn.o<r.o){
-        const avail=mds.filter(m=>state.options.includes(m) && ![...state.taken.values()].includes(m));
-        renderChoices(block,k,avail,'o');
-      } else if(tkn.r<r.r){
-        const avail=mds.filter(m=>R.includes(m) && ![...state.taken.values()].includes(m));
-        renderChoices(block,k,avail,'r');
-      } else if(tkn.s<r.s){
-        const avail=mds.filter(m=>S.includes(m));
-        renderChoices(block,k,avail,'s');
-      } else {
-        card.appendChild(el('div','text-[13px] text-slate-600 dark:text-slate-400','All requirements complete'));
-      }
-      card.appendChild(block);
-    } else if (tkMod){
-      card.appendChild(el('div','mt-1 text-[13px] font-semibold rounded border border-emerald-200/70 dark:border-emerald-900/40 px-2 py-1 bg-emerald-50/80 dark:bg-[#0a1f17]', tkMod));
-    }
-    tl.appendChild(card);
-  });
-
-  // Grad box
-  const ge=$("#gradBox");
-  const lastK=[...state.taken.keys()].sort().pop();
-  const r=req(); const tkn=countTaken();
-  const reqOK = tkn.f>=r.f && tkn.o>=r.o && tkn.r>=r.r && tkn.s>=r.s;
-  if(lastK && reqOK){ ge.classList.remove('hidden'); $("#gradTxt").textContent=fmtD(lastK); }
-  else { ge.classList.add('hidden'); }
-}
-function renderChoices(container, k, list, stage){
-  if(list.length===0){
-    const msg = stage==='f' ? 'No eligible foundation modules'
-              : stage==='o' ? 'No eligible options available'
-              : stage==='r' ? 'Complete 4 foundations + 4 options first'
-              : 'Complete research modules first';
-    container.appendChild(el('div','text-[13px] text-slate-600 dark:text-slate-400', msg));
-    return;
-  }
-  list.forEach(m=>{
-    const btn=el('button','w-full text-left text-[13px] border border-slate-200/70 dark:border-white/10 rounded px-2 py-1 bg-white/80 dark:bg-[#0f172a]/70 hover:bg-white/95 dark:hover:bg-[#111827]/70');
-    btn.textContent=m;
-    btn.addEventListener('click',()=>{
-      state.taken.set(k,m);
-      if(stage==='s'){ const i=keys.indexOf(k); const nk=keys[i+1]; if(nk) state.taken.set(nk,m); }
-      regen();
-    });
-    container.appendChild(btn);
-  });
-}
-function renderAnalytics(){
-  const r=req(); const tkn=countTaken();
-  const lastK=[...state.taken.keys()].sort().pop();
-
-  // duration
-  if(lastK){
-    const totalPeriods=keys.filter(k=>k>=state.start && k<=lastK).length;
-    const studyPeriods=Math.max(0,totalPeriods - state.breaks.size);
-    const months = studyPeriods*2;
-    animateNumber($("#vDur"), months);
-  } else { $("#vDur").textContent='—'; }
-
-  // breaks
-  animateNumber($("#vBrk"), state.breaks.size);
-
-  // progress %
-  const tot=r.f+r.o+r.r+r.s;
-  const cur=tkn.f+tkn.o+tkn.r+tkn.s;
-  const pct=tot?Math.round((cur/tot)*100):0;
-  animateNumber($("#vPct"), pct, '%');
-  const pf=$("#progFill"), pf2=$("#progFillClone"); pf.style.width=pct+'%'; pf2.style.width=pct+'%'; pf2.textContent=pct+'%';
-
-  // mini grad card
-  if(lastK){ $("#vGrad").innerHTML = fmtD(lastK).replace(' ','<br>'); } else { $("#vGrad").textContent='—'; }
-
-  // badges
-  $("#pf").textContent=tkn.f; $("#rf").textContent=r.f;
-  $("#po").textContent=tkn.o; $("#ro").textContent=r.o;
-  $("#pr").textContent=tkn.r; $("#rr").textContent=r.r;
-  $("#ps").textContent=tkn.s; $("#rs").textContent=r.s;
-}
-function renderImpact(){
-  const box=$("#impactBox");
-  if(state.taken.size===0){ box.classList.add('hidden'); return; }
-  const base = calcBaseline();
-  const lastK=[...state.taken.keys()].sort().pop();
-  if(!(base && lastK)){ box.classList.add('hidden'); return; }
-
-  const bPeriods=keys.filter(k=>k>=state.start && k<=base).length;
-  const cPeriods=keys.filter(k=>k>=state.start && k<=lastK).length;
-  const delay=(cPeriods-bPeriods)*2 - state.breaks.size*2;
-
-  $("#impBase").textContent = fmtD(base);
-  $("#impPlan").textContent = fmtD(lastK);
-  const d=$("#impDelta");
-  d.textContent = (delay>0?'+':'')+delay+' months';
-  d.className = 'ml-2 font-semibold ' + (delay>0?'text-amber-700':'text-emerald-600');
-
-  box.classList.remove('hidden');
-  drawImpactChart('impactChart', { baselinePeriods:bPeriods, currentPeriods:cPeriods, breaks:[...state.breaks].length });
-}
-function calcBaseline(){
-  const r=req();
-  const taken2=new Map(); let tkn={f:0,o:0,r:0,s:0};
-  const hs=addY(state.start,6);
-  const itk=keys.filter(k=>k>=state.start && k<=hs);
-
-  for(const k of itk){
-    if(tkn.f>=r.f && tkn.o>=r.o && tkn.r>=r.r && tkn.s>=r.s) break;
-    const mds=SCH[k]||[];
-
-    if(tkn.f<r.f){
-      const m=mds.find(x=>F.includes(x) && ![...taken2.values()].includes(x));
-      if(m){ taken2.set(k,m); tkn.f++; continue; }
-    }
-    if(tkn.f>=r.f && tkn.o<r.o){
-      const m=mds.find(x=>state.options.includes(x) && ![...taken2.values()].includes(x));
-      if(m){ taken2.set(k,m); tkn.o++; continue; }
-    }
-    if(tkn.f>=r.f && tkn.o>=r.o && tkn.r<r.r){
-      const m=mds.find(x=>R.includes(x) && ![...taken2.values()].includes(x));
-      if(m){ taken2.set(k,m); tkn.r++; continue; }
-    }
-    if(tkn.f>=r.f && tkn.o>=r.o && tkn.r>=r.r && tkn.s<r.s){
-      const m=mds.find(x=>S.includes(x));
-      if(m){ taken2.set(k,m); const ni=itk.indexOf(k); if(ni>=0 && ni<itk.length-1) taken2.set(itk[ni+1],m); tkn.s++; break; }
-    }
-  }
-  return [...taken2.keys()].sort().pop();
-}
-
-/* =========================
-   Actions
-   ========================= */
-function quickFill(){
-  const r=req();
-  if(r.o>0 && state.options.length<4){ toast('Please select 4 option modules first','warn'); return; }
-  const before = state.taken.size;
-
-  const hs=addY(state.start,6);
-  const itk=keys.filter(k=>k>=state.start && k<=hs);
-  let tkn=countTaken();
-
-  for(const k of itk){
-    if(tkn.f>=r.f && tkn.o>=r.o && tkn.r>=r.r && tkn.s>=r.s) break;
-    if(state.taken.has(k) || state.breaks.has(k)) continue;
-    const mds=SCH[k]||[];
-
-    if(tkn.f<r.f){
-      const m=mds.find(x=>F.includes(x) && ![...state.taken.values()].includes(x));
-      if(m){ state.taken.set(k,m); tkn.f++; continue; }
-    }
-    if(tkn.f>=r.f && tkn.o<r.o){
-      const m=mds.find(x=>state.options.includes(x) && ![...state.taken.values()].includes(x));
-      if(m){ state.taken.set(k,m); tkn.o++; continue; }
-    }
-    if(tkn.f>=r.f && tkn.o>=r.o && tkn.r<r.r){
-      const m=mds.find(x=>R.includes(x) && ![...state.taken.values()].includes(x));
-      if(m){ state.taken.set(k,m); tkn.r++; continue; }
-    }
-    if(tkn.f>=r.f && tkn.o>=r.o && tkn.r>=r.r && tkn.s<r.s){
-      const m=mds.find(x=>S.includes(x));
-      if(m){ state.taken.set(k,m); const ni=itk.indexOf(k); const nk=itk[ni+1]; if(nk) state.taken.set(nk,m); tkn.s++; break; }
-    }
-  }
-
-  const added = state.taken.size - before;
-  regen();
-  if(added>0) toast(`Added ${added} module${added>1?'s':''} to your plan`,'ok');
-  else toast('No suitable modules found to add','warn');
-}
-function resetPlan(){
-  if(!confirm('Reset everything? This cannot be undone.')) return;
-  state.taken.clear(); state.breaks.clear(); state.options=[]; state.award='MSc'; state.start=keys.find(k=>k>='2023-09')||keys[0];
-  $("#award").value=state.award; $("#start").value=state.start;
-  document.querySelectorAll('#opts .chip').forEach(c=>c.classList.remove('on')); $("#optCount").textContent='0';
-  regen(); toast('Plan reset successfully','ok');
-}
-function downloadPlan(){
-  const payload = { award: state.award, start: state.start, options: state.options, breaks: [...state.breaks], taken: [...state.taken], generatedAt: new Date().toISOString() };
-  const blob = new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='graduation_plan.json'; a.click(); URL.revokeObjectURL(a.href);
-}
-function importPlan(evt){
-  const file = evt.target.files && evt.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try{
-      const obj = JSON.parse(e.target.result);
-      if(!obj || typeof obj!=='object') throw new Error('Invalid file');
-      state.award = obj.award ?? state.award;
-      state.start = obj.start ?? state.start;
-      state.options = Array.isArray(obj.options) ? obj.options : [];
-      state.breaks = new Set(Array.isArray(obj.breaks)?obj.breaks:[]);
-      state.taken  = new Map(Array.isArray(obj.taken)?obj.taken:[]);
-      $("#award").value=state.award; $("#start").value=state.start;
-      document.querySelectorAll('#opts .chip').forEach(c=>{ const n=c.textContent.trim(); c.classList.toggle('on', state.options.includes(n)); });
-      $("#optCount").textContent = state.options.length;
-      regen(); toast('Plan imported successfully','ok');
-    } catch{
-      toast('Could not import this file','warn');
-    } finally { evt.target.value = ''; }
-  };
-  reader.readAsText(file);
-}
-function printSummary(){
-  $("#printMeta").textContent = `Award: ${state.award} · Start: ${fmtD(state.start)} · Generated: ${new Date().toLocaleString('en-GB')}`;
-
-  const r=req(); const tkn=countTaken();
-  const lastK=[...state.taken.keys()].sort().pop();
-  $("#printOverview").innerHTML = `
-    <div><span class="font-semibold">Foundations:</span> ${tkn.f}/${r.f}</div>
-    <div><span class="font-semibold">Options:</span> ${tkn.o}/${r.o} — ${state.options.join(', ')||'No selections'}</div>
-    <div><span class="font-semibold">Research:</span> ${tkn.r}/${r.r}</div>
-    <div><span class="font-semibold">Synoptic:</span> ${tkn.s}/${r.s}</div>
-    <div class="mt-1"><span class="font-semibold">Estimated Graduation:</span> ${lastK?fmtD(lastK):'—'}</div>
-  `;
-
-  const tbody = $("#printTable"); tbody.innerHTML = '';
-  const horizonStop = addY(state.start,6);
-  const span = keys.filter(k => k >= state.start && k <= horizonStop);
-  span.forEach(k=>{
-    const tr=document.createElement('tr');
-    const term=fmtD(k);
-    const mod= state.breaks.has(k) ? 'Break' : (state.taken.get(k) || '—');
-    const ty = state.breaks.has(k) ? '—' : stageLabel(getType(mod));
-    tr.innerHTML = `<td class="py-1 border-b">${term}</td><td class="py-1 border-b">${mod}</td><td class="py-1 border-b">${ty}</td>`;
-    tbody.appendChild(tr);
-  });
-
-  window.print();
-}
-const stageLabel = t => t==='f'?'Foundation': t==='o'?'Option': t==='r'?'Research': t==='s'?'Synoptic':'';
-
-/* =========================
-   Chart
-   ========================= */
-function drawImpactChart(id, {baselinePeriods, currentPeriods, breaks}){
-  const c = document.getElementById(id); const ctx = c.getContext('2d'); const w=c.width, h=c.height;
-  ctx.clearRect(0,0,w,h);
-
-  const pad=30; const maxX = Math.max(baselinePeriods, currentPeriods)||1; const maxY = maxX;
-  ctx.strokeStyle = '#9aa4b2'; ctx.globalAlpha = .55; ctx.beginPath(); ctx.moveTo(pad,h-pad); ctx.lineTo(w-pad,h-pad); ctx.moveTo(pad,h-pad); ctx.lineTo(pad,pad); ctx.stroke(); ctx.globalAlpha = 1;
-  const x = v => pad + (w-2*pad) * (v/maxX); const y = v => (h-pad) - (h-2*pad) * (v/maxY);
-
-  ctx.strokeStyle = '#3aa6e9'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x(0), y(0)); ctx.lineTo(x(baselinePeriods), y(baselinePeriods)); ctx.stroke();
-  ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x(0), y(0)); ctx.lineTo(x(currentPeriods), y(currentPeriods)); ctx.stroke();
-
-  if(breaks>0){ ctx.fillStyle = '#f59e0b'; for(let i=1;i<=breaks;i++){ const bx=x(currentPeriods*(i/(breaks+1))); const by=y(currentPeriods*(i/(breaks+1))); ctx.beginPath(); ctx.arc(bx,by,3,0,Math.PI*2); ctx.fill(); } }
-
-  ctx.fillStyle = '#9aa4b2'; ctx.font = '10px Inter, system-ui, sans-serif'; ctx.fillText('Terms', w/2-14, h-8); ctx.save(); ctx.translate(12,h/2+20); ctx.rotate(-Math.PI/2); ctx.fillText('Cumulative terms',0,0); ctx.restore();
-  ctx.fillStyle='#3aa6e9'; ctx.fillText('Baseline', w-90, 20); ctx.fillStyle='#06b6d4'; ctx.fillText('Your plan', w-90, 34); ctx.fillStyle='#f59e0b'; ctx.fillText('Breaks', w-90, 48);
-}
-
-/* =========================
-   Sidebar / Break Impact
-   ========================= */
-function updateBreakImpact(){
-  const el=$("#breakImpact");
-  const base=calcBaseline();
-  const lastK=[...state.taken.keys()].sort().pop();
-  if(state.breaks.size===0){ el.textContent='No breaks selected'; return; }
-  if(base && lastK){
-    const bP=keys.filter(k=>k>=state.start && k<=base).length;
-    const cP=keys.filter(k=>k>=state.start && k<=lastK).length;
-    const delay=(cP-bP)*2;
-    el.innerHTML = `${state.breaks.size} break(s) = <span class="${delay>0?'text-amber-700':'text-emerald-600'} font-semibold">${delay>0?'+':''}${delay} months</span>`;
-  } else el.textContent = `${state.breaks.size} break(s) selected`;
-}
-
-/* =========================
-   Tiny helper: animate number
-   ========================= */
-function animateNumber(node, value, suffix=''){
-  const target = Number(value);
-  const curr = Number((node.textContent||'0').replace('%','')) || 0;
-  const steps = 12; const delta = (target - curr)/steps; let i=0;
-  const tick=()=>{ i++; const val = i<steps ? Math.round(curr + delta*i) : target; node.textContent = val + (suffix||''); if(i<steps) requestAnimationFrame(tick); };
-  requestAnimationFrame(tick);
-}
-
-/* =========================
-   Boot
-   ========================= */
-document.addEventListener('DOMContentLoaded', init);
-</script>
-
+        // Data persistence functions
+        function savePlan() {
+            const plan = {
+                award: document.getElementById('award').value,
+                start: document.getElementById('start').value,
+                selectedOptions: getOpts(),
+                taken: Array.from(taken.entries()),
+                breaks: Array.from(brks),
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('kclGraduationPlan', JSON.stringify(plan));
+            showAlert('Plan saved successfully!', 'success');
+        }
+        
+        function loadPlan() {
+            const saved = localStorage.getItem('kclGraduationPlan');
+            if (!saved) {
+                showAlert('No saved plan found', 'warning');
+                return;
+            }
+            
+            try {
+                const plan = JSON.parse(saved);
+                
+                // Restore basic settings
+                document.getElementById('award').value = plan.award;
+                document.getElementById('start').value = plan.start;
+                
+                // Restore option selections
+                const checkboxes = document.querySelectorAll('#opts input');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = plan.selectedOptions.includes(checkbox.dataset.name);
+                });
+                updateChipSelection();
+                
+                // Restore taken modules and breaks
+                taken.clear();
+                brks.clear();
+                
+                plan.taken.forEach(([period, module]) => {
+                    taken.set(period, module);
+                });
+                
+                plan.breaks.forEach(breakPeriod => {
+                    brks.add(breakPeriod);
+                });
+                
+                gen();
+                showAlert('Plan loaded successfully!', 'success');
+            } catch (e) {
+                showAlert('Error loading saved plan', 'error');
+                console.error(e);
+            }
+        }
+        
+        // Export functions
+        function exportToPDF() {
+            showAlert('PDF export would be generated here', 'info');
+        }
+        
+        function exportToCalendar() {
+            showAlert('Calendar export would be generated here', 'info');
+        }
+        
+        // Conflict detection
+        function detectConflicts() {
+            const conflicts = [];
+            const aw = document.getElementById('award').value || 'MSc';
+            const rq = { ...REQ[aw] };
+            const actualCompletion = getActualCompletion();
+            
+            // Check if selected options match taken options
+            const selectedOptions = getOpts();
+            const takenOptions = [...taken.values()].filter(m => O.includes(m));
+            
+            takenOptions.forEach(takenOpt => {
+                if (!selectedOptions.includes(takenOpt)) {
+                    conflicts.push(`Module "${takenOpt}" is scheduled but not selected in your options`);
+                }
+            });
+            
+            // Check prerequisite violations
+            const takenKeys = [...taken.keys()].sort();
+            let foundationCompleted = false;
+            let optionsCompleted = false;
+            let researchCompleted = false;
+            
+            takenKeys.forEach(period => {
+                const module = taken.get(period);
+                const type = getType(module);
+                
+                if (type === 'option' && !foundationCompleted) {
+                    conflicts.push(`Option module "${module}" scheduled before completing all foundation modules`);
+                }
+                
+                if (type === 'research' && (!foundationCompleted || !optionsCompleted)) {
+                    conflicts.push(`Research module "${module}" scheduled before completing foundation and option modules`);
+                }
+                
+                if (type === 'synoptic' && (!foundationCompleted || !optionsCompleted || !researchCompleted)) {
+                    conflicts.push(`Synoptic project scheduled before completing all prerequisite modules`);
+                }
+                
+                // Update completion status
+                if (type === 'foundation' && actualCompletion.foundations >= rq.f) {
+                    foundationCompleted = true;
+                }
+                if (type === 'option' && actualCompletion.options >= rq.o) {
+                    optionsCompleted = true;
+                }
+                if (type === 'research' && actualCompletion.research >= rq.r) {
+                    researchCompleted = true;
+                }
+            });
+            
+            return conflicts;
+        }
+        
+        // Notification system
+        function checkNotifications() {
+            const notifications = [];
+            const aw = document.getElementById('award').value || 'MSc';
+            const st = document.getElementById('start').value || '2023-09';
+            const rq = { ...REQ[aw] };
+            const actualCompletion = getActualCompletion();
+            
+            // Check for upcoming registration deadlines
+            const currentDate = new Date();
+            const upcomingPeriods = keys.filter(k => {
+                const [y, m] = k.split('-').map(Number);
+                const periodDate = new Date(y, m - 1, 1);
+                const timeDiff = periodDate - currentDate;
+                const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+                return daysDiff > 0 && daysDiff < 60; // Within next 60 days
+            });
+            
+            if (upcomingPeriods.length > 0) {
+                notifications.push(`Registration deadline approaching for ${fmtD(upcomingPeriods[0])}`);
+            }
+            
+            // Check module completion status
+            if (actualCompletion.foundations < rq.f) {
+                notifications.push(`Complete ${rq.f - actualCompletion.foundations} more foundation modules`);
+            } else if (actualCompletion.options < rq.o) {
+                notifications.push(`Complete ${rq.o - actualCompletion.options} more option modules`);
+            } else if (actualCompletion.research < rq.r) {
+                notifications.push(`Complete ${rq.r - actualCompletion.research} more research modules`);
+            } else if (actualCompletion.synoptic < rq.s) {
+                notifications.push(`Complete the synoptic project`);
+            }
+            
+            // Update notification badge
+            const badge = document.getElementById('notificationCount');
+            if (badge) {
+                if (notifications.length > 0) {
+                    badge.textContent = notifications.length;
+                    badge.style.display = 'inline-flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+            
+            return notifications;
+        }
+        
+        function showNotifications() {
+            const notifications = checkNotifications();
+            if (notifications.length === 0) {
+                showAlert('No notifications at this time', 'info');
+            } else {
+                const notificationText = notifications.map((n, i) => `${i+1}. ${n}`).join('\n');
+                showAlert(`Notifications:\n\n${notificationText}`, 'info');
+            }
+        }
+        
+        // Expose functions to global scope
+        window.quickFill = quickFill;
+        window.resetPlan = resetPlan;
+        window.savePlan = savePlan;
+        window.loadPlan = loadPlan;
+        window.exportToPDF = exportToPDF;
+        window.exportToCalendar = exportToCalendar;
+        window.showNotifications = showNotifications;
+        
+        // Initialize on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
 </body>
 </html>
