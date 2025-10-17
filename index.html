@@ -53,12 +53,6 @@
             align-items: center;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
         .logo h1 {
             font-size: 1.5rem;
             font-weight: 700;
@@ -643,8 +637,12 @@
         const R = ['Research Skills: From Reviewing & Critical Analysis to Research Ethics', 'Research Skills: From Methods & Procedures to Analysis & Reporting'];
         const S = ['Independent Synoptic Project'];
         
-        // Sample schedule data (truncated for brevity)
+        // Complete schedule data
         const SCH = {
+            "2023-01": ["Techniques in Neuroscience", "Psychology & Neuroscience of Affective Disorders", "Neuroscience in Society", "Social, Genetic & Environmental Basis of Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics"],
+            "2023-03": ["Psychological Foundations of Mental Health", "Psychology & Neuroscience of Psychosis", "Neuroimaging in Mental Health", "Pharmacotherapies in Mental Health", "Research Skills: From Methods & Procedures to Analysis & Reporting"],
+            "2023-05": ["Mental Health in the Community", "Child & Adolescent Mental Health", "Global Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics"],
+            "2023-06": ["Biological Foundations of Mental Health", "Psychology & Neuroscience of Addiction", "Mindfulness: Neuroscience & Application", "Research Skills: From Methods & Procedures to Analysis & Reporting"],
             "2023-09": ["Techniques in Neuroscience", "Psychology & Neuroscience of Affective Disorders", "Neuroscience in Society", "Social, Genetic & Environmental Basis of Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics"],
             "2023-10": ["Psychological Foundations of Mental Health", "Psychology & Neuroscience of Psychosis", "Neuroimaging in Mental Health", "Pharmacotherapies in Mental Health", "Research Skills: From Methods & Procedures to Analysis & Reporting"],
             "2024-01": ["Mental Health in the Community", "Child & Adolescent Mental Health", "Global Mental Health", "Research Skills: From Reviewing & Critical Analysis to Research Ethics"],
@@ -789,6 +787,22 @@
             return t;
         }
         
+        // Calculate actual completed modules (not just count)
+        function getActualCompletion() {
+            const completedFoundations = F.filter(f => [...taken.values()].includes(f)).length;
+            const cho = getOpts();
+            const completedOptions = cho.filter(o => [...taken.values()].includes(o)).length;
+            const completedResearch = R.filter(r => [...taken.values()].includes(r)).length;
+            const completedSynoptic = S.filter(s => [...taken.values()].includes(s)).length;
+            
+            return {
+                foundations: completedFoundations,
+                options: completedOptions,
+                research: completedResearch,
+                synoptic: completedSynoptic
+            };
+        }
+        
         // Generate the main view
         function gen() {
             const aw = document.getElementById('award').value || 'MSc';
@@ -796,6 +810,7 @@
             const rq = { ...REQ[aw] };
             const cho = getOpts();
             const tkn = getTkn();
+            const actualCompletion = getActualCompletion();
             const wb = document.getElementById('wbox');
         
             if (wb) {
@@ -809,27 +824,33 @@
         
             const hs = addY(st, 6);
             const itk = keys.filter(k => k >= st && k <= hs);
-            render(itk, st, rq, tkn, cho);
-            vis(itk, tkn, rq, st);
+            render(itk, st, rq, tkn, cho, actualCompletion);
+            vis(itk, tkn, rq, st, actualCompletion);
             updateBreakImpact();
             updateOptimalGraduation(st, rq, cho);
         }
         
         // Render the timeline
-        function render(itk, st, rq, tkn, cho) {
+        function render(itk, st, rq, tkn, cho, actualCompletion) {
             const el = document.getElementById('tl');
             if (!el) return;
         
             el.innerHTML = '';
             const pi = document.getElementById('phaseInfo');
             if (pi) {
-                if (tkn.f < rq.f) {
-                    pi.innerHTML = '<div class="alert" style="position: static; margin-bottom: 15px;">Complete all 4 Foundation modules before proceeding to Options</div>';
-                } else if (tkn.f >= rq.f && tkn.o < rq.o) {
-                    pi.innerHTML = '<div class="alert" style="position: static; margin-bottom: 15px;">Select and complete 4 Option modules</div>';
-                } else if (tkn.f >= rq.f && tkn.o >= rq.o && tkn.r < rq.r) {
-                    pi.innerHTML = '<div class="alert" style="position: static; margin-bottom: 15px;">Complete Research Skills modules</div>';
-                } else if (tkn.f >= rq.f && tkn.o >= rq.o && tkn.r >= rq.r && tkn.s < rq.s) {
+                if (actualCompletion.foundations < rq.f) {
+                    pi.innerHTML = `<div class="alert" style="position: static; margin-bottom: 15px;">
+                        Complete all ${rq.f} Foundation modules before proceeding (${actualCompletion.foundations}/${rq.f} completed)
+                    </div>`;
+                } else if (actualCompletion.foundations >= rq.f && actualCompletion.options < rq.o) {
+                    pi.innerHTML = `<div class="alert" style="position: static; margin-bottom: 15px;">
+                        Select and complete ${rq.o} Option modules (${actualCompletion.options}/${rq.o} completed)
+                    </div>`;
+                } else if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research < rq.r) {
+                    pi.innerHTML = `<div class="alert" style="position: static; margin-bottom: 15px;">
+                        Complete Research Skills modules (${actualCompletion.research}/${rq.r} completed)
+                    </div>`;
+                } else if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r && actualCompletion.synoptic < rq.s) {
                     pi.innerHTML = '<div class="alert" style="position: static; margin-bottom: 15px;">Complete the Synoptic Project</div>';
                 } else {
                     pi.innerHTML = '<div class="alert" style="position: static; margin-bottom: 15px;">All requirements complete!</div>';
@@ -880,13 +901,27 @@
                     const mds = SCH[k] || [];
                     let availableModules = [];
                     
-                    if (tkn.f < rq.f) {
-                        availableModules = mds.filter(m => F.includes(m) && ![...taken.values()].includes(m));
-                    } else if (tkn.f >= rq.f && tkn.o < rq.o) {
-                        availableModules = mds.filter(m => cho.includes(m) && ![...taken.values()].includes(m));
-                    } else if (tkn.f >= rq.f && tkn.o >= rq.o && tkn.r < rq.r) {
-                        availableModules = mds.filter(m => R.includes(m) && ![...taken.values()].includes(m));
-                    } else if (tkn.f >= rq.f && tkn.o >= rq.o && tkn.r >= rq.r && tkn.s < rq.s) {
+                    // STRICT PREREQUISITE CHECKING
+                    if (actualCompletion.foundations < rq.f) {
+                        // Only show foundation modules
+                        availableModules = mds.filter(m => 
+                            F.includes(m) && 
+                            ![...taken.values()].includes(m)
+                        );
+                    } else if (actualCompletion.foundations >= rq.f && actualCompletion.options < rq.o) {
+                        // Only show selected option modules
+                        availableModules = mds.filter(m => 
+                            cho.includes(m) && 
+                            ![...taken.values()].includes(m)
+                        );
+                    } else if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research < rq.r) {
+                        // Only show research modules
+                        availableModules = mds.filter(m => 
+                            R.includes(m) && 
+                            ![...taken.values()].includes(m)
+                        );
+                    } else if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r && actualCompletion.synoptic < rq.s) {
+                        // Only show synoptic project
                         availableModules = mds.filter(m => S.includes(m));
                     }
                     
@@ -905,9 +940,18 @@
                             </div>
                         `;
                     } else {
+                        let message = 'No available modules';
+                        if (actualCompletion.foundations < rq.f) {
+                            message = `Complete ${rq.f - actualCompletion.foundations} more foundation modules`;
+                        } else if (actualCompletion.foundations >= rq.f && actualCompletion.options < rq.o) {
+                            message = `Complete ${rq.o - actualCompletion.options} more option modules`;
+                        } else if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research < rq.r) {
+                            message = `Complete ${rq.r - actualCompletion.research} more research modules`;
+                        }
+                        
                         content.innerHTML = `
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <div>No available modules</div>
+                                <div>${message}</div>
                                 <button class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="brks.add('${k}'); gen();">Set Break</button>
                             </div>
                         `;
@@ -921,7 +965,7 @@
         }
         
         // Update visualization
-        function vis(itk, tkn, rq, st) {
+        function vis(itk, tkn, rq, st, actualCompletion) {
             const lastK = [...taken.keys()].sort().pop();
         
             const vDur = document.getElementById('vDur');
@@ -943,7 +987,7 @@
             }
         
             const tot = rq.f + rq.o + rq.r + rq.s;
-            const cur = tkn.f + tkn.o + tkn.r + tkn.s;
+            const cur = actualCompletion.foundations + actualCompletion.options + actualCompletion.research + actualCompletion.synoptic;
             const pct = tot > 0 ? Math.round((cur / tot) * 100) : 0;
         
             const vPct = document.getElementById('vPct');
@@ -1193,7 +1237,9 @@
                 showAlert('Please select 4 option modules first', 'warning');
                 return;
             }
-            if (tkn.f >= rq.f && tkn.o >= rq.o && tkn.r >= rq.r && tkn.s >= rq.s) {
+            
+            const actualCompletion = getActualCompletion();
+            if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r && actualCompletion.synoptic >= rq.s) {
                 showAlert('Your plan is already complete!', 'success');
                 return;
             }
@@ -1204,47 +1250,52 @@
             const remF = new Set(F.filter(m => ![...taken.values()].includes(m)));
             const remO = new Set((cho.length >= 4 ? cho : O.slice(0, 4)).filter(m => ![...taken.values()].includes(m)));
             const remR = new Set(R.filter(m => ![...taken.values()].includes(m)));
-            let curTkn = { ...tkn };
+            
+            let curFoundations = actualCompletion.foundations;
+            let curOptions = actualCompletion.options;
+            let curResearch = actualCompletion.research;
+            let curSynoptic = actualCompletion.synoptic;
         
             for (const k of itk) {
-                if (curTkn.f >= rq.f && curTkn.o >= rq.o && curTkn.r >= rq.r && curTkn.s >= rq.s) break;
+                if (curFoundations >= rq.f && curOptions >= rq.o && curResearch >= rq.r && curSynoptic >= rq.s) break;
                 if (taken.has(k) || brks.has(k)) continue;
                 const mds = SCH[k] || [];
         
-                if (curTkn.f < rq.f) {
+                // STRICT PREREQUISITE ENFORCEMENT
+                if (curFoundations < rq.f) {
                     const m = mds.find(x => remF.has(x));
                     if (m) {
                         taken.set(k, m);
                         remF.delete(m);
-                        curTkn.f++;
+                        curFoundations++;
                         continue;
                     }
                 }
-                if (curTkn.f >= rq.f && curTkn.o < rq.o) {
+                if (curFoundations >= rq.f && curOptions < rq.o) {
                     const m = mds.find(x => remO.has(x));
                     if (m) {
                         taken.set(k, m);
                         remO.delete(m);
-                        curTkn.o++;
+                        curOptions++;
                         continue;
                     }
                 }
-                if (curTkn.f >= rq.f && curTkn.o >= rq.o && curTkn.r < rq.r) {
+                if (curFoundations >= rq.f && curOptions >= rq.o && curResearch < rq.r) {
                     const m = mds.find(x => remR.has(x));
                     if (m) {
                         taken.set(k, m);
                         remR.delete(m);
-                        curTkn.r++;
+                        curResearch++;
                         continue;
                     }
                 }
-                if (curTkn.f >= rq.f && curTkn.o >= rq.o && curTkn.r >= rq.r && curTkn.s < rq.s) {
+                if (curFoundations >= rq.f && curOptions >= rq.o && curResearch >= rq.r && curSynoptic < rq.s) {
                     const m = mds.find(x => S.includes(x));
                     if (m) {
                         taken.set(k, m);
                         const ni = itk.indexOf(k);
                         if (ni >= 0 && ni < itk.length - 1) taken.set(itk[ni + 1], m);
-                        curTkn.s++;
+                        curSynoptic++;
                         break;
                     }
                 }
