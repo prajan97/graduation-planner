@@ -1226,7 +1226,7 @@
                              actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r ? 'phase active' : 'phase';
         }
         
-        // Generate the main view
+        // Generate the main view - FIXED: Hide previous phase modules
         function gen() {
             const aw = document.getElementById('award').value || 'MSc';
             const st = document.getElementById('start').value || '2023-09';
@@ -1275,7 +1275,7 @@
             }
         }
         
-        // Render the timeline - FIXED LOGIC: Only show current phase modules
+        // Render the timeline - FIXED: Hide previous phase modules
         function render(itk, st, rq, tkn, cho, actualCompletion) {
             const el = document.getElementById('tl');
             if (!el) return;
@@ -1349,7 +1349,7 @@
                     const mds = SCH[k] || [];
                     let availableModules = [];
                     
-                    // FIXED LOGIC: Only show modules from current phase
+                    // FIXED LOGIC: Only show modules from current phase AND hide previous phase modules
                     const completedModules = [...taken.values()];
                     
                     const foundationsDone = actualCompletion.foundations >= rq.f;
@@ -1361,16 +1361,16 @@
                     
                     // STRICTER PHASE PROGRESSION: Only show current phase modules
                     if (!foundationsDone) {
-                        // Only show foundation modules
+                        // Only show foundation modules (hide options, research, synoptic)
                         availableModules = allAvailable.filter(m => F.includes(m));
                     } else if (!optionsDone) {
-                        // Only show selected option modules (no research modules!)
+                        // Only show selected option modules (hide foundation, research, synoptic)
                         availableModules = allAvailable.filter(m => cho.includes(m) && O.includes(m));
                     } else if (!researchDone) {
-                        // Only show research modules
+                        // Only show research modules (hide foundation, options, synoptic)
                         availableModules = allAvailable.filter(m => R.includes(m));
                     } else if (actualCompletion.synoptic < rq.s) {
-                        // Only show synoptic project
+                        // Only show synoptic project (hide all others)
                         availableModules = allAvailable.filter(m => S.includes(m));
                     } else {
                         // All requirements complete
