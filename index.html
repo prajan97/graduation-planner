@@ -79,26 +79,14 @@
             padding: 0 20px;
         }
 
-        /* Header Styles */
+        /* Header Styles - Updated to solid KCL red */
         header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: #d50032; /* Solid KCL red */
             color: white;
             padding: 1.2rem 0;
             box-shadow: var(--shadow);
             position: relative;
             overflow: hidden;
-        }
-
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
-            background-size: cover;
-            opacity: 0.1;
         }
 
         .header-content {
@@ -1133,16 +1121,9 @@
                 optsW.appendChild(l);
             });
             
-            // Try to load saved plan
-            const saved = localStorage.getItem('kclGraduationPlan');
-            if (saved) {
-                if (confirm('A saved plan was found. Would you like to load it?')) {
-                    loadPlan();
-                }
-            } else {
-                // Generate initial view
-                gen();
-            }
+            // REMOVED: Automatic "saved plan found" alert on refresh
+            // Just generate initial view without asking to load saved plan
+            gen();
         }
         
         // Update chip selection styling
