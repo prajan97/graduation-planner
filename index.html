@@ -1121,7 +1121,6 @@
                 optsW.appendChild(l);
             });
             
-            // REMOVED: Automatic "saved plan found" alert on refresh
             // Just generate initial view without asking to load saved plan
             gen();
         }
@@ -1207,7 +1206,7 @@
                              actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r ? 'phase active' : 'phase';
         }
         
-        // Generate the main view - FIXED: Hide previous phase modules
+        // Generate the main view
         function gen() {
             const aw = document.getElementById('award').value || 'MSc';
             const st = document.getElementById('start').value || '2023-09';
@@ -1256,7 +1255,7 @@
             }
         }
         
-        // Render the timeline - FIXED: Hide previous phase modules
+        // Render the timeline - FIXED: Research modules only appear in future intakes after prerequisites
         function render(itk, st, rq, tkn, cho, actualCompletion) {
             const el = document.getElementById('tl');
             if (!el) return;
@@ -1330,7 +1329,7 @@
                     const mds = SCH[k] || [];
                     let availableModules = [];
                     
-                    // FIXED LOGIC: Only show modules from current phase AND hide previous phase modules
+                    // FIXED LOGIC: Research modules only appear in future intakes after prerequisites
                     const completedModules = [...taken.values()];
                     
                     const foundationsDone = actualCompletion.foundations >= rq.f;
@@ -1340,6 +1339,12 @@
                     // Filter out completed modules first
                     const allAvailable = mds.filter(m => !completedModules.includes(m));
                     
+                    // Check if this is a future intake (not in the past)
+                    const currentDate = new Date();
+                    const [periodYear, periodMonth] = k.split('-').map(Number);
+                    const periodDate = new Date(periodYear, periodMonth - 1, 1);
+                    const isFutureIntake = periodDate >= currentDate;
+                    
                     // STRICTER PHASE PROGRESSION: Only show current phase modules
                     if (!foundationsDone) {
                         // Only show foundation modules (hide options, research, synoptic)
@@ -1348,11 +1353,19 @@
                         // Only show selected option modules (hide foundation, research, synoptic)
                         availableModules = allAvailable.filter(m => cho.includes(m) && O.includes(m));
                     } else if (!researchDone) {
-                        // Only show research modules (hide foundation, options, synoptic)
-                        availableModules = allAvailable.filter(m => R.includes(m));
+                        // Only show research modules in FUTURE intakes (hide foundation, options, synoptic)
+                        if (isFutureIntake) {
+                            availableModules = allAvailable.filter(m => R.includes(m));
+                        } else {
+                            availableModules = []; // Don't show research modules in past intakes
+                        }
                     } else if (actualCompletion.synoptic < rq.s) {
-                        // Only show synoptic project (hide all others)
-                        availableModules = allAvailable.filter(m => S.includes(m));
+                        // Only show synoptic project in FUTURE intakes (hide all others)
+                        if (isFutureIntake) {
+                            availableModules = allAvailable.filter(m => S.includes(m));
+                        } else {
+                            availableModules = []; // Don't show synoptic in past intakes
+                        }
                     } else {
                         // All requirements complete
                         availableModules = [];
@@ -1413,6 +1426,8 @@
                             message = `Complete ${rq.o - actualCompletion.options} more option modules first`;
                         } else if (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o && actualCompletion.research >= rq.r && actualCompletion.synoptic >= rq.s) {
                             message = 'All requirements completed!';
+                        } else if (!isFutureIntake && (actualCompletion.foundations >= rq.f && actualCompletion.options >= rq.o)) {
+                            message = 'Research modules only available in future intakes';
                         }
                         
                         modules.innerHTML = `<div style="font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 8px;">${message}</div>`;
@@ -1540,23 +1555,39 @@
                     }
                 }
                 if (curFoundations >= rq.f && curOptions >= rq.o && curResearch < rq.r) {
-                    const m = mds.find(x => remR.has(x));
-                    if (m) {
-                        taken.set(k, m);
-                        remR.delete(m);
-                        curResearch++;
-                        continue;
+                    // Only schedule research modules in future intakes
+                    const currentDate = new Date();
+                    const [periodYear, periodMonth] = k.split('-').map(Number);
+                    const periodDate = new Date(periodYear, periodMonth - 1, 1);
+                    const isFutureIntake = periodDate >= currentDate;
+                    
+                    if (isFutureIntake) {
+                        const m = mds.find(x => remR.has(x));
+                        if (m) {
+                            taken.set(k, m);
+                            remR.delete(m);
+                            curResearch++;
+                            continue;
+                        }
                     }
                 }
                 if (curFoundations >= rq.f && curOptions >= rq.o && curResearch >= rq.r && curSynoptic < rq.s) {
-                    const m = mds.find(x => S.includes(x));
-                    if (m) {
-                        taken.set(k, m);
-                        const ni = itk.indexOf(k);
-                        // Add next period for synoptic project (4 months total)
-                        if (ni >= 0 && ni < itk.length - 1) taken.set(itk[ni + 1], m);
-                        curSynoptic++;
-                        break;
+                    // Only schedule synoptic in future intakes
+                    const currentDate = new Date();
+                    const [periodYear, periodMonth] = k.split('-').map(Number);
+                    const periodDate = new Date(periodYear, periodMonth - 1, 1);
+                    const isFutureIntake = periodDate >= currentDate;
+                    
+                    if (isFutureIntake) {
+                        const m = mds.find(x => S.includes(x));
+                        if (m) {
+                            taken.set(k, m);
+                            const ni = itk.indexOf(k);
+                            // Add next period for synoptic project (4 months total)
+                            if (ni >= 0 && ni < itk.length - 1) taken.set(itk[ni + 1], m);
+                            curSynoptic++;
+                            break;
+                        }
                     }
                 }
             }
